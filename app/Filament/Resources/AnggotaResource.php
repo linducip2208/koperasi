@@ -35,18 +35,23 @@ class AnggotaResource extends Resource
                         Forms\Components\TextInput::make('nama')->label('Nama Lengkap')->required()->columnSpanFull(),
                         Forms\Components\TextInput::make('tempat_lahir')->label('Tempat Lahir'),
                         Forms\Components\DatePicker::make('tanggal_lahir')->label('Tanggal Lahir'),
-                        Forms\Components\Select::make('jenis_kelamin')->label('Jenis Kelamin')->options(['L' => 'Laki-laki', 'P' => 'Perempuan']),
-                        Forms\Components\Select::make('agama')->label('Agama')->options([
-                            'Islam' => 'Islam', 'Kristen' => 'Kristen', 'Katolik' => 'Katolik',
-                            'Hindu' => 'Hindu', 'Buddha' => 'Buddha', 'Konghucu' => 'Konghucu',
-                        ]),
-                        Forms\Components\Select::make('status_perkawinan')->label('Status Perkawinan')->options([
-                            'belum' => 'Belum Menikah', 'menikah' => 'Menikah', 'cerai' => 'Cerai',
-                        ]),
                         Forms\Components\TextInput::make('telp')->label('Telepon/HP'),
                         Forms\Components\TextInput::make('email')->label('Email')->email(),
                         Forms\Components\TextInput::make('npwp')->label('NPWP'),
                     ]),
+                    Forms\Components\Section::make('Identitas')->schema([
+                        Forms\Components\Grid::make(3)->schema([
+                            Forms\Components\Radio::make('jenis_kelamin')->label('Jenis Kelamin')
+                                ->options(['L' => 'Laki-laki', 'P' => 'Perempuan'])
+                                ->inline()->inlineLabel(false),
+                            Forms\Components\Radio::make('agama')->label('Agama')
+                                ->options(['Islam' => 'Islam', 'Kristen' => 'Kristen', 'Katolik' => 'Katolik', 'Hindu' => 'Hindu', 'Buddha' => 'Buddha', 'Konghucu' => 'Konghucu'])
+                                ->inline()->inlineLabel(false),
+                            Forms\Components\Radio::make('status_perkawinan')->label('Status')
+                                ->options(['belum' => 'Belum Menikah', 'menikah' => 'Menikah', 'cerai' => 'Cerai'])
+                                ->inline()->inlineLabel(false),
+                        ]),
+                    ])->collapsible(),
                 ]),
                 Forms\Components\Tabs\Tab::make('Alamat')->schema([
                     Forms\Components\Textarea::make('alamat')->label('Alamat Lengkap')->rows(2)->columnSpanFull(),
