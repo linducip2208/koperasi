@@ -195,6 +195,24 @@ class AnggotaResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('Reset PW')
+                    ->icon('heroicon-o-key')
+                    ->color('warning')
+                    ->visible(fn (\App\Models\Anggota $record) => $record->user_id !== null)
+                    ->form([
+                        Forms\Components\TextInput::make('new_password')
+                            ->label('Password Baru')
+                            ->password()
+                            ->required()
+                            ->minLength(6),
+                    ])
+                    ->action(function (\App\Models\Anggota $record, array $data) {
+                        $record->user()->update(['password' => \Illuminate\Support\Facades\Hash::make($data['new_password'])]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Password anggota berhasil direset.')
+                            ->success()->send();
+                    }),
                 Tables\Actions\Action::make('kartuQr')
                     ->label('Kartu QR')
                     ->icon('heroicon-o-qr-code')
