@@ -57,8 +57,8 @@
         .fi-input:focus{border-color:#e879f9!important;background:#fff!important;box-shadow:0 0 0 4px rgba(232,121,249,.12)!important}
         .fi-input[type=password]{font-family:system-ui!important;letter-spacing:.15em!important}
         .fi-input::placeholder{color:#d1d5db!important}
-        .fi-input-wrapper button[type=button]{position:absolute!important;right:2px!important;top:50%!important;transform:translateY(-50%)!important;z-index:2!important;padding:4px!important;min-width:auto!important;min-height:auto!important;width:auto!important;height:auto!important;background:transparent!important;border:none!important;box-shadow:none!important;cursor:pointer!important}
-        .fi-input-wrapper button[type=button] svg,.fi-input-wrapper button[type=button] svg *{width:16px!important;height:16px!important;max-width:16px!important;max-height:16px!important;min-width:16px!important;min-height:16px!important;color:#c084fc!important;display:block!important}
+        .fi-input-wrapper button[type=button]{position:absolute!important;right:2px!important;top:50%!important;transform:translateY(-50%)!important;z-index:2!important;padding:4px!important;min-width:auto!important;min-height:auto!important;width:auto!important;height:auto!important;background:transparent!important;border:none!important;box-shadow:none!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important}
+        .fi-input-wrapper button[type=button] svg,.fi-input-wrapper button[type=button] svg *,.fi-input-wrapper button[type=button] .fi-icon,.fi-input-wrapper button[type=button] .fi-icon svg{width:16px!important;height:16px!important;max-width:16px!important;max-height:16px!important;min-width:16px!important;min-height:16px!important;color:#c084fc!important;display:block!important}
         .fi-input-wrapper [x-ref=revealPassword]{display:none!important}
         .fi-input-wrapper{padding:0!important;box-shadow:none!important;background:transparent!important;border:none!important;border-radius:0!important}
         .fi-input-wrapper-prefix,.fi-input-wrapper-suffix{display:none!important}
@@ -164,5 +164,13 @@
 </div>
 
 @filamentScripts
+<script>
+(function fixEye(){
+    var b = document.querySelector('.fi-input-wrapper input[type=password]');
+    if(!b) return setTimeout(fixEye, 50);
+    var s = b.parentElement.querySelectorAll('button svg, button .fi-icon svg');
+    s.forEach(function(e){ e.setAttribute('width','16'); e.setAttribute('height','16'); e.style.width='16px'; e.style.height='16px' });
+})();
+</script>
 </body>
 </html>
