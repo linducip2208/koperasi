@@ -140,9 +140,14 @@
             </form>
 
             <div class="mt-8 pt-6 border-t border-slate-200/70">
-                <p class="text-xs text-slate-500 text-center font-medium">
-                    Belum jadi anggota? <a href="https://wa.me/6281296052010?text=Saya%20mau%20daftar%20jadi%20anggota" class="text-emerald-600 hover:text-emerald-700 hover:underline font-bold">Daftar via WhatsApp</a>
-                </p>
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm">
+                    <div class="font-semibold text-slate-800 mb-2">🧪 Demo Login</div>
+                    <div class="space-y-1 text-slate-600 text-xs font-mono">
+                        <div><span class="font-bold text-slate-800">Anggota 1:</span> anggota1@demo.local / anggota123</div>
+                        <div><span class="font-bold text-slate-800">Anggota 2:</span> anggota2@demo.local / anggota123</div>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2">Jalankan <code class="bg-slate-200 px-1 rounded">php artisan koperasi:seed-demo</code> untuk 5000+ data demo.</p>
+                </div>
             </div>
         </div>
     </div>

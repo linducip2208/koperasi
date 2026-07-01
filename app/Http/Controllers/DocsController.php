@@ -7,14 +7,14 @@ class DocsController extends Controller
     protected function demoAccounts(): array
     {
         return [
-            ['role' => 'Super Admin / Owner', 'email' => 'admin@koperasi.local', 'password' => 'admin123', 'scope' => 'Semua fitur + settings + license + tenant'],
-            ['role' => 'Admin', 'email' => 'admin@koperasi.local', 'password' => 'admin123', 'scope' => 'Semua modul kecuali tenant & license'],
-            ['role' => 'Manajer', 'email' => 'manager@koperasi.local', 'password' => 'admin123', 'scope' => 'View semua, approve pinjaman, export & print laporan'],
-            ['role' => 'Kasir', 'email' => 'kasir@koperasi.local', 'password' => 'admin123', 'scope' => 'Simpanan, kas, pembayaran pinjaman, POS penjualan, tagihan'],
-            ['role' => 'Account Officer (AO)', 'email' => 'ao@koperasi.local', 'password' => 'admin123', 'scope' => 'View anggota, kelola pinjaman (pengajuan s/d akad)'],
-            ['role' => 'Kolektor', 'email' => 'kolektor@koperasi.local', 'password' => 'admin123', 'scope' => 'View anggota, view & update pembayaran pinjaman'],
-            ['role' => 'Pengawas', 'email' => 'pengawas@koperasi.local', 'password' => 'admin123', 'scope' => 'View-only semua modul + akses laporan'],
-            ['role' => 'Akuntan', 'email' => 'akuntan@koperasi.local', 'password' => 'admin123', 'scope' => 'Jurnal, COA, laporan keuangan, setting'],
+            ['role' => 'Super Admin',  'email' => 'admin@koperasi.local',     'password' => 'admin123', 'scope' => 'Semua fitur + settings + license + tenant'],
+            ['role' => 'Manajer',      'email' => 'manager@koperasi.local',   'password' => 'admin123', 'scope' => 'View semua, approve pinjaman, export & print laporan'],
+            ['role' => 'Kasir',        'email' => 'kasir@koperasi.local',     'password' => 'admin123', 'scope' => 'Simpanan, kas, pembayaran pinjaman, POS, tagihan'],
+            ['role' => 'AO',           'email' => 'ao@koperasi.local',        'password' => 'admin123', 'scope' => 'View anggota, kelola pinjaman (pengajuan s/d akad)'],
+            ['role' => 'Kolektor',     'email' => 'kolektor@koperasi.local',  'password' => 'admin123', 'scope' => 'View anggota, view & update pembayaran pinjaman'],
+            ['role' => 'Pengawas',     'email' => 'pengawas@koperasi.local',  'password' => 'admin123', 'scope' => 'View-only semua modul + akses laporan'],
+            ['role' => 'Akuntan',      'email' => 'akuntan@koperasi.local',   'password' => 'admin123', 'scope' => 'Jurnal, COA, laporan keuangan, setting'],
+            ['role' => 'Anggota Demo', 'email' => 'anggota1@demo.local',      'password' => 'anggota123', 'scope' => 'Portal anggota: simpanan, pinjaman, setoran, PPOB, voting'],
         ];
     }
 

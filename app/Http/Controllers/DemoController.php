@@ -7,14 +7,14 @@ class DemoController extends Controller
     public function index()
     {
         $accounts = [
-            ['role' => 'Super Admin / Owner', 'email' => 'admin@koperasi.local', 'password' => 'admin123', 'scope' => 'Semua fitur + settings + license + tenant'],
-            ['role' => 'Admin', 'email' => 'admin@koperasi.local', 'password' => 'admin123', 'scope' => 'Semua modul kecuali tenant & license'],
-            ['role' => 'Manajer', 'email' => 'manager@koperasi.local', 'password' => 'admin123', 'scope' => 'View semua, approve pinjaman, export laporan'],
-            ['role' => 'Kasir', 'email' => 'kasir@koperasi.local', 'password' => 'admin123', 'scope' => 'Simpanan, kas, pembayaran, POS, tagihan'],
-            ['role' => 'Account Officer', 'email' => 'ao@koperasi.local', 'password' => 'admin123', 'scope' => 'View anggota, kelola pengajuan pinjaman'],
-            ['role' => 'Kolektor', 'email' => 'kolektor@koperasi.local', 'password' => 'admin123', 'scope' => 'View anggota, update pembayaran'],
-            ['role' => 'Pengawas', 'email' => 'pengawas@koperasi.local', 'password' => 'admin123', 'scope' => 'View-only semua + laporan'],
-            ['role' => 'Akuntan', 'email' => 'akuntan@koperasi.local', 'password' => 'admin123', 'scope' => 'Jurnal, COA, laporan keuangan'],
+            ['role' => 'Super Admin', 'email' => 'admin@koperasi.local',    'password' => 'admin123', 'scope' => 'Semua fitur + settings + license + tenant'],
+            ['role' => 'Manajer',     'email' => 'manager@koperasi.local',  'password' => 'admin123', 'scope' => 'View semua, approve pinjaman, export laporan'],
+            ['role' => 'Kasir',       'email' => 'kasir@koperasi.local',    'password' => 'admin123', 'scope' => 'Simpanan, kas, pembayaran, POS, tagihan'],
+            ['role' => 'AO',          'email' => 'ao@koperasi.local',       'password' => 'admin123', 'scope' => 'View anggota, kelola pengajuan pinjaman'],
+            ['role' => 'Kolektor',    'email' => 'kolektor@koperasi.local', 'password' => 'admin123', 'scope' => 'View anggota, update pembayaran'],
+            ['role' => 'Pengawas',    'email' => 'pengawas@koperasi.local', 'password' => 'admin123', 'scope' => 'View-only semua + laporan'],
+            ['role' => 'Akuntan',     'email' => 'akuntan@koperasi.local',  'password' => 'admin123', 'scope' => 'Jurnal, COA, laporan keuangan'],
+            ['role' => 'Anggota',     'email' => 'anggota1@demo.local',     'password' => 'anggota123', 'scope' => 'Portal anggota: simpanan, pinjaman, setoran, PPOB'],
         ];
 
         $tutorial = $this->tutorial();

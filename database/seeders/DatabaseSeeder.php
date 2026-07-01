@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             DefaultTenantSeeder::class,
             RoleSeeder::class,
             AdminUserSeeder::class,
+            DemoUserSeeder::class,
             ChartOfAccountsSeeder::class,
             KasDefaultSeeder::class,
             ProdukSimpananSeeder::class,

@@ -96,10 +96,14 @@
             <div class="demo-box">
                 <div class="title">🧪 Demo Login</div>
                 <div class="creds">
-                    <b>Super Admin:</b> admin@koperasi.test / password<br>
-                    <b>Manager:</b> manager@koperasi.test / password<br>
-                    <b>Kasir:</b> kasir@koperasi.test / password<br>
-                    <b>AO:</b> ao@koperasi.test / password
+                    <b>Super Admin:</b> admin@koperasi.local / admin123<br>
+                    <b>Admin:</b> admin@koperasi.local / admin123<br>
+                    <b>Manager:</b> manager@koperasi.local / admin123<br>
+                    <b>Kasir:</b> kasir@koperasi.local / admin123<br>
+                    <b>AO:</b> ao@koperasi.local / admin123<br>
+                    <b>Kolektor:</b> kolektor@koperasi.local / admin123<br>
+                    <b>Pengawas:</b> pengawas@koperasi.local / admin123<br>
+                    <b>Akuntan:</b> akuntan@koperasi.local / admin123
                 </div>
             </div>
 
