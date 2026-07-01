@@ -89,7 +89,14 @@ class AnggotaResource extends Resource
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->helperText('Hubungkan anggota ke akun User agar bisa login portal.'),
+                            ->helperText('Hubungkan anggota ke akun User agar bisa login portal. Pilih kosong untuk auto-create User baru.'),
+                        Forms\Components\TextInput::make('password_custom')
+                            ->label('Password Login')
+                            ->password()
+                            ->revealable()
+                            ->helperText('Kosongkan untuk password random otomatis. Min. 6 karakter.')
+                            ->minLength(6)
+                            ->visible(fn (string $context) => $context === 'create'),
                         Forms\Components\Textarea::make('alasan_keluar')->label('Alasan Keluar')->columnSpanFull(),
                     ]),
                 ]),
