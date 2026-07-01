@@ -79,6 +79,10 @@
             .hero-content{padding:2rem 1.5rem}
             .hero-content h2{font-size:1.75rem}
         }
+
+        input[type=password]::-ms-reveal,
+        input[type=password]::-ms-clear,
+        input[type=password]::-webkit-password-toggle-button {display:none!important}
     </style>
     @filamentStyles
 </head>
