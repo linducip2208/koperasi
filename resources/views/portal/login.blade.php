@@ -5,231 +5,187 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Anggota — {{ config('app.name') }}</title>
     <meta name="theme-color" content="#059669">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|jetbrains-mono:500,700" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif'],mono:['JetBrains Mono','monospace']}}}}</script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        .gradient-bg { background: linear-gradient(135deg, #047857 0%, #0d9488 50%, #0891b2 100%); }
-        .gradient-mesh {
-            background:
-                radial-gradient(at 12% 8%, #10b981 0%, transparent 45%),
-                radial-gradient(at 88% 12%, #06b6d4 0%, transparent 45%),
-                radial-gradient(at 18% 92%, #14b8a6 0%, transparent 45%),
-                radial-gradient(at 92% 88%, #0891b2 0%, transparent 45%),
-                linear-gradient(135deg, #047857 0%, #0d9488 50%, #0891b2 100%);
-        }
-        .gradient-text { background: linear-gradient(135deg, #047857, #0891b2); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(72px); opacity: 0.55; mix-blend-mode: multiply; }
-        .grid-pattern {
-            background-image:
-                linear-gradient(rgba(5,150,105,0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(5,150,105,0.06) 1px, transparent 1px);
-            background-size: 36px 36px;
-        }
-        @keyframes float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-22px) rotate(1deg); } }
-        @keyframes blob {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(30px,-20px) scale(1.1); }
-            66% { transform: translate(-20px,15px) scale(0.95); }
-        }
-        @keyframes shimmer { 0% { backgroundPosition: '-200% 0' } 100% { backgroundPosition: '200% 0' } }
-        .animate-float { animation: float 7s ease-in-out infinite; }
-        .animate-blob { animation: blob 14s ease-in-out infinite; }
-        .glass-form {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid rgba(255,255,255,0.6);
-            box-shadow: 0 24px 48px -12px rgba(15,23,42,0.18), 0 4px 16px -4px rgba(15,23,42,0.06);
-        }
-        .input-shell {
-            position: relative; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .input-shell input:focus + .input-glow {
-            opacity: 1;
-        }
-        .input-glow {
-            position: absolute; inset: -2px; border-radius: 14px;
-            background: linear-gradient(135deg, rgba(16,185,129,0.4), rgba(6,182,212,0.4));
-            opacity: 0; transition: opacity 0.2s;
-            z-index: -1; filter: blur(8px);
+        *,::before,::after{box-sizing:border-box;margin:0;padding:0}
+        html{font-family:'Plus Jakarta Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"cv02","cv03","cv04","cv11"}
+        body{min-height:100vh}
+        .login-grid{display:flex;min-height:100vh}
+        @media(max-width:1023px){.login-grid{flex-direction:column-reverse}}
+
+        .hero-panel{flex:1;position:relative;background:linear-gradient(135deg,#047857 0%,#0d9488 50%,#0891b2 100%);display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .hero-mesh{position:absolute;inset:0;background:radial-gradient(at 12% 8%,#10b981 0%,transparent 45%),radial-gradient(at 88% 12%,#06b6d4 0%,transparent 45%),radial-gradient(at 18% 92%,#14b8a6 0%,transparent 45%),radial-gradient(at 92% 88%,#0891b2 0%,transparent 45%)}
+        .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
+        .blob{position:absolute;border-radius:50%;filter:blur(72px);opacity:.4;mix-blend-mode:screen;pointer-events:none}
+        @keyframes float{0%,100%{transform:translateY(0)rotate(0)}50%{transform:translateY(-20px)rotate(1deg)}}
+        @keyframes blob{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(30px,-20px)scale(1.1)}66%{transform:translate(-20px,15px)scale(.95)}}
+        .animate-float{animation:float 7s ease-in-out infinite}
+        .animate-blob{animation:blob 14s ease-in-out infinite}
+        @keyframes fadeSlideUp{0%{transform:translateY(24px);opacity:0}100%{transform:translateY(0);opacity:1}}
+        .animate-fade-slide{animation:fadeSlideUp .8s cubic-bezier(.16,1,.3,1) both}
+        .delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+
+        .hero-content{position:relative;z-index:1;max-width:480px;padding:3rem;color:#fff}
+        .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.12);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);padding:.4rem .85rem;border-radius:9999px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:1.5rem}
+        .hero-content h2{font-size:2.5rem;font-weight:800;line-height:1.1;margin-bottom:1rem}
+        .hero-content p{font-size:1rem;opacity:.85;line-height:1.6;margin-bottom:2.5rem}
+        .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem}
+        .hero-stat{text-align:center;padding:.75rem;background:rgba(255,255,255,.08);border-radius:12px}
+        .hero-stat .val{font-size:1.5rem;font-weight:800}
+        .hero-stat .lbl{font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-top:.2rem}
+        .hero-footer{position:absolute;bottom:2rem;left:3rem;color:rgba(255,255,255,.3);font-size:.65rem;z-index:1}
+
+        .form-panel{width:520px;display:flex;align-items:center;justify-content:center;padding:2.5rem;background:#f8fafc}
+        @media(max-width:1023px){.form-panel{width:100%;padding:2rem 1.25rem}}
+        .form-wrapper{width:100%;max-width:400px}
+        .form-card{background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:2rem;box-shadow:0 1px 3px rgba(0,0,0,.03),0 12px 32px -8px rgba(0,0,0,.08)}
+        .brand{display:flex;align-items:center;gap:.65rem;margin-bottom:1.75rem}
+        .brand-logo{width:42px;height:42px;background:linear-gradient(135deg,#047857,#0d9488);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:1.2rem;box-shadow:0 4px 12px rgba(5,150,105,.35)}
+        .brand-text{font-weight:800;font-size:1.15rem;color:#0f172a}
+        .brand-text span{background:linear-gradient(135deg,#047857,#0891b2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .form-badge{display:inline-flex;align-items:center;gap:.4rem;background:#d1fae5;border:1px solid #a7f3d0;padding:.25rem .65rem;border-radius:9999px;font-size:.65rem;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.25rem}
+        .form-badge .ping{width:7px;height:7px;background:#10b981;border-radius:50%;position:relative}
+        .form-badge .ping::after{content:'';position:absolute;inset:-2px;border-radius:50%;background:#10b981;animation:ping 1.5s cubic-bezier(0,0,.2,1)infinite;opacity:.5}
+        @keyframes ping{0%{transform:scale(1);opacity:.5}100%{transform:scale(2);opacity:0}}
+        .form-title{font-size:1.75rem;font-weight:800;color:#0f172a;line-height:1.1;margin-bottom:.25rem}
+        .form-sub{color:#64748b;font-size:.875rem;margin-bottom:1.75rem}
+
+        .input-group{margin-bottom:1.25rem}
+        .input-group label{display:block;font-size:.7rem;font-weight:700;color:#334155;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+        .input-wrap{position:relative}
+        .input-wrap svg{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;color:#94a3b8;pointer-events:none}
+        .input-wrap input{width:100%;padding:.75rem .9rem .75rem 2.5rem;border:1.5px solid #e2e8f0;border-radius:12px;font-size:.875rem;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#0f172a;background:#f8fafc;transition:all .2s;outline:none}
+        .input-wrap input:focus{border-color:#10b981;background:#fff;box-shadow:0 0 0 3px rgba(16,185,129,.12)}
+        .input-wrap input::placeholder{color:#cbd5e1}
+        .btn-primary{width:100%;padding:.8rem;background:linear-gradient(135deg,#047857,#0d9488);color:#fff;border:none;border-radius:12px;font-size:.875rem;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(5,150,105,.3);transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+        .btn-primary:hover{box-shadow:0 8px 28px rgba(5,150,105,.4);transform:translateY(-1px)}
+
+        .demo-box{margin-top:1.25rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:1rem;font-size:.78rem}
+        .demo-box .ttl{font-weight:700;color:#334155;margin-bottom:.4rem;font-size:.8rem}
+        .demo-box .creds{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#64748b;line-height:1.5}
+        .demo-box .creds b{color:#334155}
+        .alert{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:.75rem 1rem;border-radius:12px;font-size:.8rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+        .back-link{display:inline-flex;align-items:center;gap:.4rem;color:#94a3b8;text-decoration:none;font-size:.8rem;font-weight:500;margin-bottom:1.5rem;transition:color .2s}
+        .back-link:hover{color:#0f172a}
+        .back-link svg{transition:transform .2s}
+        .back-link:hover svg{transform:translateX(-2px)}
+
+        @media(max-width:640px){
+            .form-card{padding:1.5rem;border-radius:16px}
+            .form-title{font-size:1.5rem}
+            .hero-content{padding:2rem 1.5rem}
+            .hero-content h2{font-size:1.75rem}
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 flex relative overflow-hidden">
-    <div class="absolute inset-0 grid-pattern"></div>
-    <div class="blob bg-emerald-300 w-[520px] h-[520px] -top-40 -left-40 animate-blob"></div>
-    <div class="blob bg-cyan-300 w-[420px] h-[420px] top-1/2 -right-32 animate-blob" style="animation-delay: -7s;"></div>
-    <div class="blob bg-teal-200 w-[360px] h-[360px] -bottom-32 left-1/3 animate-blob" style="animation-delay: -3s;"></div>
+<body>
 
-    {{-- Left side: Form --}}
-    <div class="relative flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12 z-10">
-        <div class="w-full max-w-md">
-            <a href="/" class="inline-flex items-center gap-2 mb-8 text-slate-600 hover:text-slate-900 transition group">
-                <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
-                <span class="text-sm font-semibold">Kembali ke beranda</span>
+<div class="login-grid">
+
+    <div class="form-panel">
+        <div class="form-wrapper">
+
+            <a href="/" class="back-link">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+                Kembali ke beranda
             </a>
 
-            <div class="flex items-center gap-3 mb-9">
-                <div class="relative">
-                    <div class="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-white font-extrabold text-xl shadow-xl shadow-emerald-500/40">K</div>
-                    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-white"></span>
-                </div>
-                <div>
-                    <div class="font-extrabold text-xl text-slate-900 tracking-tight">Koperasi<span class="gradient-text">App</span></div>
-                    <div class="text-[10px] text-slate-500 uppercase tracking-[0.18em] font-bold">Portal Anggota</div>
-                </div>
+            <div class="brand">
+                <div class="brand-logo">K</div>
+                <div class="brand-text">Koperasi<span>App</span></div>
             </div>
 
-            <div class="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full text-[11px] font-bold text-emerald-700 mb-4 uppercase tracking-wider">
-                <span class="relative flex h-1.5 w-1.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                </span>
-                Server online
-            </div>
+            <div class="form-badge"><span class="ping"></span> Portal Anggota</div>
 
-            <h1 class="text-3xl md:text-[40px] font-extrabold tracking-tighter text-slate-900 mb-2 leading-[1.05]">Selamat datang<br/>kembali</h1>
-            <p class="text-slate-600 mb-8 text-[15px]">Masuk untuk akses saldo, transaksi, dan ajukan pinjaman online — kapan saja, di mana saja.</p>
+            <h1 class="form-title">Selamat datang<br>kembali</h1>
+            <p class="form-sub">Masuk untuk akses saldo, transaksi, dan ajukan pinjaman online.</p>
 
             @if($errors->any())
-                <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl mb-4 flex items-start gap-2">
-                    <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                    <span class="text-sm font-semibold">{{ $errors->first() }}</span>
+                <div class="alert">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ $errors->first() }}
                 </div>
             @endif
 
-            <form action="{{ route('portal.login.post') }}" method="POST" class="space-y-5">
+            <form action="{{ route('portal.login.post') }}" method="POST">
                 @csrf
-                <div>
-                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1.5 uppercase tracking-wider">Email</label>
-                    <div class="input-shell relative">
-                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
-                        <input type="email" name="email" required value="{{ old('email') }}"
-                               placeholder="anggota@email.com"
-                               class="relative w-full pl-11 pr-4 py-3 bg-white/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition outline-none text-sm font-medium z-10">
-                        <div class="input-glow"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between mb-1.5">
-                        <label class="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider">Password</label>
-                        <a href="#" class="text-[11px] text-emerald-600 hover:text-emerald-700 hover:underline font-bold">Lupa password?</a>
-                    </div>
-                    <div class="input-shell relative">
-                        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
-                        <input type="password" name="password" required
-                               placeholder="••••••••"
-                               class="relative w-full pl-11 pr-4 py-3 bg-white/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition outline-none text-sm font-medium z-10">
-                        <div class="input-glow"></div>
+                <div class="input-group animate-fade-slide">
+                    <label>Email</label>
+                    <div class="input-wrap">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>
+                        <input type="email" name="email" required value="{{ old('email') }}" placeholder="anggota@email.com">
                     </div>
                 </div>
 
-                <label class="flex items-center gap-2 text-[12px] text-slate-600 cursor-pointer select-none">
-                    <input type="checkbox" name="remember" class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/30">
-                    <span class="font-medium">Ingat saya selama 30 hari</span>
+                <div class="input-group animate-fade-slide delay-1">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+                        <label style="margin-bottom:0">Password</label>
+                        <a href="#" style="font-size:.65rem;color:#059669;font-weight:700;text-decoration:none">Lupa?</a>
+                    </div>
+                    <div class="input-wrap">
+                        <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </div>
+                </div>
+
+                <label class="animate-fade-slide delay-2" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.78rem;color:#64748b;margin-bottom:1.25rem;font-weight:500">
+                    <input type="checkbox" name="remember" style="width:1rem;height:1rem;border-radius:4px;border:1.5px solid #cbd5e1;accent-color:#059669">
+                    Ingat saya
                 </label>
 
-                <button type="submit" class="relative w-full gradient-bg text-white py-3.5 rounded-xl font-extrabold hover:shadow-2xl hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 group overflow-hidden text-sm tracking-tight">
-                    <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                    <span class="relative">Masuk ke Portal</span>
-                    <svg class="relative w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                <button type="submit" class="btn-primary animate-fade-slide delay-3">
+                    Masuk ke Portal
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
                 </button>
             </form>
 
-            <div class="mt-8 pt-6 border-t border-slate-200/70">
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm">
-                    <div class="font-semibold text-slate-800 mb-2">🧪 Demo Login</div>
-                    <div class="space-y-1 text-slate-600 text-xs font-mono">
-                        <div><span class="font-bold text-slate-800">Anggota 1:</span> anggota1@demo.local / anggota123</div>
-                        <div><span class="font-bold text-slate-800">Anggota 2:</span> anggota2@demo.local / anggota123</div>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2">Jalankan <code class="bg-slate-200 px-1 rounded">php artisan koperasi:seed-demo</code> untuk 5000+ data demo.</p>
+            <div class="demo-box">
+                <div class="ttl">🧪 Demo Login Anggota</div>
+                <div class="creds">
+                    <b>Anggota 1:</b> anggota1@demo.local / anggota123<br>
+                    <b>Anggota 2:</b> anggota2@demo.local / anggota123
                 </div>
+                <div style="font-size:.6rem;color:#94a3b8;margin-top:.4rem">Jalankan <code style="background:#e2e8f0;padding:.1rem .3rem;border-radius:4px">php artisan koperasi:seed-demo</code> untuk data demo.</div>
             </div>
+
         </div>
     </div>
 
-    {{-- Right side: Premium Mockup --}}
-    <div class="hidden lg:flex relative flex-1 gradient-mesh items-center justify-center overflow-hidden z-0">
-        <div class="absolute inset-0 grid-pattern opacity-15"></div>
+    <div class="hero-panel">
+        <div class="hero-mesh"></div>
+        <div class="hero-grid"></div>
+        <div class="blob animate-blob" style="background:#10b981;width:420px;height:420px;top:-100px;right:-100px"></div>
+        <div class="blob animate-blob" style="background:#06b6d4;width:350px;height:350px;bottom:-80px;left:-80px;animation-delay:-7s"></div>
+        <div class="blob" style="background:#14b8a6;width:280px;height:280px;top:40%;right:20%;animation:blob 16s ease-in-out infinite;animation-delay:-4s;opacity:.25"></div>
 
-        {{-- Floating decorative elements --}}
-        <div class="absolute top-20 right-20 w-3 h-3 rounded-full bg-amber-300 shadow-lg shadow-amber-500/50 animate-float"></div>
-        <div class="absolute bottom-32 right-44 w-2 h-2 rounded-full bg-emerald-200 animate-float" style="animation-delay: -3s;"></div>
-        <div class="absolute top-1/3 left-20 w-4 h-4 rounded-full border-2 border-white/40 animate-float" style="animation-delay: -5s;"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24l-7.19-.62L12 2z"/></svg>
+                Software Koperasi #1 Indonesia
+            </div>
+            <h2>Kelola simpanan &<br>pinjaman dari mana saja.</h2>
+            <p>Cek saldo real-time, ajukan pinjaman online, bayar angsuran — semua dari portal anggota atau aplikasi mobile.</p>
 
-        <div class="relative max-w-lg p-12 text-white">
-            <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur border border-white/20 px-3 py-1 rounded-full text-[11px] font-extrabold mb-6 uppercase tracking-[0.18em]">
-                <svg class="w-3 h-3 text-amber-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2 9.19 8.62 2 9.24l5.45 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24l-7.19-.62L12 2z"/></svg>
-                Trusted by 10K+ Anggota
+            <div class="hero-stats">
+                <div class="hero-stat"><div class="val">24/7</div><div class="lbl">Akses</div></div>
+                <div class="hero-stat"><div class="val">&lt;10s</div><div class="lbl">Cek Saldo</div></div>
+                <div class="hero-stat"><div class="val">100%</div><div class="lbl">Aman</div></div>
             </div>
 
-            <h2 class="text-4xl xl:text-5xl font-extrabold tracking-tighter leading-[1.05] mb-5">
-                Kelola simpanan &amp; pinjaman <span class="bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">dari mana saja.</span>
-            </h2>
-            <p class="text-base xl:text-lg opacity-90 mb-10 leading-relaxed font-medium">Cek saldo, ajukan pinjaman, bayar angsuran — semua dari portal atau aplikasi mobile.</p>
-
-            {{-- Premium floating card --}}
-            <div class="relative animate-float">
-                <div class="absolute inset-0 rounded-3xl bg-white/20 blur-2xl"></div>
-                <div class="relative bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/25 shadow-2xl">
-                    <div class="bg-white rounded-2xl p-5 text-slate-900 shadow-2xl shadow-black/20">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Total Simpanan</p>
-                                <p class="text-3xl font-extrabold gradient-text tracking-tighter leading-none">Rp 12.450.000</p>
-                                <p class="text-[11px] text-emerald-600 font-bold mt-1.5 inline-flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/></svg>
-                                    +Rp 250.000 minggu ini
-                                </p>
-                            </div>
-                            <div class="w-11 h-11 rounded-xl gradient-bg flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25"/></svg>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="bg-slate-50 rounded-xl p-2.5 text-center">
-                                <div class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Pokok</div>
-                                <div class="font-extrabold text-sm text-slate-900 mt-0.5">100rb</div>
-                            </div>
-                            <div class="bg-slate-50 rounded-xl p-2.5 text-center">
-                                <div class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Wajib</div>
-                                <div class="font-extrabold text-sm text-slate-900 mt-0.5">2.4jt</div>
-                            </div>
-                            <div class="rounded-xl p-2.5 text-center text-white relative overflow-hidden" style="background: linear-gradient(135deg, #10b981, #06b6d4);">
-                                <div class="text-[9px] opacity-90 font-bold uppercase tracking-wider">Sukarela</div>
-                                <div class="font-extrabold text-sm mt-0.5">9.95jt</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Sparkline --}}
-                    <div class="mt-4 flex items-end gap-1.5 h-12 px-1">
-                        @foreach([35,42,38,55,48,62,58,72,68,80,75,90] as $h)
-                            <div class="flex-1 bg-gradient-to-t from-white/40 to-white/80 rounded-t" style="height: {{ $h }}%"></div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4 mt-10">
-                <div class="text-center">
-                    <div class="text-3xl font-extrabold tracking-tight">24/7</div>
-                    <div class="text-[10px] opacity-75 font-bold uppercase tracking-wider mt-0.5">Akses</div>
-                </div>
-                <div class="text-center border-x border-white/15">
-                    <div class="text-3xl font-extrabold tracking-tight">10s</div>
-                    <div class="text-[10px] opacity-75 font-bold uppercase tracking-wider mt-0.5">Cek Saldo</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-3xl font-extrabold tracking-tight">A+</div>
-                    <div class="text-[10px] opacity-75 font-bold uppercase tracking-wider mt-0.5">Aman</div>
-                </div>
+            <div style="margin-top:2.5rem;display:flex;align-items:center;gap:.75rem;font-size:.8rem;opacity:.7">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg>
+                Enkripsi end-to-end · Data anggota terlindungi
             </div>
         </div>
+
+        <div class="hero-footer">&copy; {{ date('Y') }} {{ config('app.name') }} · Powered by Laravel</div>
     </div>
+
+</div>
+
 </body>
 </html>
