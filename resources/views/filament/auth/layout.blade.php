@@ -57,8 +57,9 @@
         .fi-input:focus{border-color:#10b981!important;background:#fff!important;box-shadow:0 0 0 3px rgba(16,185,129,.12)!important}
         .fi-input[type=password]{font-family:system-ui!important;letter-spacing:.15em!important}
         .fi-input::placeholder{color:#cbd5e1!important}
-        .fi-input-wrapper button[type=button] svg{width:14px!important;height:14px!important}
+        .fi-input-wrapper button[type=button],.fi-input-wrapper [x-ref=revealPassword]{display:none!important}
         .fi-input-wrapper{padding:0!important;box-shadow:none!important;background:transparent!important;border:none!important;border-radius:0!important}
+        .fi-input-wrapper-prefix,.fi-input-wrapper-suffix{display:none!important}
 
         .fi-btn{border-radius:12px!important;font-weight:700!important;font-size:.85rem!important;padding:.75rem 1.25rem!important;width:100%!important;justify-content:center!important;gap:.5rem!important}
         .fi-btn-primary{background:linear-gradient(135deg,#047857,#0d9488)!important;border:none!important;box-shadow:0 4px 16px rgba(5,150,105,.3)!important;transition:all .25s!important;color:#fff!important}
