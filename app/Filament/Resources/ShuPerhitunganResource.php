@@ -21,7 +21,7 @@ class ShuPerhitunganResource extends Resource
     protected static ?string $navigationLabel = 'Perhitungan SHU';
     protected static ?string $modelLabel = 'Perhitungan SHU';
     protected static ?string $pluralModelLabel = 'Perhitungan SHU';
-    protected static ?int $navigationSort = 81;
+    protected static ?int $navigationSort = 72;
 
     public static function form(Form $form): Form
     {

@@ -18,7 +18,7 @@ class TokoSatuanResource extends Resource
     protected static ?string $navigationLabel = 'Master Satuan';
     protected static ?string $modelLabel = 'Satuan';
     protected static ?string $pluralModelLabel = 'Satuan Barang';
-    protected static ?int $navigationSort = 34;
+    protected static ?int $navigationSort = 23;
 
     public static function form(Form $form): Form
     {

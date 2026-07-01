@@ -18,7 +18,7 @@ class PengumumanResource extends Resource
     protected static ?string $navigationLabel = 'Pengumuman';
     protected static ?string $modelLabel = 'Pengumuman';
     protected static ?string $pluralModelLabel = 'Pengumuman';
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 83;
 
     public static function form(Form $form): Form
     {

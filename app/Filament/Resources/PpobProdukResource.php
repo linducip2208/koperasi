@@ -18,7 +18,7 @@ class PpobProdukResource extends Resource
     protected static ?string $navigationLabel = 'Produk PPOB';
     protected static ?string $modelLabel = 'Produk PPOB';
     protected static ?string $pluralModelLabel = 'Produk PPOB';
-    protected static ?int $navigationSort = 35;
+    protected static ?int $navigationSort = 27;
 
     public static function form(Form $form): Form
     {

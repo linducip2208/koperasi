@@ -20,7 +20,7 @@ class ProdukSimpananResource extends Resource
     protected static ?string $navigationLabel = 'Produk Simpanan';
     protected static ?string $modelLabel = 'Produk Simpanan';
     protected static ?string $pluralModelLabel = 'Produk Simpanan';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 11;
 
     public static function form(Form $form): Form
     {

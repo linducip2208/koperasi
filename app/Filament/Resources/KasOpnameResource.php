@@ -21,7 +21,7 @@ class KasOpnameResource extends Resource
     protected static ?string $navigationLabel = 'Kas Opname';
     protected static ?string $modelLabel = 'Kas Opname';
     protected static ?string $pluralModelLabel = 'Kas Opname';
-    protected static ?int $navigationSort = 24;
+    protected static ?int $navigationSort = 35;
 
     public static function form(Form $form): Form
     {

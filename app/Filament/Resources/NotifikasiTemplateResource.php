@@ -18,7 +18,7 @@ class NotifikasiTemplateResource extends Resource
     protected static ?string $navigationLabel = 'Template Notifikasi';
     protected static ?string $modelLabel = 'Template';
     protected static ?string $pluralModelLabel = 'Template Notifikasi';
-    protected static ?int $navigationSort = 91;
+    protected static ?int $navigationSort = 92;
 
     public static function form(Form $form): Form
     {

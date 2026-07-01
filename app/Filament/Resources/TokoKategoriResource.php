@@ -18,7 +18,7 @@ class TokoKategoriResource extends Resource
     protected static ?string $navigationLabel = 'Master Kategori Barang';
     protected static ?string $modelLabel = 'Kategori';
     protected static ?string $pluralModelLabel = 'Kategori Barang';
-    protected static ?int $navigationSort = 32;
+    protected static ?int $navigationSort = 21;
 
     public static function form(Form $form): Form
     {

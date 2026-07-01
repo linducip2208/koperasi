@@ -19,7 +19,7 @@ class PinjamanRestrukturisasiResource extends Resource
     protected static ?string $navigationLabel = 'Restrukturisasi';
     protected static ?string $modelLabel = 'Restrukturisasi';
     protected static ?string $pluralModelLabel = 'Restrukturisasi Pinjaman';
-    protected static ?int $navigationSort = 12;
+    protected static ?int $navigationSort = 17;
 
     public static function form(Form $form): Form
     {

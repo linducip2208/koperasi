@@ -50,16 +50,16 @@ class AdminPanelProvider extends PanelProvider
             ->font('Plus Jakarta Sans')
             ->maxContentWidth(MaxWidth::Full)
             ->navigationGroups([
-                NavigationGroup::make('Keanggotaan')->icon('heroicon-o-user-group'),
-                NavigationGroup::make('Simpan Pinjam')->icon('heroicon-o-banknotes'),
-                NavigationGroup::make('Toko & Unit Usaha')->icon('heroicon-o-shopping-bag'),
-                NavigationGroup::make('Akuntansi')->icon('heroicon-o-calculator'),
-                NavigationGroup::make('SHU & RAT')->icon('heroicon-o-cake'),
-                NavigationGroup::make('HR & Asset')->icon('heroicon-o-cube'),
-                NavigationGroup::make('Asuransi')->icon('heroicon-o-shield-check'),
-                NavigationGroup::make('Laporan')->icon('heroicon-o-document-chart-bar'),
-                NavigationGroup::make('Blog & Marketing')->icon('heroicon-o-newspaper'),
-                NavigationGroup::make('Pengaturan')->icon('heroicon-o-cog-6-tooth'),
+                NavigationGroup::make('👥 Keanggotaan'),
+                NavigationGroup::make('💰 Simpan Pinjam'),
+                NavigationGroup::make('🛒 Toko & Unit Usaha'),
+                NavigationGroup::make('🧮 Akuntansi'),
+                NavigationGroup::make('🎂 SHU & RAT'),
+                NavigationGroup::make('👥 HR & Asset'),
+                NavigationGroup::make('🛡️ Asuransi'),
+                NavigationGroup::make('📊 Laporan'),
+                NavigationGroup::make('📝 Blog & Marketing')->collapsed(),
+                NavigationGroup::make('⚙️ Pengaturan')->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

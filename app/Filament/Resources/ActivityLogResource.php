@@ -17,7 +17,7 @@ class ActivityLogResource extends Resource
     protected static ?string $navigationLabel = 'Audit Trail';
     protected static ?string $modelLabel = 'Activity Log';
     protected static ?string $pluralModelLabel = 'Activity Logs';
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 96;
 
     public static function table(Table $table): Table
     {

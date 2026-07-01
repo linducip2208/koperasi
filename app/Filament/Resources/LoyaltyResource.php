@@ -18,7 +18,7 @@ class LoyaltyResource extends Resource
     protected static ?string $navigationLabel = 'Poin Loyalitas';
     protected static ?string $modelLabel = 'Poin Loyalitas';
     protected static ?string $pluralModelLabel = 'Poin Loyalitas';
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

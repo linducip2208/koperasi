@@ -19,7 +19,7 @@ class TagihanMasterResource extends Resource
     protected static ?string $navigationLabel = 'Master Iuran/Tagihan';
     protected static ?string $modelLabel = 'Iuran';
     protected static ?string $pluralModelLabel = 'Master Iuran/Tagihan';
-    protected static ?int $navigationSort = 53;
+    protected static ?int $navigationSort = 93;
 
     public static function form(Form $form): Form
     {

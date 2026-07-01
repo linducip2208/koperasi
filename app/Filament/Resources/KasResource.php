@@ -20,7 +20,7 @@ class KasResource extends Resource
     protected static ?string $navigationLabel = 'Kas & Bank';
     protected static ?string $modelLabel = 'Kas';
     protected static ?string $pluralModelLabel = 'Kas & Bank';
-    protected static ?int $navigationSort = 62;
+    protected static ?int $navigationSort = 40;
 
     public static function form(Form $form): Form
     {

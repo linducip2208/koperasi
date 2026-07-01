@@ -24,7 +24,7 @@ class UnitJasaOrderResource extends Resource
     protected static ?string $navigationLabel = 'Order Jasa';
     protected static ?string $modelLabel = 'Order Jasa';
     protected static ?string $pluralModelLabel = 'Order Jasa';
-    protected static ?int $navigationSort = 36;
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {

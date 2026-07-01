@@ -26,7 +26,7 @@ class TokoPenjualanResource extends Resource
     protected static ?string $navigationLabel = 'Penjualan (POS)';
     protected static ?string $modelLabel = 'Transaksi Penjualan';
     protected static ?string $pluralModelLabel = 'Transaksi Penjualan';
-    protected static ?int $navigationSort = 31;
+    protected static ?int $navigationSort = 25;
 
     public static function form(Form $form): Form
     {

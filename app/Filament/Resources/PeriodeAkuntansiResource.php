@@ -18,7 +18,7 @@ class PeriodeAkuntansiResource extends Resource
     protected static ?string $navigationLabel = 'Periode Akuntansi';
     protected static ?string $modelLabel = 'Periode';
     protected static ?string $pluralModelLabel = 'Periode Akuntansi';
-    protected static ?int $navigationSort = 25;
+    protected static ?int $navigationSort = 36;
 
     public static function form(Form $form): Form
     {

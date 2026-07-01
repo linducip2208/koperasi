@@ -24,7 +24,7 @@ class UnitProdusenSetoranResource extends Resource
     protected static ?string $navigationLabel = 'Setoran Produsen';
     protected static ?string $modelLabel = 'Setoran Produsen';
     protected static ?string $pluralModelLabel = 'Setoran Produsen';
-    protected static ?int $navigationSort = 38;
+    protected static ?int $navigationSort = 32;
 
     public static function form(Form $form): Form
     {

@@ -19,7 +19,7 @@ class CoaResource extends Resource
     protected static ?string $navigationLabel = 'Chart of Accounts';
     protected static ?string $modelLabel = 'COA';
     protected static ?string $pluralModelLabel = 'Chart of Accounts';
-    protected static ?int $navigationSort = 60;
+    protected static ?int $navigationSort = 38;
 
     public static function form(Form $form): Form
     {

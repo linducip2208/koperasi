@@ -18,7 +18,7 @@ class TokoSupplierResource extends Resource
     protected static ?string $navigationLabel = 'Master Supplier';
     protected static ?string $modelLabel = 'Supplier';
     protected static ?string $pluralModelLabel = 'Supplier';
-    protected static ?int $navigationSort = 33;
+    protected static ?int $navigationSort = 22;
 
     public static function form(Form $form): Form
     {

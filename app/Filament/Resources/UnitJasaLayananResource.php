@@ -19,7 +19,7 @@ class UnitJasaLayananResource extends Resource
     protected static ?string $navigationLabel = 'Master Layanan Jasa';
     protected static ?string $modelLabel = 'Layanan Jasa';
     protected static ?string $pluralModelLabel = 'Layanan Jasa';
-    protected static ?int $navigationSort = 35;
+    protected static ?int $navigationSort = 29;
 
     public static function form(Form $form): Form
     {

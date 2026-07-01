@@ -19,7 +19,7 @@ class PaymentProviderResource extends Resource
     protected static ?string $navigationGroup = 'Akuntansi';
     protected static ?string $navigationLabel = 'Payment Gateway';
     protected static ?string $modelLabel = 'Payment Provider';
-    protected static ?int $navigationSort = 26;
+    protected static ?int $navigationSort = 37;
 
     public static function form(Form $form): Form
     {

@@ -19,7 +19,7 @@ class UnitProdusenKomoditiResource extends Resource
     protected static ?string $navigationLabel = 'Master Komoditi';
     protected static ?string $modelLabel = 'Komoditi';
     protected static ?string $pluralModelLabel = 'Komoditi';
-    protected static ?int $navigationSort = 37;
+    protected static ?int $navigationSort = 31;
 
     public static function form(Form $form): Form
     {

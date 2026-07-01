@@ -18,7 +18,7 @@ class NumberingSettingResource extends Resource
     protected static ?string $navigationLabel = 'Format Penomoran';
     protected static ?string $modelLabel = 'Format Nomor';
     protected static ?string $pluralModelLabel = 'Format Penomoran';
-    protected static ?int $navigationSort = 92;
+    protected static ?int $navigationSort = 94;
 
     public static function form(Form $form): Form
     {

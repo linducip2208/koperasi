@@ -19,7 +19,7 @@ class AnggaranResource extends Resource
     protected static ?string $navigationLabel = 'Anggaran (Budget)';
     protected static ?string $modelLabel = 'Anggaran';
     protected static ?string $pluralModelLabel = 'Anggaran';
-    protected static ?int $navigationSort = 22;
+    protected static ?int $navigationSort = 33;
 
     public static function form(Form $form): Form
     {

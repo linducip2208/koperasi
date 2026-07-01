@@ -19,7 +19,7 @@ class AsuransiKlaimResource extends Resource
     protected static ?string $navigationLabel = 'Klaim Asuransi';
     protected static ?string $modelLabel = 'Klaim Asuransi';
     protected static ?string $pluralModelLabel = 'Klaim Asuransi';
-    protected static ?int $navigationSort = 73;
+    protected static ?int $navigationSort = 63;
 
     public static function form(Form $form): Form
     {

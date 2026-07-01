@@ -19,7 +19,7 @@ class SimpananBlokirResource extends Resource
     protected static ?string $navigationLabel = 'Blokir Simpanan';
     protected static ?string $modelLabel = 'Blokir';
     protected static ?string $pluralModelLabel = 'Blokir Simpanan';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 15;
 
     public static function form(Form $form): Form
     {

@@ -20,7 +20,7 @@ class JurnalResource extends Resource
     protected static ?string $navigationLabel = 'Jurnal';
     protected static ?string $modelLabel = 'Jurnal';
     protected static ?string $pluralModelLabel = 'Jurnal';
-    protected static ?int $navigationSort = 61;
+    protected static ?int $navigationSort = 39;
 
     public static function form(Form $form): Form
     {

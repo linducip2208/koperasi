@@ -18,7 +18,7 @@ class AsuransiProdukResource extends Resource
     protected static ?string $navigationLabel = 'Produk Asuransi';
     protected static ?string $modelLabel = 'Produk Asuransi';
     protected static ?string $pluralModelLabel = 'Produk Asuransi';
-    protected static ?int $navigationSort = 71;
+    protected static ?int $navigationSort = 61;
 
     public static function form(Form $form): Form
     {

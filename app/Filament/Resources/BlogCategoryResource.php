@@ -19,7 +19,7 @@ class BlogCategoryResource extends Resource
     protected static ?string $navigationLabel = 'Kategori Blog';
     protected static ?string $modelLabel = 'Kategori Blog';
     protected static ?string $pluralModelLabel = 'Kategori Blog';
-    protected static ?int $navigationSort = 12;
+    protected static ?int $navigationSort = 82;
 
     public static function form(Form $form): Form
     {

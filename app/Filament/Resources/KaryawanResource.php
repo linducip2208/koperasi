@@ -17,7 +17,7 @@ class KaryawanResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'HR & Asset';
     protected static ?string $navigationLabel = 'Karyawan';
-    protected static ?int $navigationSort = 70;
+    protected static ?int $navigationSort = 51;
 
     public static function form(Form $form): Form
     {

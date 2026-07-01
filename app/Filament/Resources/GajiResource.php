@@ -21,7 +21,7 @@ class GajiResource extends Resource
     protected static ?string $navigationLabel = 'Payroll Karyawan';
     protected static ?string $modelLabel = 'Slip Gaji';
     protected static ?string $pluralModelLabel = 'Slip Gaji';
-    protected static ?int $navigationSort = 61;
+    protected static ?int $navigationSort = 53;
 
     public static function form(Form $form): Form
     {

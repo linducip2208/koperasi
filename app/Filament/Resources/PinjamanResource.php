@@ -25,7 +25,7 @@ class PinjamanResource extends Resource
     protected static ?string $navigationLabel = 'Pinjaman / Pembiayaan';
     protected static ?string $modelLabel = 'Pinjaman';
     protected static ?string $pluralModelLabel = 'Pinjaman';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 14;
 
     public static function form(Form $form): Form
     {

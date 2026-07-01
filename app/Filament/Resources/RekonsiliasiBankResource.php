@@ -21,7 +21,7 @@ class RekonsiliasiBankResource extends Resource
     protected static ?string $navigationLabel = 'Rekonsiliasi Bank';
     protected static ?string $modelLabel = 'Rekonsiliasi Bank';
     protected static ?string $pluralModelLabel = 'Rekonsiliasi Bank';
-    protected static ?int $navigationSort = 23;
+    protected static ?int $navigationSort = 34;
 
     public static function form(Form $form): Form
     {

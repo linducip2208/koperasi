@@ -17,7 +17,7 @@ class PpobTransaksiResource extends Resource
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';
     protected static ?string $navigationLabel = 'Transaksi PPOB';
     protected static ?string $modelLabel = 'Transaksi PPOB';
-    protected static ?int $navigationSort = 36;
+    protected static ?int $navigationSort = 28;
 
     public static function form(Form $form): Form
     {

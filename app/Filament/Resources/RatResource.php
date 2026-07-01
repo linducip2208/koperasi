@@ -17,7 +17,7 @@ class RatResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
     protected static ?string $navigationGroup = 'SHU & RAT';
     protected static ?string $navigationLabel = 'Rapat Anggota Tahunan';
-    protected static ?int $navigationSort = 80;
+    protected static ?int $navigationSort = 71;
 
     public static function form(Form $form): Form
     {

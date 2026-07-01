@@ -21,7 +21,7 @@ class ProdukPinjamanResource extends Resource
     protected static ?string $navigationLabel = 'Produk Pinjaman';
     protected static ?string $modelLabel = 'Produk Pinjaman';
     protected static ?string $pluralModelLabel = 'Produk Pinjaman';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 13;
 
     public static function form(Form $form): Form
     {

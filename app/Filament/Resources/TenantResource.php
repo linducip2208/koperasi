@@ -19,7 +19,7 @@ class TenantResource extends Resource
     protected static ?string $navigationLabel = 'Profil Koperasi';
     protected static ?string $modelLabel = 'Koperasi';
     protected static ?string $pluralModelLabel = 'Koperasi';
-    protected static ?int $navigationSort = 90;
+    protected static ?int $navigationSort = 91;
 
     public static function form(Form $form): Form
     {

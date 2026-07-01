@@ -23,7 +23,7 @@ class AsuransiPolisResource extends Resource
     protected static ?string $navigationLabel = 'Polis Anggota';
     protected static ?string $modelLabel = 'Polis Asuransi';
     protected static ?string $pluralModelLabel = 'Polis Asuransi';
-    protected static ?int $navigationSort = 72;
+    protected static ?int $navigationSort = 62;
 
     public static function form(Form $form): Form
     {

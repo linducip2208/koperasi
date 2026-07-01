@@ -22,7 +22,7 @@ class TokoPembelianResource extends Resource
     protected static ?string $navigationLabel = 'Pembelian Barang';
     protected static ?string $modelLabel = 'Pembelian';
     protected static ?string $pluralModelLabel = 'Pembelian';
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 26;
 
     public static function form(Form $form): Form
     {
