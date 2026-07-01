@@ -151,17 +151,19 @@
                 </div>
             </div>
 
-            <h3 class="text-xl font-bold mt-6 mb-3">Role yang tersedia (Spatie Permission)</h3>
+            <h3 class="text-xl font-bold mt-6 mb-3">Semua Akun Demo</h3>
+            <p class="text-sm text-slate-500 mb-3">Login di <a href="/admin/login" class="text-emerald-600 font-semibold hover:underline">/admin/login</a>. Semua password: <strong>admin123</strong></p>
             <table>
-                <tr><th>Role</th><th>Akses</th></tr>
-                <tr><td><code>super-admin</code></td><td>Full akses semua resource, semua tenant</td></tr>
-                <tr><td><code>admin-koperasi</code></td><td>Full akses dalam 1 tenant (koperasi-nya)</td></tr>
-                <tr><td><code>kasir</code></td><td>Transaksi simpanan & pinjaman, kas</td></tr>
-                <tr><td><code>accounting</code></td><td>Jurnal, COA, laporan keuangan</td></tr>
-                <tr><td><code>pengawas</code></td><td>Read-only semua data + laporan</td></tr>
-                <tr><td><code>anggota</code></td><td>Hanya akses Portal Anggota (<code>/portal</code>)</td></tr>
+                <tr><th>Role</th><th>Email</th><th>Cakupan</th></tr>
+                <tr><td><code>super-admin</code></td><td><code>admin@koperasi.local</code></td><td>Full akses semua resource, semua tenant + license</td></tr>
+                <tr><td><code>manajer</code></td><td><code>manager@koperasi.local</code></td><td>View semua, approve pinjaman, export & print</td></tr>
+                <tr><td><code>kasir</code></td><td><code>kasir@koperasi.local</code></td><td>Simpanan, kas, pembayaran pinjaman, POS, tagihan</td></tr>
+                <tr><td><code>ao</code></td><td><code>ao@koperasi.local</code></td><td>View anggota, kelola pinjaman (pengajuan s/d akad)</td></tr>
+                <tr><td><code>kolektor</code></td><td><code>kolektor@koperasi.local</code></td><td>View anggota, view & update pembayaran</td></tr>
+                <tr><td><code>pengawas</code></td><td><code>pengawas@koperasi.local</code></td><td>View-only semua data + akses laporan</td></tr>
+                <tr><td><code>akuntan</code></td><td><code>akuntan@koperasi.local</code></td><td>Jurnal, COA, laporan keuangan, setting</td></tr>
+                <tr><td><code>anggota</code></td><td><code>anggota1@demo.local</code></td><td>Portal anggota → <a href="/portal/login" class="text-emerald-600 hover:underline">/portal/login</a> (password: anggota123)</td></tr>
             </table>
-            <p>Role di-seed otomatis via <code>RoleSeeder.php</code>. Untuk assign role ke user lewat Filament: menu <strong>Users → Edit User → tab Roles</strong>.</p>
         </section>
 
         <!-- Instalasi -->
