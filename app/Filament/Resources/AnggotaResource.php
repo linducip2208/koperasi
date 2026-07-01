@@ -74,15 +74,13 @@ class AnggotaResource extends Resource
                     ]),
                 ]),
                 Forms\Components\Tabs\Tab::make('Status Keanggotaan')->schema([
+                    Forms\Components\Radio::make('kategori')->label('Kategori')
+                        ->options(['biasa' => 'Biasa', 'luar_biasa' => 'Luar Biasa', 'calon' => 'Calon', 'kehormatan' => 'Kehormatan'])
+                        ->default('biasa')->required()->inline()->inlineLabel(false),
+                    Forms\Components\Radio::make('status')->label('Status')
+                        ->options(['aktif' => 'Aktif', 'tidak_aktif' => 'Non-Aktif', 'keluar' => 'Keluar', 'meninggal' => 'Meninggal', 'dikeluarkan' => 'Dikeluarkan'])
+                        ->default('aktif')->required()->inline()->inlineLabel(false),
                     Forms\Components\Grid::make(2)->schema([
-                        Forms\Components\Select::make('kategori')->label('Kategori')->options([
-                            'biasa' => 'Biasa', 'luar_biasa' => 'Luar Biasa',
-                            'calon' => 'Calon Anggota', 'kehormatan' => 'Kehormatan',
-                        ])->default('biasa')->required(),
-                        Forms\Components\Select::make('status')->label('Status')->options([
-                            'aktif' => 'Aktif', 'tidak_aktif' => 'Tidak Aktif',
-                            'keluar' => 'Keluar', 'meninggal' => 'Meninggal', 'dikeluarkan' => 'Dikeluarkan',
-                        ])->default('aktif')->required(),
                         Forms\Components\DatePicker::make('tanggal_masuk')->label('Tanggal Masuk')->default(now()),
                         Forms\Components\DatePicker::make('tanggal_keluar')->label('Tanggal Keluar'),
                         Forms\Components\Select::make('user_id')
