@@ -97,7 +97,6 @@
                 <div class="title">🧪 Demo Login</div>
                 <div class="creds">
                     <b>Super Admin:</b> admin@koperasi.local / admin123<br>
-                    <b>Admin:</b> admin@koperasi.local / admin123<br>
                     <b>Manager:</b> manager@koperasi.local / admin123<br>
                     <b>Kasir:</b> kasir@koperasi.local / admin123<br>
                     <b>AO:</b> ao@koperasi.local / admin123<br>
