@@ -14,7 +14,7 @@ class DocsController extends Controller
             ['role' => 'Kolektor',     'email' => 'kolektor@koperasi.local',  'password' => 'admin123', 'scope' => 'View anggota, view & update pembayaran pinjaman'],
             ['role' => 'Pengawas',     'email' => 'pengawas@koperasi.local',  'password' => 'admin123', 'scope' => 'View-only semua modul + akses laporan'],
             ['role' => 'Akuntan',      'email' => 'akuntan@koperasi.local',   'password' => 'admin123', 'scope' => 'Jurnal, COA, laporan keuangan, setting'],
-            ['role' => 'Anggota Demo', 'email' => 'anggota1@demo.local',      'password' => 'anggota123', 'scope' => 'Portal anggota: simpanan, pinjaman, setoran, PPOB, voting'],
+            ['role' => 'Anggota Demo', 'email' => 'anggota1@demo.local',      'password' => 'anggota123', 'scope' => 'Login di /portal/login — simpanan, pinjaman, setoran, PPOB, voting'],
         ];
     }
 

@@ -49,7 +49,12 @@
 <section id="akun-demo" class="scroll-mt-32">
     <div class="text-center mb-6">
         <h2 class="text-2xl font-extrabold text-zinc-900">Akun Demo</h2>
-        <p class="mt-2 text-zinc-500">Login ke <a href="/admin/login" class="text-emerald-600 font-semibold hover:underline">/admin/login</a>. <strong>Semua password: admin123</strong></p>
+        <p class="mt-2 text-zinc-500">
+            Admin: <a href="/admin/login" class="text-emerald-600 font-semibold hover:underline">/admin/login</a>
+            &nbsp;·&nbsp;
+            Anggota: <a href="/portal/login" class="text-emerald-600 font-semibold hover:underline">/portal/login</a>
+            <br><strong>Semua password admin: admin123</strong> · Anggota: anggota123
+        </p>
     </div>
     <div class="overflow-x-auto rounded-xl ring-1 ring-zinc-200 shadow-sm bg-white">
         <table class="w-full text-sm">
