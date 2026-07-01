@@ -59,7 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make('Asuransi')->icon('heroicon-o-shield-check'),
                 NavigationGroup::make('Laporan')->icon('heroicon-o-document-chart-bar'),
                 NavigationGroup::make('Blog & Marketing')->icon('heroicon-o-newspaper'),
-                NavigationGroup::make('Pengaturan')->icon('heroicon-o-cog-6-tooth')->collapsed(),
+                NavigationGroup::make('Pengaturan')->icon('heroicon-o-cog-6-tooth'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
