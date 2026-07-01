@@ -57,7 +57,9 @@
         .fi-input:focus{border-color:#e879f9!important;background:#fff!important;box-shadow:0 0 0 4px rgba(232,121,249,.12)!important}
         .fi-input[type=password]{font-family:system-ui!important;letter-spacing:.15em!important}
         .fi-input::placeholder{color:#d1d5db!important}
-        .fi-input-wrapper button[type=button],.fi-input-wrapper [x-ref=revealPassword],.fi-input-wrapper button[x-show]{display:none!important;visibility:hidden!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;opacity:0!important;pointer-events:none!important}
+        .fi-input-wrapper button[type=button]{position:absolute!important;right:2px!important;top:50%!important;transform:translateY(-50%)!important;z-index:2!important;padding:4px!important;min-width:auto!important;min-height:auto!important;width:auto!important;height:auto!important;background:transparent!important;border:none!important;box-shadow:none!important;cursor:pointer!important}
+        .fi-input-wrapper button[type=button] svg,.fi-input-wrapper button[type=button] svg *{width:16px!important;height:16px!important;max-width:16px!important;max-height:16px!important;min-width:16px!important;min-height:16px!important;color:#c084fc!important;display:block!important}
+        .fi-input-wrapper [x-ref=revealPassword]{display:none!important}
         .fi-input-wrapper{padding:0!important;box-shadow:none!important;background:transparent!important;border:none!important;border-radius:0!important}
         .fi-input-wrapper-prefix,.fi-input-wrapper-suffix{display:none!important}
 
@@ -162,6 +164,5 @@
 </div>
 
 @filamentScripts
-<script>document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.fi-input-wrapper button[type=button]').forEach(b=>b.remove())},100)});</script>
 </body>
 </html>

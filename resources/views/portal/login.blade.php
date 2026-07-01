@@ -76,11 +76,7 @@
         .back-link:hover{color:#6b7280}
         .alert{background:linear-gradient(135deg,#fef2f2,#fff1f2);border:1.5px solid #fecdd3;color:#be123c;padding:.75rem 1rem;border-radius:14px;font-size:.8rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 
-        input[type=password]::-ms-reveal,
-        input[type=password]::-ms-clear,
-        input[type=password]::-webkit-credentials-auto-fill-button,
-        input[type=password]::-webkit-caps-lock-indicator,
-        input[type=password]::-webkit-password-toggle-button {display:none!important;visibility:hidden!important}
+        input[type=password]::-ms-reveal{filter:brightness(.7);transform:scale(.85)}
 
         .sparkle{position:absolute;width:4px;height:4px;background:#fbbf24;border-radius:50%;animation:sparkle 2s ease-in-out infinite}
     </style>
