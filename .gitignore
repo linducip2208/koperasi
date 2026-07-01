@@ -25,3 +25,16 @@ Thumbs.db
 
 # License pairing v3 — encrypted lock file, never commit
 storage/app/.license.lock
+
+# Large files
+koperasi.zip
+storage/exports/
+database/koperasi_FULL_ALL.sql
+database/koperasi_full_with_demo.sql
+database/koperasi_schema.sql
+database/koperasi_admin_user.sql
+database/koperasi_roles_permissions.sql
+database/koperasi_tenant.sql
+database/koperasi_production_install.sql
+database/patch_asuransi.sql
+database/README_SQL.txt
