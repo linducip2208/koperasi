@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\TiketResource\Pages; use App\Filament\Resources\TiketResource; use Filament\Resources\Pages\CreateRecord; class CreateTiket extends CreateRecord { protected static string $resource = TiketResource::class; }

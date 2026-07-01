@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sedang Offline · KoperasiApp</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: linear-gradient(180deg,#f0fdf4,#ecfdf5); margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #064e3b; }
+        .card { max-width: 420px; background: #fff; border-radius: 18px; padding: 32px 28px; box-shadow: 0 12px 40px -12px rgba(5,150,105,0.25); text-align: center; border: 1px solid #d1fae5; }
+        .emoji { font-size: 56px; margin-bottom: 8px; }
+        h1 { font-size: 22px; margin: 0 0 8px; font-weight: 800; color: #047857; }
+        p { font-size: 14px; line-height: 1.6; color: #4b5563; margin: 0 0 20px; }
+        button { background: linear-gradient(135deg,#059669,#0d9488); color: #fff; border: 0; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px -4px rgba(5,150,105,0.5); }
+        button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -4px rgba(5,150,105,0.6); }
+        .small { font-size: 11px; color: #9ca3af; margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="emoji">📡</div>
+        <h1>Sedang Offline</h1>
+        <p>Koneksi internet kamu lagi putus. Halaman yang kamu kunjungi belum tersimpan offline. Coba sambungkan internet, lalu refresh halaman ini.</p>
+        <button onclick="location.reload()">🔄 Coba Lagi</button>
+        <div class="small">KoperasiApp · Portal Anggota</div>
+    </div>
+</body>
+</html>

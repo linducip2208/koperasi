@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\PpobProdukResource\Pages; use App\Filament\Resources\PpobProdukResource; use Filament\Actions; use Filament\Resources\Pages\EditRecord; class EditPpobProduk extends EditRecord { protected static string $resource = PpobProdukResource::class; protected function getHeaderActions(): array { return [Actions\DeleteAction::make()]; } }

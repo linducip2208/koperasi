@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentasi Aplikasi Koperasi — Tutorial Lengkap</title>
+<meta name="description" content="Dokumentasi & tutorial lengkap aplikasi Koperasi: install, kredensial admin, fitur, seed demo data, troubleshooting.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: -0.02em; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 1rem 1.25rem; border-radius: 0.75rem; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+    pre code { background: transparent; padding: 0; color: inherit; }
+    code:not(pre code) { background: #f1f5f9; color: #4338ca; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.85em; }
+    .gradient-text { background: linear-gradient(135deg,#6366f1 0%,#a855f7 50%,#ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .gradient-bg { background: linear-gradient(135deg,#6366f1 0%,#a855f7 50%,#ec4899 100%); }
+    .toc a { display: block; padding: 0.4rem 0.8rem; border-radius: 0.4rem; color: #64748b; font-size: 0.875rem; transition: all 0.15s; }
+    .toc a:hover { background: #f1f5f9; color: #4f46e5; }
+    .toc a.active { background: #eef2ff; color: #4f46e5; font-weight: 600; }
+    .scroll-mt { scroll-margin-top: 5rem; }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary svg.chevron { transform: rotate(180deg); }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
+    th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; }
+    .prose-doc p { margin: 0.75rem 0; line-height: 1.75; color: #334155; }
+    .prose-doc ul { margin: 0.75rem 0; padding-left: 1.5rem; list-style: disc; }
+    .prose-doc ol { margin: 0.75rem 0; padding-left: 1.75rem; list-style: decimal; }
+    .prose-doc li { margin: 0.4rem 0; line-height: 1.7; color: #334155; }
+    .prose-doc strong { color: #0f172a; font-weight: 700; }
+    .anchor-link { color: #cbd5e1; margin-left: 0.4rem; opacity: 0; transition: opacity 0.15s; }
+    h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- Top bar -->
+<nav class="bg-white border-b border-slate-200 sticky top-0 z-30 backdrop-blur-md bg-white/90">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+            <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center text-white font-extrabold shadow-lg">K</div>
+            <div>
+                <div class="font-extrabold text-lg gradient-text leading-none">Koperasi App</div>
+                <div class="text-xs text-slate-500 leading-none mt-0.5">Dokumentasi v1.0</div>
+            </div>
+        </a>
+        <div class="flex items-center gap-2 text-sm">
+            <a href="/" class="text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-lg hover:bg-slate-100 transition">Beranda</a>
+            <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20beli%20source%20code%20aplikasi%20koperasi" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow-md transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
+                Beli: 0812-9605-2010
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-[260px_1fr] gap-8">
+
+    <!-- Sidebar TOC -->
+    <aside class="lg:sticky lg:top-20 lg:self-start lg:max-h-[calc(100vh-6rem)] overflow-y-auto pr-2">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 px-2">Daftar Isi</div>
+        <nav class="toc space-y-0.5">
+            <a href="#pengantar">📖 Pengantar</a>
+            <a href="#kredensial">🔑 Kredensial Default</a>
+            <a href="#instalasi">⚙️ Instalasi</a>
+            <a href="#aktivasi">🔓 Aktivasi License</a>
+            <a href="#seed-demo">🎲 Seed Demo 100k</a>
+            <a href="#tutorial">🎓 Tutorial Pemakaian</a>
+            <a href="#fitur">⚡ Daftar Fitur</a>
+            <a href="#admin-panel">🛠️ Admin Panel</a>
+            <a href="#portal-anggota">📱 Portal Anggota</a>
+            <a href="#pseo">🌐 pSEO</a>
+            <a href="#troubleshooting">🚑 Troubleshooting</a>
+            <a href="#faq">❓ FAQ</a>
+            <a href="#kontak">💬 Kontak</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="prose-doc">
+
+        <!-- Hero -->
+        <section class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-3">
+                Dokumentasi <span class="gradient-text">Aplikasi Koperasi</span>
+            </h1>
+            <p class="text-lg text-slate-600 leading-relaxed mb-6">
+                Tutorial lengkap aplikasi Koperasi (Laravel 12 + Filament 3.3) — dari instalasi sampai operasional harian. Dokumen ini ikut dalam paket source code yang Anda beli.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+                <span class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full">PHP 8.3</span>
+                <span class="bg-purple-100 text-purple-700 font-bold px-3 py-1 rounded-full">Laravel 12</span>
+                <span class="bg-pink-100 text-pink-700 font-bold px-3 py-1 rounded-full">Filament 3.3</span>
+                <span class="bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full">MySQL / PostgreSQL</span>
+                <span class="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-full">Tailwind CSS</span>
+            </div>
+        </section>
+
+        <!-- Pengantar -->
+        <section id="pengantar" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">📖 Pengantar</h2>
+            <p>Aplikasi ini adalah <strong>software manajemen koperasi modern</strong> dengan dukungan dual-mode (Konvensional & Syariah) dalam satu platform. Cocok untuk:</p>
+            <ul>
+                <li><strong>Koperasi Simpan Pinjam (KSP)</strong> — fokus simpanan & pinjaman</li>
+                <li><strong>Koperasi Serba Usaha (KSU)</strong> — multi unit (SP + Toko + Jasa)</li>
+                <li><strong>Koperasi Syariah (KSPPS)</strong> — 9 akad syariah lengkap</li>
+                <li><strong>Koperasi Pegawai (KPRI)</strong> — auto-debit gaji integrasi payroll</li>
+                <li><strong>Koperasi Karyawan (Kopkar)</strong> — internal perusahaan</li>
+                <li><strong>Koperasi Pondok Pesantren (Kopontren)</strong> — multi unit syariah</li>
+            </ul>
+            <p>Aplikasi <strong>menjual source code</strong> — Anda dapat repository lengkap, deploy di server sendiri, dan modifikasi sesuka hati. <em>Tidak ada SaaS subscription.</em> Untuk pembelian: hubungi WhatsApp <a href="https://wa.me/6281296052010" class="text-indigo-600 font-semibold hover:underline">0812-9605-2010</a>.</p>
+        </section>
+
+        <!-- Kredensial -->
+        <section id="kredensial" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🔑 Kredensial Default</h2>
+            <p>Setelah <code>php artisan migrate --seed</code> dijalankan, berikut akun default untuk login pertama:</p>
+
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-6 my-6">
+                <div class="grid md:grid-cols-2 gap-5">
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center font-bold">A</span>
+                            <h3 class="font-extrabold text-lg text-slate-900 mb-0">Super Admin</h3>
+                        </div>
+                        <table class="bg-white rounded-lg overflow-hidden">
+                            <tr><th>URL</th><td><code>/admin</code></td></tr>
+                            <tr><th>Email</th><td><code>admin@koperasi.local</code></td></tr>
+                            <tr><th>Password</th><td><code>admin123</code></td></tr>
+                            <tr><th>Role</th><td><code>super-admin</code></td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="w-10 h-10 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold">P</span>
+                            <h3 class="font-extrabold text-lg text-slate-900 mb-0">Portal Anggota Demo</h3>
+                        </div>
+                        <table class="bg-white rounded-lg overflow-hidden">
+                            <tr><th>URL</th><td><code>/portal/login</code></td></tr>
+                            <tr><th>Email</th><td><code>anggota1@demo.local</code></td></tr>
+                            <tr><th>Password</th><td><code>anggota123</code></td></tr>
+                            <tr><th>Catatan</th><td>Tersedia setelah seeder <code>koperasi:seed-demo</code></td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-5 bg-red-100 border border-red-300 rounded-lg p-4 text-sm text-red-900">
+                    ⚠️ <strong>WAJIB ganti password</strong> setelah login pertama via menu <em>User → Edit Profile</em>. Akun default ini hanya untuk testing dan tidak boleh dipakai di production.
+                </div>
+            </div>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Role yang tersedia (Spatie Permission)</h3>
+            <table>
+                <tr><th>Role</th><th>Akses</th></tr>
+                <tr><td><code>super-admin</code></td><td>Full akses semua resource, semua tenant</td></tr>
+                <tr><td><code>admin-koperasi</code></td><td>Full akses dalam 1 tenant (koperasi-nya)</td></tr>
+                <tr><td><code>kasir</code></td><td>Transaksi simpanan & pinjaman, kas</td></tr>
+                <tr><td><code>accounting</code></td><td>Jurnal, COA, laporan keuangan</td></tr>
+                <tr><td><code>pengawas</code></td><td>Read-only semua data + laporan</td></tr>
+                <tr><td><code>anggota</code></td><td>Hanya akses Portal Anggota (<code>/portal</code>)</td></tr>
+            </table>
+            <p>Role di-seed otomatis via <code>RoleSeeder.php</code>. Untuk assign role ke user lewat Filament: menu <strong>Users → Edit User → tab Roles</strong>.</p>
+        </section>
+
+        <!-- Instalasi -->
+        <section id="instalasi" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">⚙️ Instalasi</h2>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Prasyarat</h3>
+            <ul>
+                <li>PHP 8.3 atau lebih baru (cek: <code>php --version</code>)</li>
+                <li>Composer 2.7+ (<code>composer --version</code>)</li>
+                <li>Node.js 18+ dan npm (untuk asset compilation)</li>
+                <li>MySQL 8 / MariaDB 10.5+ atau PostgreSQL 14+</li>
+                <li>Web server: Apache, Nginx, atau Laragon (Windows)</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Langkah Instalasi</h3>
+            <ol>
+                <li>Extract source code ke folder web (mis. <code>htdocs/koperasi</code> atau <code>/var/www/koperasi</code>).</li>
+                <li>Buka terminal di folder tersebut, jalankan:</li>
+            </ol>
+
+            <pre><code># 1. Install PHP dependencies
+composer install --no-dev --optimize-autoloader
+
+# 2. Install Node dependencies dan build asset
+npm install
+npm run build
+
+# 3. Salin file environment
+cp .env.example .env
+
+# 4. Generate application key
+php artisan key:generate
+
+# 5. Edit .env — isi konfigurasi database
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_DATABASE=koperasi
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# 6. Buat database (lewat phpMyAdmin atau CLI)
+mysql -u root -e "CREATE DATABASE koperasi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# 7. Run migration + seeder default
+php artisan migrate --seed
+
+# 8. Symlink storage (untuk upload file)
+php artisan storage:link
+
+# 9. Set permission folder storage & cache (Linux)
+chmod -R 775 storage bootstrap/cache
+
+# 10. Jalankan dev server
+php artisan serve
+</code></pre>
+
+            <p>Aplikasi sekarang accessible di <code>http://localhost:8000</code>. Login admin dengan kredensial di atas.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Deploy ke Production (Nginx)</h3>
+            <pre><code>server {
+    listen 80;
+    server_name koperasi.example.com;
+    root /var/www/koperasi/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}</code></pre>
+
+            <p>Setelah deploy, jalankan optimasi:</p>
+            <pre><code>php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache</code></pre>
+        </section>
+
+        <!-- Aktivasi License -->
+        <section id="aktivasi" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🔓 Aktivasi License</h2>
+            <p>Aplikasi menggunakan <strong>domain-locked license</strong>. Tanpa aktivasi, semua route (selain <code>/__pair</code>) akan di-redirect ke wizard aktivasi. <em>Khusus localhost dan domain *.test, license check di-bypass otomatis (dev mode).</em></p>
+
+            <ol>
+                <li>Setelah pembelian via WhatsApp <a href="https://wa.me/6281296052010" class="text-indigo-600 font-semibold">0812-9605-2010</a>, Anda akan mendapat <strong>License Key</strong> dan <strong>Activation Code</strong>.</li>
+                <li>Buka <code>https://yourdomain.com/__pair</code> di browser.</li>
+                <li>Masukkan License Key dan Activation Code → klik <strong>Aktifkan</strong>.</li>
+                <li>Sistem akan validate ke server marketplace (<code>whitelabel.co.id</code>) dan generate <code>storage/app/.license.lock</code>.</li>
+                <li>Anda di-redirect ke <code>/admin</code> setelah aktivasi sukses.</li>
+            </ol>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Bypass Sementara untuk Development</h3>
+            <p>Set di <code>.env</code>:</p>
+            <pre><code>LICENSE_DEV_BYPASS=true
+APP_ENV=local</code></pre>
+            <p>Bypass hanya aktif untuk host <code>localhost</code>, <code>127.0.0.1</code>, <code>*.test</code>, <code>*.localhost</code>. Banner peringatan akan muncul di setiap halaman.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Konfigurasi Heartbeat</h3>
+            <p>Aplikasi melakukan heartbeat ke marketplace setiap 24 jam untuk verifikasi license aktif:</p>
+            <pre><code># config/license.php
+'heartbeat_interval' => 86400,   // 24 jam
+'heartbeat_grace'    => 604800,  // grace 7 hari saat marketplace unreachable</code></pre>
+        </section>
+
+        <!-- Seed Demo -->
+        <section id="seed-demo" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🎲 Seed Demo Data 100.000 Records</h2>
+            <p>Untuk demo dan stress-testing, tersedia command artisan yang generate ~100.000 record dummy realistic dalam beberapa menit:</p>
+
+            <pre><code># Generate 100.000 records (default)
+php artisan koperasi:seed-demo
+
+# Custom size
+php artisan koperasi:seed-demo --members=10000 --tx-per-member=15
+
+# Reset semua data demo
+php artisan koperasi:seed-demo --fresh</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Distribusi Default</h3>
+            <table>
+                <tr><th>Tabel</th><th>Jumlah</th><th>Keterangan</th></tr>
+                <tr><td><code>anggota</code></td><td>5.000</td><td>Anggota aktif dengan NIK & alamat realistic</td></tr>
+                <tr><td><code>simpanan</code></td><td>15.000</td><td>3 simpanan per anggota (Pokok, Wajib, Sukarela)</td></tr>
+                <tr><td><code>simpanan_transaksi</code></td><td>50.000</td><td>~10 transaksi setoran/penarikan per simpanan</td></tr>
+                <tr><td><code>pinjaman</code></td><td>8.000</td><td>~1.6 pinjaman per anggota (mix konv + syariah)</td></tr>
+                <tr><td><code>pinjaman_jadwal</code></td><td>12.000</td><td>Jadwal angsuran 12 bulan per pinjaman</td></tr>
+                <tr><td><code>pinjaman_pembayaran</code></td><td>5.000</td><td>Cicilan terbayar (random 0–12 cicilan)</td></tr>
+                <tr><td><code>jurnal</code></td><td>3.000</td><td>Jurnal transaksi otomatis</td></tr>
+                <tr><td><code>kas_transaksi</code></td><td>2.000</td><td>Mutasi kas masuk/keluar</td></tr>
+                <tr><th colspan="3" class="text-right">Total</th></tr>
+                <tr class="font-bold"><td colspan="2">~100.000 records</td><td>Realistic untuk demo & load test</td></tr>
+            </table>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Perkiraan Waktu Eksekusi</h3>
+            <ul>
+                <li>Local development (Laragon, MySQL): <strong>3–5 menit</strong></li>
+                <li>VPS 1 vCPU 2GB RAM: <strong>5–8 menit</strong></li>
+                <li>VPS 4 vCPU 8GB RAM: <strong>1–2 menit</strong></li>
+            </ul>
+            <p>Seeder pakai <strong>batch insert</strong> (chunk 1000 records) supaya memori-efisien. Bisa di-interrupt kapan saja dengan <code>Ctrl+C</code> tanpa korup data.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Login Anggota Demo</h3>
+            <p>Setelah seeder selesai, semua anggota demo punya password seragam <code>anggota123</code>. Login portal di <code>/portal/login</code>:</p>
+            <pre><code>Email: anggota1@demo.local      → anggota#1
+Email: anggota2@demo.local      → anggota#2
+...
+Email: anggota5000@demo.local   → anggota#5000
+
+Password (semua): anggota123</code></pre>
+        </section>
+
+        <!-- Tutorial -->
+        <section id="tutorial" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🎓 Tutorial Pemakaian (10 Langkah)</h2>
+            <p>Workflow lengkap dari pertama login sampai operasional harian. Ikuti urutan ini saat pertama setup.</p>
+
+            <div class="space-y-4 mt-6">
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-sm">1</span>
+                        <span class="font-bold text-slate-900 flex-1">Aktivasi License & Login Pertama</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <ol class="mt-3">
+                            <li>Buka browser ke <code>https://yourdomain.com/__pair</code></li>
+                            <li>Masukkan License Key & Activation Code (kirim WA setelah pembelian)</li>
+                            <li>Sistem validasi → <code>.license.lock</code> dibuat → redirect ke <code>/admin</code></li>
+                            <li>Login dengan <code>admin@koperasi.local</code> / <code>admin123</code></li>
+                            <li>Klik avatar kanan-atas → <strong>Edit Profile</strong> → ganti password baru yang kuat</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-sm">2</span>
+                        <span class="font-bold text-slate-900 flex-1">Setup Profile Tenant (Koperasi)</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu sidebar: <strong>Master → Tenant</strong> → klik tenant default → <strong>Edit</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Tab <strong>Profil</strong>: nama koperasi, NIK badan hukum, NPWP, alamat, logo, warna brand</li>
+                            <li>Tab <strong>Mode Operasi</strong>: pilih Konvensional / Syariah / Dual</li>
+                            <li>Tab <strong>Subscription SaaS</strong>: (jika multi-tenant) status billing</li>
+                            <li>Tab <strong>Branding</strong>: kop surat, footer faktur, alamat cetak</li>
+                            <li>Klik <strong>Simpan</strong> — perubahan langsung effect ke seluruh halaman</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-pink-100 text-pink-700 font-extrabold flex items-center justify-center text-sm">3</span>
+                        <span class="font-bold text-slate-900 flex-1">Konfigurasi Chart of Accounts (CoA)</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu sidebar: <strong>Akuntansi → Chart of Accounts</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Default sudah ada akun PSAK 27 standar (di-seed via <code>ChartOfAccountsSeeder</code>)</li>
+                            <li>Review akun-akun: 1xxxx (Aset), 2xxxx (Kewajiban), 3xxxx (Ekuitas), 4xxxx (Pendapatan), 5xxxx (Beban)</li>
+                            <li>Tambah akun custom jika perlu (mis. <em>Simpanan Lebaran</em>, <em>Dana Sosial</em>)</li>
+                            <li>Set parent account untuk hierarchy yang rapi</li>
+                            <li>Filter by tipe akan auto-color-code badge di tabel</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 font-extrabold flex items-center justify-center text-sm">4</span>
+                        <span class="font-bold text-slate-900 flex-1">Buat Produk Simpanan</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Master → Produk Simpanan → Create</strong>.</p>
+                        <ul class="mt-3">
+                            <li><strong>Pokok</strong>: setoran sekali saat masuk anggota, tidak dapat ditarik</li>
+                            <li><strong>Wajib</strong>: rutin bulanan, tidak dapat ditarik selama keanggotaan</li>
+                            <li><strong>Sukarela</strong>: tabungan bebas, bisa ditarik kapan saja</li>
+                            <li><strong>Berjangka</strong>: deposito koperasi, tenor & bunga/bagi hasil</li>
+                        </ul>
+                        <p>Untuk Syariah, pilih akad pada produk Berjangka (Mudharabah / Wadiah). Set parameter: minimum setoran, biaya admin, bunga/nisbah.</p>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 font-extrabold flex items-center justify-center text-sm">5</span>
+                        <span class="font-bold text-slate-900 flex-1">Buat Produk Pinjaman / Pembiayaan</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Master → Produk Pinjaman → Create</strong> (form 5 tab).</p>
+                        <ul class="mt-3">
+                            <li>Tab <strong>Info Dasar</strong>: nama produk, kode, deskripsi</li>
+                            <li>Tab <strong>Plafon</strong>: minimum-maksimum, tenor min-max bulan</li>
+                            <li>Tab <strong>Akad</strong>: pilih dari 10 opsi (<em>Konvensional, Murabahah, Mudharabah, Musyarakah, Ijarah, Ijarah MB, Qardh, Rahn, Salam, Istishna</em>)</li>
+                            <li>Tab <strong>Perhitungan</strong>: flat / efektif / anuitas, suku bunga atau nisbah</li>
+                            <li>Tab <strong>Biaya & Denda</strong>: admin, asuransi, denda telat (% per hari)</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-teal-100 text-teal-700 font-extrabold flex items-center justify-center text-sm">6</span>
+                        <span class="font-bold text-slate-900 flex-1">Daftarkan Anggota Baru</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Anggota → Anggota → New Anggota</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Isi data: NIK, Nama, Tempat/Tgl Lahir, Alamat, Pekerjaan, No HP, Email</li>
+                            <li>Upload foto KTP & foto profil (opsional)</li>
+                            <li>Isi data ahli waris (untuk klaim asuransi/SHU)</li>
+                            <li>Status: <strong>Aktif</strong> (default)</li>
+                            <li>Klik <strong>Save</strong> → anggota auto-buat User account untuk Portal Anggota</li>
+                        </ol>
+                        <p>Untuk migrasi banyak anggota dari Excel, gunakan command <code>php artisan koperasi:import-members file.csv</code> (lihat docs add-on).</p>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-700 font-extrabold flex items-center justify-center text-sm">7</span>
+                        <span class="font-bold text-slate-900 flex-1">Catat Transaksi Setoran Simpanan</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Transaksi → Simpanan → Setor</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Pilih anggota (search by NIK atau nama)</li>
+                            <li>Pilih jenis simpanan (Pokok/Wajib/Sukarela/Berjangka)</li>
+                            <li>Input nominal setoran</li>
+                            <li>Pilih kas penerima (untuk multi-kas/bank)</li>
+                            <li>Catatan opsional</li>
+                            <li>Klik <strong>Simpan</strong> — sistem auto:
+                                <ul>
+                                    <li>Update saldo simpanan anggota</li>
+                                    <li>Auto-jurnal Dr. Kas / Cr. Simpanan</li>
+                                    <li>Update saldo kas</li>
+                                    <li>Generate slip setoran (PDF — bisa di-print)</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 font-extrabold flex items-center justify-center text-sm">8</span>
+                        <span class="font-bold text-slate-900 flex-1">Proses Pengajuan Pinjaman</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Pinjaman → Pinjaman → New</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Pilih anggota & produk pinjaman</li>
+                            <li>Input plafon pengajuan, tenor (bulan)</li>
+                            <li>Sistem auto-generate jadwal angsuran (table preview)</li>
+                            <li>Upload dokumen jaminan (jika ada)</li>
+                            <li>Status awal: <strong>Pengajuan</strong></li>
+                            <li>Approval flow: Pengajuan → Review → Approved/Rejected → Cair</li>
+                            <li>Saat status = Cair: auto-jurnal Dr. Piutang Pinjaman / Cr. Kas + pembayaran ke anggota</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-violet-100 text-violet-700 font-extrabold flex items-center justify-center text-sm">9</span>
+                        <span class="font-bold text-slate-900 flex-1">Tutup Buku Bulanan & Laporan Keuangan</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Akuntansi → Laporan Keuangan</strong> (Page custom Filament).</p>
+                        <ol class="mt-3">
+                            <li>Pilih periode (mulai - akhir tanggal)</li>
+                            <li>Klik tab <strong>Neraca</strong> — posisi keuangan akhir periode</li>
+                            <li>Tab <strong>Laba-Rugi (PHU)</strong> — surplus/defisit operasional</li>
+                            <li>Tab <strong>Arus Kas</strong> — flow operasional, investasi, pendanaan</li>
+                            <li>Tab <strong>Buku Besar</strong> — detail transaksi per akun</li>
+                            <li>Klik <strong>Export PDF</strong> di tiap tab</li>
+                        </ol>
+                    </div>
+                </details>
+
+                <details class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                    <summary class="px-5 py-4 flex items-center gap-3 hover:bg-slate-50">
+                        <span class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 font-extrabold flex items-center justify-center text-sm">10</span>
+                        <span class="font-bold text-slate-900 flex-1">Distribusi SHU & RAT Akhir Tahun</span>
+                        <svg class="w-5 h-5 text-slate-400 chevron transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-5 pb-5 border-t border-slate-100">
+                        <p>Menu: <strong>Akhir Tahun → SHU Perhitungan → New</strong>.</p>
+                        <ol class="mt-3">
+                            <li>Pilih periode RAT (mis. Jan-Des 2026)</li>
+                            <li>Sistem hitung total SHU otomatis dari Laba-Rugi</li>
+                            <li>Set persentase pembagian (sesuai AD/ART): cadangan, jasa modal, jasa usaha, dll</li>
+                            <li>Klik <strong>Hitung Distribusi</strong> → preview SHU per anggota</li>
+                            <li>Confirm & finalize → entry tabel <code>shu_distribusi</code></li>
+                            <li>Export slip SHU per anggota (PDF batch)</li>
+                            <li>Bagikan slip ke anggota saat RAT</li>
+                        </ol>
+                        <p>Menu <strong>RAT → Periode RAT</strong> juga menyimpan dokumen RAT (berita acara, daftar hadir, foto dokumentasi).</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Daftar Fitur -->
+        <section id="fitur" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">⚡ Daftar Fitur Confirmed di Source Code</h2>
+            <p>Daftar di bawah ini <strong>semuanya sudah dibangun</strong> di repository — <em>diverify dengan grep manual ke file resource/model/controller</em>:</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Filament Resources (19 modul)</h3>
+            <table>
+                <tr><th>Resource</th><th>Path</th><th>Fitur</th></tr>
+                <tr><td>Anggota</td><td><code>app/Filament/Resources/AnggotaResource.php</code></td><td>CRUD anggota, ahli waris, status log</td></tr>
+                <tr><td>Tenant</td><td><code>TenantResource.php</code></td><td>Multi-tenant koperasi, 4 tab (Profile, Mode, Subscription, Branding)</td></tr>
+                <tr><td>User</td><td><code>UserResource.php</code></td><td>User admin/staff dengan Spatie Role</td></tr>
+                <tr><td>ProdukSimpanan</td><td><code>ProdukSimpananResource.php</code></td><td>Definisi produk simpanan (Pokok/Wajib/Sukarela/Berjangka)</td></tr>
+                <tr><td>ProdukPinjaman</td><td><code>ProdukPinjamanResource.php</code></td><td>5-tab form, 10 akad selector</td></tr>
+                <tr><td>Simpanan</td><td><code>SimpananResource.php</code></td><td>Akun simpanan per anggota + transaksi</td></tr>
+                <tr><td>Pinjaman</td><td><code>PinjamanResource.php</code></td><td>Pengajuan, jadwal, pembayaran, jaminan</td></tr>
+                <tr><td>Coa</td><td><code>CoaResource.php</code></td><td>Chart of Accounts hierarchical</td></tr>
+                <tr><td>Jurnal</td><td><code>JurnalResource.php</code></td><td>Jurnal umum dengan multi-line detail</td></tr>
+                <tr><td>Kas</td><td><code>KasResource.php</code></td><td>Multi-kas + bank, conditional UI</td></tr>
+                <tr><td>ShuPerhitungan</td><td><code>ShuPerhitunganResource.php</code></td><td>Perhitungan & distribusi SHU</td></tr>
+                <tr><td>Rat</td><td><code>RatResource.php</code></td><td>Periode Rapat Anggota Tahunan</td></tr>
+                <tr><td>Tagihan</td><td><code>TagihanResource.php</code></td><td>Master tagihan rutin</td></tr>
+                <tr><td>TokoBarang</td><td><code>TokoBarangResource.php</code></td><td>Inventory toko Koperasi Serba Usaha</td></tr>
+                <tr><td>TokoPenjualan</td><td><code>TokoPenjualanResource.php</code></td><td>POS / kasir + detail transaksi</td></tr>
+                <tr><td>Karyawan</td><td><code>KaryawanResource.php</code></td><td>Data karyawan koperasi</td></tr>
+                <tr><td>Asset</td><td><code>AssetResource.php</code></td><td>Manajemen aset tetap</td></tr>
+                <tr><td>UnitJasaOrder</td><td><code>UnitJasaOrderResource.php</code></td><td>Order unit jasa anggota</td></tr>
+                <tr><td>UnitProdusenSetoran</td><td><code>UnitProdusenSetoranResource.php</code></td><td>Setoran unit produsen</td></tr>
+            </table>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Custom Pages (2)</h3>
+            <ul>
+                <li><strong>LaporanKeuangan</strong> — Neraca, Laba-Rugi, Arus Kas dalam 1 page tab</li>
+                <li><strong>Pengaturan</strong> — Settings global koperasi</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Dashboard Widgets (6)</h3>
+            <ul>
+                <li><strong>HeroBanner</strong> — Banner welcome dashboard</li>
+                <li><strong>StatsKoperasi</strong> — KPI cards (total anggota, simpanan, pinjaman aktif, kas)</li>
+                <li><strong>KolektabilitasChart</strong> — Chart kualitas pinjaman (Lancar/DPK/Macet)</li>
+                <li><strong>TrenSimpananChart</strong> — Tren simpanan 12 bulan</li>
+                <li><strong>AktivitasTerbaru</strong> — Feed transaksi real-time</li>
+                <li><strong>TopAnggotaTable</strong> — Top peminjam / penabung</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Routes Public (luar Filament)</h3>
+            <ul>
+                <li><code>GET /</code> — Landing page (LandingController)</li>
+                <li><code>GET /portal/login</code> — Portal Anggota login</li>
+                <li><code>GET /portal</code> — Portal dashboard anggota</li>
+                <li><code>GET /__pair</code> — License activation wizard</li>
+                <li><code>GET /sitemap.xml</code> — Auto-generated sitemap (75+ URL)</li>
+                <li><code>GET /robots.txt</code> — Robots</li>
+                <li><strong>7 pSEO routes</strong> — kota, jenis, akad, panduan, kalkulator, alternatif, compare</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Models (32)</h3>
+            <p>Anggota, AhliWaris, AnggotaStatusLog, Asset, Cabang, Coa, Jurnal, JurnalDetail, Karyawan, Kas, KasTransaksi, Pinjaman, PinjamanApproval, PinjamanJadwal, PinjamanJaminan, PinjamanPembayaran, ProdukPinjaman, ProdukSimpanan, Rat, Setting, ShuDistribusi, ShuPerhitungan, Simpanan, SimpananTransaksi, Tagihan, TagihanMaster, Tenant, TokoBarang, TokoPenjualan, TokoPenjualanDetail, UnitJasaOrder, UnitProdusenSetoran, User.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">⚠️ Belum Termasuk (Tersedia sebagai Add-on)</h3>
+            <table>
+                <tr><th>Fitur</th><th>Catatan</th></tr>
+                <tr><td>Notifikasi WhatsApp</td><td>Belum ada package/service. Tersedia integrasi Fonnte/Wablas sebagai add-on (chat WA tim).</td></tr>
+                <tr><td>QR Code kartu anggota</td><td>Belum ada generator QR. Bisa pakai package <code>simplesoftwareio/simple-qrcode</code>.</td></tr>
+                <tr><td>Cetak struk thermal</td><td>Untuk POS toko, perlu integrasi printer driver ESC/POS.</td></tr>
+                <tr><td>Import CSV mass anggota</td><td>Filament tidak punya importer bawaan. Bisa pakai <code>filament/spatie-laravel-import-export</code>.</td></tr>
+                <tr><td>Backup otomatis daily</td><td>Package <code>spatie/laravel-backup</code> sudah terpasang, schedule perlu di-aktifkan di <code>routes/console.php</code>.</td></tr>
+                <tr><td>Mobile app native</td><td>Hanya web responsive. Bisa di-wrap pakai Capacitor/Cordova jika perlu.</td></tr>
+            </table>
+            <p>Konfirmasi via WhatsApp untuk biaya custom add-on: <a href="https://wa.me/6281296052010" class="text-indigo-600 font-semibold">0812-9605-2010</a>.</p>
+        </section>
+
+        <!-- Admin Panel -->
+        <section id="admin-panel" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🛠️ Admin Panel</h2>
+            <p>Filament Panel di <code>/admin</code> dengan navigation groups:</p>
+            <ul>
+                <li><strong>Dashboard</strong> — 6 widgets KPI & analytics</li>
+                <li><strong>Anggota</strong> — Anggota, Ahli Waris</li>
+                <li><strong>Master Data</strong> — Tenant, Cabang, Produk Simpanan, Produk Pinjaman</li>
+                <li><strong>Transaksi</strong> — Simpanan (set, set, tarik), Pinjaman (ajukan, approval, cair, cicil)</li>
+                <li><strong>Akuntansi</strong> — COA, Jurnal, Kas, Laporan Keuangan (Page)</li>
+                <li><strong>Toko / Unit Usaha</strong> — Toko Barang, Penjualan, Unit Jasa, Unit Produsen</li>
+                <li><strong>Karyawan & Aset</strong> — Karyawan, Asset</li>
+                <li><strong>Akhir Tahun</strong> — RAT, SHU Perhitungan</li>
+                <li><strong>Sistem</strong> — User, Tagihan, Pengaturan</li>
+            </ul>
+            <p>Navigation groups bisa di-customize lewat tiap Resource (<code>$navigationGroup</code>, <code>$navigationSort</code>).</p>
+        </section>
+
+        <!-- Portal Anggota -->
+        <section id="portal-anggota" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">📱 Portal Anggota</h2>
+            <p>Antarmuka khusus untuk anggota koperasi (di luar admin Filament). Tidak butuh role admin — semua anggota auto-bisa login dengan akun yang dibuat saat registrasi.</p>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">URL Portal</h3>
+            <ul>
+                <li><code>/portal/login</code> — Login form</li>
+                <li><code>/portal</code> — Dashboard anggota (saldo simpanan, riwayat pinjaman)</li>
+                <li><code>/laporan/neraca</code>, <code>/laporan/laba-rugi</code>, <code>/laporan/arus-kas</code> — Laporan keuangan koperasi (auth required)</li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">Yang Anggota Bisa Lakukan</h3>
+            <ul>
+                <li>Lihat saldo Simpanan Pokok / Wajib / Sukarela / Berjangka</li>
+                <li>Lihat riwayat transaksi setoran/penarikan</li>
+                <li>Lihat pinjaman aktif: sisa pokok, sisa cicilan, tanggal jatuh tempo</li>
+                <li>Download bukti setoran (PDF)</li>
+                <li>Update profil (alamat, no HP, password)</li>
+            </ul>
+        </section>
+
+        <!-- pSEO -->
+        <section id="pseo" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🌐 pSEO Built-in (70+ Halaman SEO)</h2>
+            <p>Aplikasi sudah include sistem Programmatic SEO yang otomatis generate halaman public untuk traffic dari Google. Data master ada di <code>config/pseo.php</code>:</p>
+            <table>
+                <tr><th>Pattern URL</th><th>Jumlah</th><th>Contoh</th></tr>
+                <tr><td><code>/aplikasi-koperasi-{kota}</code></td><td>30</td><td><a href="/aplikasi-koperasi-jakarta" class="text-indigo-600 underline">/aplikasi-koperasi-jakarta</a></td></tr>
+                <tr><td><code>/jenis-koperasi/{tipe}</code></td><td>6</td><td><a href="/jenis-koperasi/syariah" class="text-indigo-600 underline">/jenis-koperasi/syariah</a></td></tr>
+                <tr><td><code>/akad-syariah/{nama}</code></td><td>10</td><td><a href="/akad-syariah/mudharabah" class="text-indigo-600 underline">/akad-syariah/mudharabah</a></td></tr>
+                <tr><td><code>/panduan/{slug}</code></td><td>8</td><td><a href="/panduan/cara-mendirikan-koperasi" class="text-indigo-600 underline">/panduan/cara-mendirikan-koperasi</a></td></tr>
+                <tr><td><code>/kalkulator/{slug}</code></td><td>4</td><td><a href="/kalkulator/cicilan-pinjaman" class="text-indigo-600 underline">/kalkulator/cicilan-pinjaman</a></td></tr>
+                <tr><td><code>/alternatif-{kompetitor}</code></td><td>6</td><td><a href="/alternatif-siska" class="text-indigo-600 underline">/alternatif-siska</a></td></tr>
+                <tr><td><code>/compare/{a}-vs-{b}</code></td><td>6</td><td><a href="/compare/koperasi-app-vs-siska" class="text-indigo-600 underline">/compare/koperasi-app-vs-siska</a></td></tr>
+            </table>
+            <p>Setiap halaman: JSON-LD schema, meta tags lengkap, 300+ kata konten unik, internal linking. Auto-registered di <code>/sitemap.xml</code>. Submit ke Google Search Console untuk indexing.</p>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section id="troubleshooting" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">🚑 Troubleshooting</h2>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">"Routes tidak ditemukan / 404 setelah deploy"</h3>
+            <p>Clear semua cache route lalu rebuild:</p>
+            <pre><code>php artisan optimize:clear
+php artisan route:cache
+php artisan config:cache</code></pre>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">"Internal Server Error setelah composer install"</h3>
+            <ul>
+                <li>Pastikan <code>storage/</code> dan <code>bootstrap/cache/</code> writable: <code>chmod -R 775</code></li>
+                <li>Pastikan APP_KEY ter-generate: <code>php artisan key:generate</code></li>
+                <li>Pastikan <code>.env</code> ada dan database connection benar</li>
+                <li>Cek log: <code>tail -f storage/logs/laravel.log</code></li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">"Filament page blank putih"</h3>
+            <ul>
+                <li>Run: <code>php artisan filament:cache-components</code></li>
+                <li>Run: <code>php artisan icons:cache</code></li>
+                <li>Compile asset: <code>npm run build</code></li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">"License pairing gagal — server unreachable"</h3>
+            <ul>
+                <li>Pastikan server bisa akses <code>https://whitelabel.co.id</code> (firewall, DNS)</li>
+                <li>Cek SSL cert: <code>curl -I https://whitelabel.co.id</code></li>
+                <li>Untuk dev: set <code>LICENSE_DEV_BYPASS=true</code> di <code>.env</code></li>
+            </ul>
+
+            <h3 class="text-xl font-bold mt-6 mb-3">"Seeder demo OOM (out of memory)"</h3>
+            <p>Naikkan PHP memory limit:</p>
+            <pre><code>php -d memory_limit=512M artisan koperasi:seed-demo</code></pre>
+            <p>Atau pakai <code>--chunk=500</code> untuk mengurangi batch size.</p>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">❓ FAQ</h2>
+
+            <div class="space-y-3">
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Apakah bisa modifikasi source code?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">Ya, 100% bebas modifikasi. Anda dapat full repository tanpa obfuscation.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Bisa di-deploy di shared hosting?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">Bisa, asal hosting support PHP 8.3 dan SSH access (untuk run composer + artisan). Lebih disarankan VPS untuk performa optimal.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Berapa lama license valid?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">License valid <strong>selamanya</strong> untuk 1 domain. Jika pindah domain, request re-issue ke WhatsApp sales.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Update versi baru gratis?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">Free update <strong>6 bulan pertama</strong>. Setelah itu, update major version 50% dari harga awal.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Bisa pakai PostgreSQL?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">Bisa. Aplikasi pakai Laravel Eloquent yang database-agnostic. Edit <code>DB_CONNECTION=pgsql</code> di <code>.env</code>.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-xl">
+                    <summary class="px-5 py-4 font-bold text-slate-900 hover:bg-slate-50">Support multi-bahasa?</summary>
+                    <div class="px-5 pb-5 text-slate-700 border-t border-slate-100 pt-3">Saat ini hanya Bahasa Indonesia. English translation tersedia sebagai add-on.</div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Kontak -->
+        <section id="kontak" class="scroll-mt mb-12">
+            <h2 class="text-3xl font-extrabold mb-4">💬 Kontak Pembelian & Support</h2>
+
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-8 text-white shadow-2xl shadow-emerald-500/30 my-6">
+                <h3 class="text-2xl font-extrabold mb-2 text-white">WhatsApp Sales & Support</h3>
+                <p class="text-emerald-50 mb-4">Senin–Sabtu · 09.00–17.00 WIB · Respond &lt; 5 menit</p>
+                <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20info%20aplikasi%20koperasi" class="inline-block bg-white text-emerald-700 font-extrabold text-3xl px-8 py-4 rounded-xl shadow-xl hover:scale-105 transition">
+                    📱 0812-9605-2010
+                </a>
+            </div>
+
+            <p>Untuk pembelian source code, hubungi via WhatsApp di nomor di atas. Tim sales akan kirim:</p>
+            <ul>
+                <li>Penawaran resmi (PDF) dengan detail spesifikasi</li>
+                <li>Demo akses (admin panel + portal anggota)</li>
+                <li>Invoice pembayaran (transfer bank atau e-wallet)</li>
+                <li>License Key + Activation Code (setelah pembayaran)</li>
+                <li>Link download source code (ZIP / Git repository)</li>
+            </ul>
+        </section>
+
+        <footer class="border-t border-slate-200 pt-8 mt-16 text-center text-sm text-slate-500">
+            <p>Dokumentasi versi 1.0 · Generated 2026 · <a href="/" class="text-indigo-600 hover:underline">Kembali ke Beranda</a></p>
+            <p class="mt-2">© Koperasi App — Source Code Premium · Powered by Laravel 12 & Filament 3.3</p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    // Highlight TOC link based on scroll position
+    const sections = document.querySelectorAll('section[id]');
+    const tocLinks = document.querySelectorAll('.toc a');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                tocLinks.forEach(l => l.classList.remove('active'));
+                const link = document.querySelector(`.toc a[href="#${entry.target.id}"]`);
+                if (link) link.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-100px 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

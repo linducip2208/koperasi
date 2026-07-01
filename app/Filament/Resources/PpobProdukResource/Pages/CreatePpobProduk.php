@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\PpobProdukResource\Pages; use App\Filament\Resources\PpobProdukResource; use Filament\Resources\Pages\CreateRecord; class CreatePpobProduk extends CreateRecord { protected static string $resource = PpobProdukResource::class; }

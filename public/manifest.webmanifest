@@ -1,0 +1,47 @@
+{
+    "name": "Koperasi Anggota",
+    "short_name": "KoperasiApp",
+    "description": "Portal anggota koperasi — cek simpanan, pinjaman, setor online, dan pengajuan pembiayaan dari genggaman.",
+    "start_url": "/portal",
+    "scope": "/portal",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f0fdf4",
+    "theme_color": "#047857",
+    "lang": "id",
+    "dir": "ltr",
+    "categories": ["finance", "business", "productivity"],
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Setor Online",
+            "short_name": "Setor",
+            "url": "/portal/setoran",
+            "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
+        },
+        {
+            "name": "Ajukan Pinjaman",
+            "short_name": "Pinjam",
+            "url": "/portal/pengajuan-pinjaman",
+            "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
+        },
+        {
+            "name": "Cek Simpanan",
+            "short_name": "Simpanan",
+            "url": "/portal/simpanan",
+            "icons": [{ "src": "/icons/icon.svg", "sizes": "any" }]
+        }
+    ]
+}

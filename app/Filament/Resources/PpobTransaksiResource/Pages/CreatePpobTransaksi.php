@@ -1,0 +1,1 @@
+<?php namespace App\Filament\Resources\PpobTransaksiResource\Pages; use App\Filament\Resources\PpobTransaksiResource; use Filament\Resources\Pages\CreateRecord; class CreatePpobTransaksi extends CreateRecord { protected static string $resource = PpobTransaksiResource::class; }
