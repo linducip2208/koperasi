@@ -57,7 +57,7 @@
         .fi-input:focus{border-color:#10b981!important;background:#fff!important;box-shadow:0 0 0 3px rgba(16,185,129,.12)!important}
         .fi-input[type=password]{font-family:system-ui!important;letter-spacing:.15em!important}
         .fi-input::placeholder{color:#cbd5e1!important}
-        .fi-input-wrapper button[type=button],.fi-input-wrapper [x-ref=revealPassword]{display:none!important}
+        .fi-input-wrapper button[type=button],.fi-input-wrapper [x-ref=revealPassword],.fi-input-wrapper button[x-show]{display:none!important;visibility:hidden!important;width:0!important;height:0!important;overflow:hidden!important;position:absolute!important;opacity:0!important;pointer-events:none!important}
         .fi-input-wrapper{padding:0!important;box-shadow:none!important;background:transparent!important;border:none!important;border-radius:0!important}
         .fi-input-wrapper-prefix,.fi-input-wrapper-suffix{display:none!important}
 
@@ -68,7 +68,6 @@
         .fi-checkbox-input:checked{border-color:#059669!important;background-color:#059669!important}
         .fi-checkbox-input{border-radius:6px!important;border:1.5px solid #cbd5e1!important}
         .fi-checkbox-label span{font-size:.78rem!important;font-weight:500!important;color:#64748b!important}
-        [x-ref=revealPassword]{display:none!important}
 
         .demo-box{margin-top:1.25rem;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:1rem;font-size:.78rem}
         .demo-box .ttl{font-weight:700;color:#334155;margin-bottom:.4rem;font-size:.8rem}
@@ -164,5 +163,8 @@
 </div>
 
 @filamentScripts
+<script>
+document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.fi-input-wrapper button[type=button]').forEach(b=>b.remove())},100)});
+</script>
 </body>
 </html>
