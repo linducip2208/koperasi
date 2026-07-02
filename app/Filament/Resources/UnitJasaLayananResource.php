@@ -14,7 +14,7 @@ class UnitJasaLayananResource extends Resource
 {
     protected static ?string $model = UnitJasaLayanan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';
     protected static ?string $navigationLabel = 'Master Layanan Jasa';
     protected static ?string $modelLabel = 'Layanan Jasa';

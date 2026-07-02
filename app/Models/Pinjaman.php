@@ -32,7 +32,7 @@ class Pinjaman extends Model
         'tenor', 'bunga_persen', 'margin_persen',
         'nisbah_anggota', 'nisbah_koperasi',
         'biaya_admin', 'biaya_provisi', 'biaya_asuransi', 'biaya_materai',
-        'total_biaya', 'pencairan_bersih',
+        'total_biaya', 'pencairan_bersih', 'bukti_pencairan',
         'saldo_pokok', 'saldo_margin',
         'tujuan', 'analisa_kredit', 'survey_data',
         'status', 'kolektabilitas',

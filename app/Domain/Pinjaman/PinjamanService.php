@@ -17,6 +17,28 @@ use InvalidArgumentException;
 
 class PinjamanService
 {
+    public static function cekKemampuanBayar(int $anggotaId, int $cicilanBaru): array
+    {
+        $anggota = \App\Models\Anggota::findOrFail($anggotaId);
+        $totalCicilan  = $anggota->totalCicilanPerBulan();
+        $maksCicilan   = $anggota->maxCicilanBulanan();
+        $totalSetelah  = $totalCicilan + $cicilanBaru;
+        $rasioSetelah  = $maksCicilan > 0 ? round(($totalSetelah / $anggota->penghasilan_bulanan) * 100, 2) : 100;
+
+        return [
+            'anggota_id'            => $anggotaId,
+            'penghasilan_bulanan'   => $anggota->penghasilan_bulanan,
+            'total_hutang'          => $anggota->totalHutang(),
+            'cicilan_saat_ini'      => $totalCicilan,
+            'cicilan_baru'          => $cicilanBaru,
+            'total_cicilan_setelah' => $totalSetelah,
+            'maks_cicilan_40pct'    => $maksCicilan,
+            'rasio_saat_ini'        => $anggota->rasioHutang(),
+            'rasio_setelah'         => $rasioSetelah,
+            'layak'                 => $totalSetelah <= $maksCicilan || $maksCicilan === 0,
+        ];
+    }
+
     public static function ajukan(array $data): Pinjaman
     {
         $produk = ProdukPinjaman::findOrFail($data['produk_id']);
@@ -123,15 +145,16 @@ class PinjamanService
     /**
      * Cair: pencairan dana dari kas + buat jurnal otomatis.
      */
-    public static function cairkan(Pinjaman $pinjaman, int $kasId, ?Carbon $tanggal = null): Pinjaman
+    public static function cairkan(Pinjaman $pinjaman, int $kasId, ?Carbon $tanggal = null, ?string $buktiPencairan = null): Pinjaman
     {
         $tanggal ??= now();
 
-        return DB::transaction(function () use ($pinjaman, $kasId, $tanggal) {
+        return DB::transaction(function () use ($pinjaman, $kasId, $tanggal, $buktiPencairan) {
             $pinjaman->update([
                 'tanggal_pencairan'   => $tanggal,
                 'tanggal_jatuh_tempo' => $tanggal->copy()->addMonths($pinjaman->tenor),
                 'status'              => 'aktif',
+                'bukti_pencairan'     => $buktiPencairan,
             ]);
 
             self::generateJadwal($pinjaman, $tanggal);
@@ -163,13 +186,14 @@ class PinjamanService
     }
 
     /**
-     * Bayar angsuran. Alokasi: denda → margin → pokok → titipan.
+     * Bayar angsuran — simpan sebagai pending, butuh verifikasi.
+     * Alokasi: denda → margin → pokok → titipan (kalkulasi saja, belum diapply).
      */
-    public static function bayar(Pinjaman $pinjaman, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash'): PinjamanPembayaran
+    public static function bayar(Pinjaman $pinjaman, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $buktiBayar = null): PinjamanPembayaran
     {
         $tanggal ??= now();
 
-        return DB::transaction(function () use ($pinjaman, $jumlah, $kasId, $tanggal, $metode) {
+        return DB::transaction(function () use ($pinjaman, $jumlah, $kasId, $tanggal, $metode, $buktiBayar) {
             $sisa = $jumlah;
             $alokasiPokok = 0;
             $alokasiMargin = 0;
@@ -183,39 +207,26 @@ class PinjamanService
             foreach ($jadwalBelumLunas as $j) {
                 if ($sisa <= 0) break;
 
-                // 1. Denda
                 $sisaDenda = $j->denda - $j->terbayar_denda;
                 if ($sisaDenda > 0 && $sisa > 0) {
                     $bayarDenda = min($sisa, $sisaDenda);
-                    $j->terbayar_denda += $bayarDenda;
                     $alokasiDenda += $bayarDenda;
                     $sisa -= $bayarDenda;
                 }
 
-                // 2. Margin
                 $sisaMargin = $j->margin - $j->terbayar_margin;
                 if ($sisaMargin > 0 && $sisa > 0) {
                     $bayarMargin = min($sisa, $sisaMargin);
-                    $j->terbayar_margin += $bayarMargin;
                     $alokasiMargin += $bayarMargin;
                     $sisa -= $bayarMargin;
                 }
 
-                // 3. Pokok
                 $sisaPokok = $j->pokok - $j->terbayar_pokok;
                 if ($sisaPokok > 0 && $sisa > 0) {
                     $bayarPokok = min($sisa, $sisaPokok);
-                    $j->terbayar_pokok += $bayarPokok;
                     $alokasiPokok += $bayarPokok;
                     $sisa -= $bayarPokok;
                 }
-
-                // status jadwal
-                if ($j->terbayar_pokok >= $j->pokok && $j->terbayar_margin >= $j->margin) {
-                    $j->status = 'lunas';
-                    $j->tanggal_bayar = $tanggal;
-                }
-                $j->save();
             }
 
             $titipan = $sisa;
@@ -233,32 +244,100 @@ class PinjamanService
                 'alokasi_titipan' => $titipan,
                 'kas_id'          => $kasId,
                 'metode_bayar'    => $metode,
+                'status'          => 'pending',
+                'bukti_bayar'     => $buktiBayar,
                 'user_id'         => auth()->id(),
             ]);
 
+            return $pembayaran;
+        });
+    }
+
+    /**
+     * Verifikasi pembayaran — approved: apply ke jadwal + saldo pinjaman + buat jurnal.
+     */
+    public static function verifikasiPembayaran(PinjamanPembayaran $pembayaran, bool $disetujui, ?string $catatan = null): PinjamanPembayaran
+    {
+        if ($pembayaran->status !== 'pending') {
+            throw new InvalidArgumentException('Pembayaran sudah diverifikasi sebelumnya.');
+        }
+
+        return DB::transaction(function () use ($pembayaran, $disetujui, $catatan) {
+            $pembayaran->update([
+                'verified_by'        => auth()->id(),
+                'verified_at'        => now(),
+                'catatan_verifikasi' => $catatan,
+                'status'             => $disetujui ? 'disetujui' : 'ditolak',
+            ]);
+
+            if (! $disetujui) {
+                return $pembayaran;
+            }
+
+            $pinjaman = $pembayaran->pinjaman;
+            $tanggal  = $pembayaran->tanggal;
+
+            // Apply ke jadwal
+            $sisa = $pembayaran->total_bayar;
+            $jadwalBelumLunas = $pinjaman->jadwal()
+                ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
+                ->orderBy('angsuran_ke')
+                ->get();
+
+            foreach ($jadwalBelumLunas as $j) {
+                if ($sisa <= 0) break;
+
+                $sisaDenda = $j->denda - $j->terbayar_denda;
+                if ($sisaDenda > 0 && $sisa > 0) {
+                    $bayarDenda = min($sisa, $sisaDenda);
+                    $j->terbayar_denda += $bayarDenda;
+                    $sisa -= $bayarDenda;
+                }
+
+                $sisaMargin = $j->margin - $j->terbayar_margin;
+                if ($sisaMargin > 0 && $sisa > 0) {
+                    $bayarMargin = min($sisa, $sisaMargin);
+                    $j->terbayar_margin += $bayarMargin;
+                    $sisa -= $bayarMargin;
+                }
+
+                $sisaPokok = $j->pokok - $j->terbayar_pokok;
+                if ($sisaPokok > 0 && $sisa > 0) {
+                    $bayarPokok = min($sisa, $sisaPokok);
+                    $j->terbayar_pokok += $bayarPokok;
+                    $sisa -= $bayarPokok;
+                }
+
+                if ($j->terbayar_pokok >= $j->pokok && $j->terbayar_margin >= $j->margin) {
+                    $j->status = 'lunas';
+                    $j->tanggal_bayar = $tanggal;
+                }
+                $j->save();
+            }
+
             // Update saldo pinjaman
-            $pinjaman->saldo_pokok  = max(0, $pinjaman->saldo_pokok - $alokasiPokok);
-            $pinjaman->saldo_margin = max(0, $pinjaman->saldo_margin - $alokasiMargin);
+            $pinjaman->saldo_pokok  = max(0, $pinjaman->saldo_pokok - $pembayaran->alokasi_pokok);
+            $pinjaman->saldo_margin = max(0, $pinjaman->saldo_margin - $pembayaran->alokasi_margin);
             if ($pinjaman->saldo_pokok === 0 && $pinjaman->saldo_margin === 0) {
                 $pinjaman->status = 'lunas';
             }
             $pinjaman->save();
 
-            // Auto-jurnal pembayaran
-            $coaKas         = self::coaKasFromKas($kasId);
+            // Jurnal pembayaran
+            $coaKas         = self::coaKasFromKas($pembayaran->kas_id);
             $coaPokok       = self::coa('1.1.3.01');
             $coaPendBunga   = $pinjaman->produk->isSyariah() ? self::coa('4.1.1.02') : self::coa('4.1.1.01');
             $coaPendDenda   = self::coa('4.2.1.03');
 
             $details = [
-                ['coa_id' => $coaKas->id, 'debit' => $jumlah, 'kredit' => 0, 'keterangan' => "Penerimaan angsuran {$pinjaman->nomor_akad}"],
+                ['coa_id' => $coaKas->id, 'debit' => $pembayaran->total_bayar, 'kredit' => 0, 'keterangan' => "Penerimaan angsuran {$pinjaman->nomor_akad}"],
             ];
-            if ($alokasiPokok > 0)  $details[] = ['coa_id' => $coaPokok->id,     'debit' => 0, 'kredit' => $alokasiPokok,  'keterangan' => 'Pelunasan pokok'];
-            if ($alokasiMargin > 0) $details[] = ['coa_id' => $coaPendBunga->id, 'debit' => 0, 'kredit' => $alokasiMargin, 'keterangan' => 'Pendapatan ' . ($pinjaman->produk->isSyariah() ? 'margin' : 'bunga')];
-            if ($alokasiDenda > 0)  $details[] = ['coa_id' => $coaPendDenda->id, 'debit' => 0, 'kredit' => $alokasiDenda,  'keterangan' => 'Pendapatan denda'];
-            if ($titipan > 0) {
+            if ($pembayaran->alokasi_pokok > 0)  $details[] = ['coa_id' => $coaPokok->id,     'debit' => 0, 'kredit' => $pembayaran->alokasi_pokok,  'keterangan' => 'Pelunasan pokok'];
+            if ($pembayaran->alokasi_margin > 0) $details[] = ['coa_id' => $coaPendBunga->id, 'debit' => 0, 'kredit' => $pembayaran->alokasi_margin, 'keterangan' => 'Pendapatan ' . ($pinjaman->produk->isSyariah() ? 'margin' : 'bunga')];
+            if ($pembayaran->alokasi_denda > 0)  $details[] = ['coa_id' => $coaPendDenda->id, 'debit' => 0, 'kredit' => $pembayaran->alokasi_denda,  'keterangan' => 'Pendapatan denda'];
+            if ($pembayaran->alokasi_titipan > 0) {
                 $coaTitipan = self::coa('2.1.2.01');
-                $details[] = ['coa_id' => $coaTitipan->id, 'debit' => 0, 'kredit' => $titipan, 'keterangan' => 'Titipan kelebihan'];
+                $details[] = ['coa_id' => $coaTitipan->id, 'debit' => 0, 'kredit' => $pembayaran->alokasi_titipan, 'keterangan' => 'Titipan kelebihan'];
             }
 
             $jurnal = JurnalService::create(

@@ -69,8 +69,13 @@ class AnggotaResource extends Resource
                     Forms\Components\Grid::make(2)->schema([
                         Forms\Components\TextInput::make('pekerjaan')->label('Pekerjaan'),
                         Forms\Components\TextInput::make('nama_perusahaan')->label('Nama Perusahaan'),
-                        Forms\Components\TextInput::make('penghasilan_bulanan')->label('Penghasilan Bulanan')->numeric()->prefix('Rp'),
-                        Forms\Components\TextInput::make('sumber_dana')->label('Sumber Dana'),
+                        Forms\Components\TextInput::make('penghasilan_bulanan')->label('Penghasilan Bulanan')->numeric()->prefix('Rp')->required(),
+                        Forms\Components\FileUpload::make('penghasilan_bukti')->label('Bukti Penghasilan')
+                            ->directory('anggota/penghasilan')
+                            ->acceptedFileTypes(['application/pdf', 'image/*'])
+                            ->maxSize(2048)
+                            ->helperText('Upload slip gaji / surat keterangan penghasilan (PDF/JPG).'),
+                        Forms\Components\TextInput::make('sumber_dana')->label('Sumber Dana Tambahan'),
                     ]),
                 ]),
                 Forms\Components\Tabs\Tab::make('Status Keanggotaan')->schema([
@@ -117,6 +122,7 @@ class AnggotaResource extends Resource
                 Tables\Columns\TextColumn::make('nomor_anggota')->label('No.')->searchable()->sortable()->copyable(),
                 Tables\Columns\TextColumn::make('nama')->label('Nama')->searchable()->sortable()->weight('bold'),
                 Tables\Columns\TextColumn::make('telp')->label('Telp')->toggleable(),
+                Tables\Columns\TextColumn::make('penghasilan_bulanan')->label('Penghasilan/bln')->money('IDR')->toggleable(),
                 Tables\Columns\TextColumn::make('kategori')->badge()->color('info'),
                 Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state) => match ($state) {
                     'aktif'       => 'success',

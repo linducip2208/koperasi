@@ -13,7 +13,7 @@ use Filament\Tables\Table;
 class PeriodeAkuntansiResource extends Resource
 {
     protected static ?string $model = PeriodeAkuntansi::class;
-    protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
+    protected static ?string $navigationIcon = 'heroicon-o-lock-open';
     protected static ?string $navigationGroup = 'Akuntansi';
     protected static ?string $navigationLabel = 'Periode Akuntansi';
     protected static ?string $modelLabel = 'Periode';

@@ -19,7 +19,7 @@ class UnitProdusenSetoranResource extends Resource
 {
     protected static ?string $model = UnitProdusenSetoran::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';
     protected static ?string $navigationLabel = 'Setoran Produsen';
     protected static ?string $modelLabel = 'Setoran Produsen';

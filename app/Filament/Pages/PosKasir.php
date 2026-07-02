@@ -24,7 +24,7 @@ class PosKasir extends Page implements HasForms
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';
     protected static ?string $navigationLabel = 'POS Kasir (Touch)';
     protected static ?string $title = 'POS Kasir';
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 31;
 
     protected static string $view = 'filament.pages.pos-kasir';
 

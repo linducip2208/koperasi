@@ -15,7 +15,7 @@ class ProdukSimpananResource extends Resource
 {
     protected static ?string $model = ProdukSimpanan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationGroup = 'Simpan Pinjam';
     protected static ?string $navigationLabel = 'Produk Simpanan';
     protected static ?string $modelLabel = 'Produk Simpanan';

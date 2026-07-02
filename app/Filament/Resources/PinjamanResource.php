@@ -8,14 +8,18 @@ use App\Filament\Resources\PinjamanResource\Pages;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\Pinjaman;
+use App\Models\PinjamanPembayaran;
 use App\Models\ProdukPinjaman;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class PinjamanResource extends Resource
 {
@@ -116,9 +120,15 @@ class PinjamanResource extends Resource
                         Forms\Components\Select::make('kas_id')->label('Cairkan dari Kas')
                             ->options(Kas::where('aktif', true)->pluck('nama', 'id'))->required(),
                         Forms\Components\DatePicker::make('tanggal')->label('Tanggal Pencairan')->default(now())->required(),
+                        Forms\Components\FileUpload::make('bukti_pencairan')->label('Bukti Pencairan')
+                            ->directory('pinjaman/pencairan')
+                            ->acceptedFileTypes(['application/pdf', 'image/*'])
+                            ->maxSize(2048)
+                            ->required()
+                            ->helperText('Upload bukti transfer / kuitansi tanda terima (PDF/JPG).'),
                     ])
                     ->action(function (Pinjaman $r, array $data) {
-                        PinjamanService::cairkan($r, $data['kas_id'], Carbon::parse($data['tanggal']));
+                        PinjamanService::cairkan($r, $data['kas_id'], Carbon::parse($data['tanggal']), $data['bukti_pencairan'] ?? null);
                         Notification::make()->title('Pencairan berhasil')->success()->send();
                     }),
                 Tables\Actions\Action::make('bayar')->label('Bayar Angsuran')
@@ -132,10 +142,14 @@ class PinjamanResource extends Resource
                         Forms\Components\Select::make('metode')->label('Metode')
                             ->options(['cash' => 'Tunai', 'transfer' => 'Transfer', 'auto_debet' => 'Auto-debet Simpanan'])
                             ->default('cash')->required(),
+                        Forms\Components\FileUpload::make('bukti_bayar')->label('Bukti Pembayaran')
+                            ->image()->directory('bukti-bayar')->maxSize(2048)
+                            ->helperText('Upload bukti transfer/slip. Wajib jika metode bukan tunai.')
+                            ->required(fn (Forms\Get $get) => $get('metode') !== 'cash'),
                     ])
                     ->action(function (Pinjaman $r, array $data) {
-                        PinjamanService::bayar($r, (int) $data['jumlah'], (int) $data['kas_id'], Carbon::parse($data['tanggal']), $data['metode']);
-                        Notification::make()->title('Pembayaran tercatat')->success()->send();
+                        $pembayaran = PinjamanService::bayar($r, (int) $data['jumlah'], (int) $data['kas_id'], Carbon::parse($data['tanggal']), $data['metode'], $data['bukti_bayar'] ?? null);
+                        Notification::make()->title('Pembayaran tercatat, menunggu verifikasi.')->success()->send();
                     }),
                 Tables\Actions\Action::make('tolak')->label('Tolak')
                     ->icon('heroicon-o-x-circle')->color('danger')
@@ -147,6 +161,33 @@ class PinjamanResource extends Resource
                         PinjamanService::tolak($r, auth()->id(), $data['alasan']);
                         Notification::make()->title('Pinjaman ditolak')->warning()->send();
                     }),
+                Tables\Actions\Action::make('cek_dti')->label('Cek Kemampuan Bayar')
+                    ->icon('heroicon-o-calculator')->color('info')
+                    ->visible(fn (Pinjaman $r) => in_array($r->status, ['pengajuan', 'survey', 'analisa', 'approval']))
+                    ->modalHeading('Kalkulator Kemampuan Bayar (DTI)')
+                    ->modalDescription(fn (Pinjaman $r) => $r->anggota?->nama ?? '-')
+                    ->form(function (Pinjaman $r) {
+                        $cicilanBaru = 0;
+                        if ($r->total_bayar > 0 && $r->tenor > 0) {
+                            $cicilanBaru = (int) round($r->total_bayar / $r->tenor);
+                        }
+                        return [
+                            Forms\Components\Placeholder::make('info_anggota')
+                                ->content(new HtmlString("
+                                    <div class='text-sm space-y-1'>
+                                        <div><b>Penghasilan:</b> Rp ".number_format($r->anggota?->penghasilan_bulanan ?? 0, 0, ',', '.')."</div>
+                                        <div><b>Total hutang aktif:</b> Rp ".number_format($r->anggota?->totalHutang() ?? 0, 0, ',', '.')."</div>
+                                        <div><b>Cicilan per bulan saat ini:</b> Rp ".number_format($r->anggota?->totalCicilanPerBulan() ?? 0, 0, ',', '.')."</div>
+                                        <div><b>Rasio saat ini:</b> ".($r->anggota?->rasioHutang() ?? 0)."%</div>
+                                        <div><b>Maks cicilan (40%):</b> Rp ".number_format($r->anggota?->maxCicilanBulanan() ?? 0, 0, ',', '.')."</div>
+                                        <hr>
+                                        <div><b>Cicilan pinjaman ini (estimasi):</b> Rp ".number_format($cicilanBaru, 0, ',', '.')."</div>
+                                        <div><b>Sisa kemampuan:</b> Rp ".number_format($r->anggota?->sisaKemampuanCicilan() ?? 0, 0, ',', '.')."</div>
+                                    </div>
+                                ")),
+                        ];
+                    })
+                    ->action(fn () => null),
                 Tables\Actions\Action::make('kontrak')->label('Kontrak PDF')
                     ->icon('heroicon-o-document-text')->color('info')
                     ->url(fn (Pinjaman $r) => route('dokumen.kontrak', $r->id), shouldOpenInNewTab: true),

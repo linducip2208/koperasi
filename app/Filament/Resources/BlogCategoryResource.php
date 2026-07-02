@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 class BlogCategoryResource extends Resource
 {
     protected static ?string $model = BlogCategory::class;
-    protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Blog & Marketing';
     protected static ?string $navigationLabel = 'Kategori Blog';
     protected static ?string $modelLabel = 'Kategori Blog';

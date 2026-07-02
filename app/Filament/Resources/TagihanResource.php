@@ -16,7 +16,7 @@ class TagihanResource extends Resource
 {
     protected static ?string $model = Tagihan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-document-currency-dollar';
     protected static ?string $navigationGroup = 'Simpan Pinjam';
     protected static ?string $navigationLabel = 'Iuran & Tagihan';
     protected static ?int $navigationSort = 16;

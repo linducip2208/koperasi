@@ -14,7 +14,7 @@ use Filament\Tables\Table;
 class TagihanMasterResource extends Resource
 {
     protected static ?string $model = TagihanMaster::class;
-    protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
     protected static ?string $navigationGroup = 'Pengaturan';
     protected static ?string $navigationLabel = 'Master Iuran/Tagihan';
     protected static ?string $modelLabel = 'Iuran';

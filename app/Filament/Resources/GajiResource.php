@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 class GajiResource extends Resource
 {
     protected static ?string $model = Gaji::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
     protected static ?string $navigationGroup = 'HR & Asset';
     protected static ?string $navigationLabel = 'Payroll Karyawan';
     protected static ?string $modelLabel = 'Slip Gaji';

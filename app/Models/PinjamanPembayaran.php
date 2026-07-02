@@ -16,6 +16,7 @@ class PinjamanPembayaran extends Model
         'total_bayar', 'alokasi_pokok', 'alokasi_margin', 'alokasi_denda',
         'alokasi_admin', 'alokasi_titipan',
         'kas_id', 'metode_bayar', 'keterangan',
+        'status', 'bukti_bayar', 'verified_by', 'verified_at', 'catatan_verifikasi',
         'jurnal_id', 'user_id',
     ];
 
@@ -27,6 +28,7 @@ class PinjamanPembayaran extends Model
         'alokasi_denda'   => 'integer',
         'alokasi_admin'   => 'integer',
         'alokasi_titipan' => 'integer',
+        'verified_at'     => 'datetime',
     ];
 
     public function pinjaman()
@@ -47,5 +49,10 @@ class PinjamanPembayaran extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function verifiedBy()
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }
