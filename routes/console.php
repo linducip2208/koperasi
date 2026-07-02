@@ -8,8 +8,8 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('koperasi:update-kolektabilitas')->dailyAt('01:00');
-Schedule::command('koperasi:generate-denda')->dailyAt('01:30');
+Schedule::command('koperasi:hitung-denda')->dailyAt('01:00');
+Schedule::command('koperasi:auto-debet')->dailyAt('03:00');
 Schedule::command('koperasi:penyusutan-aset')->monthlyOn(1, '02:00');
 Schedule::command('backup:run --only-db')->dailyAt('03:00');     // Database-only daily backup
 Schedule::command('backup:run')->weeklyOn(0, '04:00');           // Full backup (DB + files) tiap Minggu

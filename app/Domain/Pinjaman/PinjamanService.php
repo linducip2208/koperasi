@@ -7,8 +7,10 @@ use App\Domain\Calculation\CalculatorFactory;
 use App\Domain\Numbering\NumberingService;
 use App\Models\Coa;
 use App\Models\Pinjaman;
+use App\Models\PinjamanApproval;
 use App\Models\PinjamanJadwal;
 use App\Models\PinjamanPembayaran;
+use App\Models\PinjamanRestrukturisasi;
 use App\Models\ProdukPinjaman;
 use App\Support\Tenant\CurrentTenant;
 use Carbon\Carbon;
@@ -17,6 +19,14 @@ use InvalidArgumentException;
 
 class PinjamanService
 {
+    public const APPROVAL_LEVELS = [
+        1 => ['jabatan' => 'AO', 'role' => 'ao'],
+        2 => ['jabatan' => 'Manajer', 'role' => 'manajer'],
+        3 => ['jabatan' => 'Ketua/Admin', 'role' => 'admin'],
+    ];
+
+    public const DENDA_PERSEN_PER_HARI = 0.5; // 0.5% per hari dari total angsuran
+
     public static function cekKemampuanBayar(int $anggotaId, int $cicilanBaru): array
     {
         $anggota = \App\Models\Anggota::findOrFail($anggotaId);
@@ -92,9 +102,84 @@ class PinjamanService
                 'ao_id'             => $data['ao_id'] ?? auth()->id(),
             ]);
 
+            self::generateApprovalLevels($pinjaman);
+
             return $pinjaman;
         });
     }
+
+    // ─── Multi-Level Approval ───────────────────────────────────────
+
+    public static function generateApprovalLevels(Pinjaman $pinjaman): void
+    {
+        foreach (self::APPROVAL_LEVELS as $level => $config) {
+            PinjamanApproval::create([
+                'tenant_id'   => $pinjaman->tenant_id,
+                'pinjaman_id' => $pinjaman->id,
+                'level'       => $level,
+                'jabatan'     => $config['jabatan'],
+                'keputusan'   => 'pending',
+            ]);
+        }
+    }
+
+    public static function approve(Pinjaman $pinjaman, int $userId): Pinjaman
+    {
+        $user = \App\Models\User::findOrFail($userId);
+        $userRole = $user->roles->first()?->name;
+
+        $nextPending = $pinjaman->approval()
+            ->where('keputusan', 'pending')
+            ->orderBy('level')
+            ->first();
+
+        if (! $nextPending) {
+            throw new InvalidArgumentException('Semua level sudah memberikan keputusan.');
+        }
+
+        $nextPending->update([
+            'user_id'    => $userId,
+            'keputusan'  => 'setuju',
+            'decided_at' => now(),
+        ]);
+
+        $allApproved = $pinjaman->approval()
+            ->where('keputusan', '!=', 'setuju')
+            ->doesntExist();
+
+        if ($allApproved) {
+            $pinjaman->update([
+                'status'      => 'aktif',
+                'approved_by' => $userId,
+                'approved_at' => now(),
+            ]);
+        }
+
+        return $pinjaman->refresh();
+    }
+
+    public static function tolak(Pinjaman $pinjaman, int $userId, string $alasan): Pinjaman
+    {
+        DB::transaction(function () use ($pinjaman, $userId, $alasan) {
+            $pinjaman->approval()->where('keputusan', 'pending')->update([
+                'user_id'    => $userId,
+                'keputusan'  => 'tolak',
+                'catatan'    => $alasan,
+                'decided_at' => now(),
+            ]);
+
+            $pinjaman->update([
+                'status'       => 'ditolak',
+                'rejected_by'  => $userId,
+                'rejected_at'  => now(),
+                'alasan_tolak' => $alasan,
+            ]);
+        });
+
+        return $pinjaman->refresh();
+    }
+
+    // ─── Jadwal ─────────────────────────────────────────────────────
 
     public static function generateJadwal(Pinjaman $pinjaman, ?Carbon $tanggalMulai = null): void
     {
@@ -121,30 +206,67 @@ class PinjamanService
         }
     }
 
-    public static function approve(Pinjaman $pinjaman, int $userId): Pinjaman
+    // ─── Denda Keterlambatan ────────────────────────────────────────
+
+    public static function hitungDendaHarian(Pinjaman $pinjaman): void
     {
-        $pinjaman->update([
-            'status'      => 'aktif',
-            'approved_by' => $userId,
-            'approved_at' => now(),
-        ]);
-        return $pinjaman;
+        $hariIni = now()->startOfDay();
+
+        $jadwalTelat = $pinjaman->jadwal()
+            ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
+            ->where('tanggal_jatuh_tempo', '<', $hariIni)
+            ->where(function ($q) {
+                $q->where('terbayar_pokok', '<', \DB::raw('pokok'))
+                  ->orWhere('terbayar_margin', '<', \DB::raw('margin'));
+            })
+            ->get();
+
+        foreach ($jadwalTelat as $j) {
+            if ($j->status === 'belum_jatuh_tempo') {
+                $j->status = 'jatuh_tempo';
+            }
+
+            $telatHari = (int) $j->tanggal_jatuh_tempo->diffInDays($hariIni);
+            if ($telatHari < 1) continue;
+
+            $dendaBaru = (int) round($j->total_angsuran * (self::DENDA_PERSEN_PER_HARI / 100) * $telatHari);
+            $j->denda = max($j->denda, $dendaBaru);
+
+            if ($j->status !== 'telat' && $telatHari > 1) {
+                $j->status = 'telat';
+            }
+
+            $j->save();
+        }
+
+        // Update kolektabilitas
+        $maxTelat = $pinjaman->jadwal()
+            ->where('status', 'telat')
+            ->max(\DB::raw('DATEDIFF(NOW(), tanggal_jatuh_tempo)'));
+
+        $kolektabilitas = 'lancar';
+        if ($maxTelat >= 1  && $maxTelat <= 30)  $kolektabilitas = 'dpk';
+        if ($maxTelat >= 31 && $maxTelat <= 60)  $kolektabilitas = 'kurang_lancar';
+        if ($maxTelat >= 61 && $maxTelat <= 90)  $kolektabilitas = 'diragukan';
+        if ($maxTelat >= 91)                       $kolektabilitas = 'macet';
+
+        if ($maxTelat !== null) {
+            $pinjaman->update([
+                'kolektabilitas'   => $kolektabilitas,
+                'tunggakan_hari'   => $maxTelat,
+                'tunggakan_pokok'  => $jadwalTelat->sum(fn ($j) => max(0, $j->pokok - $j->terbayar_pokok)),
+                'tunggakan_margin' => $jadwalTelat->sum(fn ($j) => max(0, $j->margin - $j->terbayar_margin)),
+                'tunggakan_denda'  => $jadwalTelat->sum(fn ($j) => max(0, $j->denda - $j->terbayar_denda)),
+            ]);
+
+            if ($kolektabilitas === 'macet') {
+                $pinjaman->update(['status' => 'macet']);
+            }
+        }
     }
 
-    public static function tolak(Pinjaman $pinjaman, int $userId, string $alasan): Pinjaman
-    {
-        $pinjaman->update([
-            'status'       => 'ditolak',
-            'rejected_by'  => $userId,
-            'rejected_at'  => now(),
-            'alasan_tolak' => $alasan,
-        ]);
-        return $pinjaman;
-    }
+    // ─── Pencairan ──────────────────────────────────────────────────
 
-    /**
-     * Cair: pencairan dana dari kas + buat jurnal otomatis.
-     */
     public static function cairkan(Pinjaman $pinjaman, int $kasId, ?Carbon $tanggal = null, ?string $buktiPencairan = null): Pinjaman
     {
         $tanggal ??= now();
@@ -159,12 +281,11 @@ class PinjamanService
 
             self::generateJadwal($pinjaman, $tanggal);
 
-            // Auto-jurnal pencairan
-            $coaPokok    = self::coa('1.1.3.01'); // Piutang Pinjaman Anggota
+            $coaPokok    = self::coa('1.1.3.01');
             $coaKas      = self::coaKasFromKas($kasId);
-            $coaAdmin    = self::coa('4.2.1.01'); // Pendapatan Biaya Admin
-            $coaProvisi  = self::coa('4.2.1.02'); // Pendapatan Provisi
-            $coaAsuransi = self::coa('2.1.1.01'); // Hutang Premi Asuransi
+            $coaAdmin    = self::coa('4.2.1.01');
+            $coaProvisi  = self::coa('4.2.1.02');
+            $coaAsuransi = self::coa('2.1.1.01');
 
             $details = [
                 ['coa_id' => $coaPokok->id, 'debit' => $pinjaman->pokok, 'kredit' => 0, 'keterangan' => "Pencairan {$pinjaman->nomor_akad}"],
@@ -185,10 +306,8 @@ class PinjamanService
         });
     }
 
-    /**
-     * Bayar angsuran — simpan sebagai pending, butuh verifikasi.
-     * Alokasi: denda → margin → pokok → titipan (kalkulasi saja, belum diapply).
-     */
+    // ─── Pembayaran ─────────────────────────────────────────────────
+
     public static function bayar(Pinjaman $pinjaman, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $buktiBayar = null): PinjamanPembayaran
     {
         $tanggal ??= now();
@@ -253,9 +372,6 @@ class PinjamanService
         });
     }
 
-    /**
-     * Verifikasi pembayaran — approved: apply ke jadwal + saldo pinjaman + buat jurnal.
-     */
     public static function verifikasiPembayaran(PinjamanPembayaran $pembayaran, bool $disetujui, ?string $catatan = null): PinjamanPembayaran
     {
         if ($pembayaran->status !== 'pending') {
@@ -277,7 +393,6 @@ class PinjamanService
             $pinjaman = $pembayaran->pinjaman;
             $tanggal  = $pembayaran->tanggal;
 
-            // Apply ke jadwal
             $sisa = $pembayaran->total_bayar;
             $jadwalBelumLunas = $pinjaman->jadwal()
                 ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
@@ -315,7 +430,6 @@ class PinjamanService
                 $j->save();
             }
 
-            // Update saldo pinjaman
             $pinjaman->saldo_pokok  = max(0, $pinjaman->saldo_pokok - $pembayaran->alokasi_pokok);
             $pinjaman->saldo_margin = max(0, $pinjaman->saldo_margin - $pembayaran->alokasi_margin);
             if ($pinjaman->saldo_pokok === 0 && $pinjaman->saldo_margin === 0) {
@@ -323,7 +437,6 @@ class PinjamanService
             }
             $pinjaman->save();
 
-            // Jurnal pembayaran
             $coaKas         = self::coaKasFromKas($pembayaran->kas_id);
             $coaPokok       = self::coa('1.1.3.01');
             $coaPendBunga   = $pinjaman->produk->isSyariah() ? self::coa('4.1.1.02') : self::coa('4.1.1.01');
@@ -351,6 +464,169 @@ class PinjamanService
             return $pembayaran;
         });
     }
+
+    // ─── Auto-Debet Simpanan ────────────────────────────────────────
+
+    public static function autoDebetAngsuran(Pinjaman $pinjaman): ?PinjamanPembayaran
+    {
+        $jadwalJatuhTempo = $pinjaman->jadwal()
+            ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
+            ->where('tanggal_jatuh_tempo', '<=', now()->toDateString())
+            ->orderBy('angsuran_ke')
+            ->first();
+
+        if (! $jadwalJatuhTempo) return null;
+
+        $sisaPokok  = max(0, $jadwalJatuhTempo->pokok - $jadwalJatuhTempo->terbayar_pokok);
+        $sisaMargin = max(0, $jadwalJatuhTempo->margin - $jadwalJatuhTempo->terbayar_margin);
+        $sisaDenda  = max(0, $jadwalJatuhTempo->denda - $jadwalJatuhTempo->terbayar_denda);
+        $totalTagihan = $sisaPokok + $sisaMargin + $sisaDenda;
+
+        $simpananSukarela = $pinjaman->anggota->simpanan()
+            ->where('status', 'aktif')
+            ->whereHas('produk', fn ($q) => $q->whereIn('akad_type', ['konvensional', 'wadiah', 'mudharabah']))
+            ->first();
+
+        if (! $simpananSukarela || $simpananSukarela->saldo < $totalTagihan) return null;
+
+        $kasDefault = \App\Models\Kas::where('aktif', true)->first();
+        if (! $kasDefault) return null;
+
+        return DB::transaction(function () use ($pinjaman, $simpananSukarela, $totalTagihan, $kasDefault) {
+            \App\Domain\Simpanan\SimpananService::tarik($simpananSukarela, $totalTagihan, $kasDefault->id, now(), 'auto_debet', 'Auto-debet angsuran ' . $pinjaman->nomor_akad);
+
+            // Bayar angsuran (auto-verifikasi)
+            $pembayaran = self::bayar($pinjaman, $totalTagihan, $kasDefault->id, now(), 'auto_debet', null);
+            return self::verifikasiPembayaran($pembayaran, true, 'Auto-debet dari simpanan');
+        });
+    }
+
+    // ─── Restrukturisasi ────────────────────────────────────────────
+
+    public static function restrukturisasi(Pinjaman $pinjaman, string $jenis, array $dataBaru, string $alasan): Pinjaman
+    {
+        $snapshot = [
+            'plafon'           => $pinjaman->plafon,
+            'pokok'            => $pinjaman->pokok,
+            'saldo_pokok'      => $pinjaman->saldo_pokok,
+            'saldo_margin'     => $pinjaman->saldo_margin,
+            'margin_total'     => $pinjaman->margin_total,
+            'total_bayar'      => $pinjaman->total_bayar,
+            'tenor'            => $pinjaman->tenor,
+            'bunga_persen'     => $pinjaman->bunga_persen,
+            'margin_persen'    => $pinjaman->margin_persen,
+            'tanggal_jatuh_tempo' => $pinjaman->tanggal_jatuh_tempo,
+        ];
+
+        return DB::transaction(function () use ($pinjaman, $jenis, $dataBaru, $alasan, $snapshot) {
+            match ($jenis) {
+                'perpanjangan' => self::restrukturisasiPerpanjangan($pinjaman, $dataBaru),
+                'reschedule'   => self::restrukturisasiReschedule($pinjaman, $dataBaru),
+                'reconditioning' => self::restrukturisasiReconditioning($pinjaman, $dataBaru),
+                default => throw new InvalidArgumentException("Jenis restrukturisasi '{$jenis}' tidak dikenal."),
+            };
+
+            PinjamanRestrukturisasi::create([
+                'tenant_id'   => $pinjaman->tenant_id,
+                'pinjaman_id' => $pinjaman->id,
+                'tanggal'     => now()->toDateString(),
+                'jenis'       => $jenis,
+                'sebelum'     => $snapshot,
+                'sesudah'     => [
+                    'saldo_pokok'      => $pinjaman->saldo_pokok,
+                    'saldo_margin'     => $pinjaman->saldo_margin,
+                    'tenor'            => $pinjaman->tenor,
+                    'tanggal_jatuh_tempo' => $pinjaman->tanggal_jatuh_tempo,
+                ],
+                'alasan'      => $alasan,
+                'user_id'     => auth()->id(),
+            ]);
+
+            if ($pinjaman->status === 'macet') {
+                $pinjaman->update(['status' => 'aktif', 'kolektabilitas' => 'lancar']);
+            }
+
+            return $pinjaman->refresh();
+        });
+    }
+
+    private static function restrukturisasiPerpanjangan(Pinjaman $pinjaman, array $data): void
+    {
+        $tambahanTenor = (int) ($data['tambahan_tenor'] ?? 0);
+        if ($tambahanTenor <= 0) throw new InvalidArgumentException('Tambahan tenor harus > 0.');
+
+        $pinjaman->update([
+            'tenor'               => $pinjaman->tenor + $tambahanTenor,
+            'tanggal_jatuh_tempo' => Carbon::parse($pinjaman->tanggal_jatuh_tempo)->addMonths($tambahanTenor),
+        ]);
+
+        // Regenerate jadwal untuk sisa
+        $produk = $pinjaman->produk;
+        $rate   = $produk->isSyariah() ? (float) $produk->margin_persen : (float) $produk->bunga_persen;
+        $calc   = CalculatorFactory::for($produk->metode_perhitungan);
+        $hasil  = $calc->generate($pinjaman->saldo_pokok, $rate, $tambahanTenor);
+
+        $lastAngsuran = $pinjaman->jadwal()->max('angsuran_ke') ?? 0;
+        $tanggalMulai = Carbon::parse($pinjaman->tanggal_jatuh_tempo)->subMonths($tambahanTenor);
+
+        // Hapus jadwal yang belum lunas
+        $pinjaman->jadwal()->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])->delete();
+
+        foreach ($hasil['schedule'] as $row) {
+            $lastAngsuran++;
+            PinjamanJadwal::create([
+                'tenant_id'           => $pinjaman->tenant_id,
+                'pinjaman_id'         => $pinjaman->id,
+                'angsuran_ke'         => $lastAngsuran,
+                'tanggal_jatuh_tempo' => $tanggalMulai->copy()->addMonths($lastAngsuran),
+                'pokok'               => $row['pokok'],
+                'margin'              => $row['margin'],
+                'total_angsuran'      => $row['total'],
+                'saldo_pokok'         => $row['saldo_pokok'],
+                'status'              => 'belum_jatuh_tempo',
+            ]);
+        }
+    }
+
+    private static function restrukturisasiReschedule(Pinjaman $pinjaman, array $data): void
+    {
+        $tanggalMulaiBaru = Carbon::parse($data['tanggal_mulai_baru'] ?? now());
+
+        $jadwalBelumLunas = $pinjaman->jadwal()
+            ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
+            ->orderBy('angsuran_ke')
+            ->get();
+
+        $bulanOffset = 0;
+        foreach ($jadwalBelumLunas as $j) {
+            $bulanOffset++;
+            $j->update([
+                'tanggal_jatuh_tempo' => $tanggalMulaiBaru->copy()->addMonths($bulanOffset),
+                'status'              => 'belum_jatuh_tempo',
+                'denda'               => 0,
+                'terbayar_denda'      => 0,
+            ]);
+        }
+    }
+
+    private static function restrukturisasiReconditioning(Pinjaman $pinjaman, array $data): void
+    {
+        if (isset($data['bunga_persen'])) {
+            $pinjaman->update(['bunga_persen' => (float) $data['bunga_persen']]);
+        }
+        if (isset($data['margin_persen'])) {
+            $pinjaman->update(['margin_persen' => (float) $data['margin_persen']]);
+        }
+        if (isset($data['hapus_denda']) && $data['hapus_denda']) {
+            $pinjaman->jadwal()->update(['denda' => 0, 'terbayar_denda' => 0]);
+        }
+        if (isset($data['diskon_pokok'])) {
+            $pinjaman->saldo_pokok = max(0, $pinjaman->saldo_pokok - (int) $data['diskon_pokok']);
+            $pinjaman->save();
+        }
+    }
+
+    // ─── Helpers ────────────────────────────────────────────────────
 
     private static function coa(string $kode): Coa
     {
