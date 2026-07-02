@@ -211,6 +211,7 @@ class PinjamanService
     public static function hitungDendaHarian(Pinjaman $pinjaman): void
     {
         $hariIni = now()->startOfDay();
+        $dendaPersen = (float) ($pinjaman->produk->denda_persen_per_hari ?? self::DENDA_PERSEN_PER_HARI);
 
         $jadwalTelat = $pinjaman->jadwal()
             ->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo', 'telat'])
@@ -229,7 +230,7 @@ class PinjamanService
             $telatHari = (int) $j->tanggal_jatuh_tempo->diffInDays($hariIni);
             if ($telatHari < 1) continue;
 
-            $dendaBaru = (int) round($j->total_angsuran * (self::DENDA_PERSEN_PER_HARI / 100) * $telatHari);
+            $dendaBaru = (int) round($j->total_angsuran * ($dendaPersen / 100) * $telatHari);
             $j->denda = max($j->denda, $dendaBaru);
 
             if ($j->status !== 'telat' && $telatHari > 1) {

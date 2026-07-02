@@ -85,6 +85,17 @@ class PinjamanResource extends Resource
                     'macet'         => 'danger',
                     default         => 'gray',
                 }),
+                Tables\Columns\TextColumn::make('approval_progress')->label('Approval')
+                    ->state(function (Pinjaman $r) {
+                        $total   = $r->approval()->count();
+                        $setuju  = $r->approval()->where('keputusan', 'setuju')->count();
+                        $tolak   = $r->approval()->where('keputusan', 'tolak')->count();
+                        if ($tolak > 0) return '❌ Ditolak';
+                        if ($total === 0) return '—';
+                        return "{$setuju}/{$total} ✅";
+                    })
+                    ->badge()->color(fn ($state) => str_contains($state, '❌') ? 'danger' : (str_contains($state, '✅') ? 'success' : 'warning'))
+                    ->visible(fn (Pinjaman $r) => in_array($r->status, ['pengajuan', 'approval', 'aktif', 'ditolak'])),
                 Tables\Columns\TextColumn::make('tanggal_pengajuan')->label('Tgl Pengajuan')->date('d M Y'),
             ])
             ->filters([
@@ -188,6 +199,34 @@ class PinjamanResource extends Resource
                 Tables\Actions\Action::make('kontrak')->label('Kontrak PDF')
                     ->icon('heroicon-o-document-text')->color('info')
                     ->url(fn (Pinjaman $r) => route('dokumen.kontrak', $r->id), shouldOpenInNewTab: true),
+                Tables\Actions\Action::make('restrukturisasi')->label('Restrukturisasi')
+                    ->icon('heroicon-o-arrow-path-rounded-square')->color('purple')
+                    ->visible(fn (Pinjaman $r) => in_array($r->status, ['aktif', 'macet']))
+                    ->form([
+                        Forms\Components\Select::make('jenis')->label('Jenis Restrukturisasi')
+                            ->options([
+                                'perpanjangan'   => 'Perpanjangan Tenor',
+                                'reschedule'     => 'Reschedule (Atur Ulang Jadwal)',
+                                'reconditioning' => 'Reconditioning (Ubah Syarat)',
+                            ])->required()->live(),
+                        Forms\Components\TextInput::make('tambahan_tenor')->label('Tambahan Tenor (bulan)')
+                            ->numeric()->minValue(1)->visible(fn (Forms\Get $get) => $get('jenis') === 'perpanjangan'),
+                        Forms\Components\DatePicker::make('tanggal_mulai_baru')->label('Tanggal Mulai Baru')
+                            ->visible(fn (Forms\Get $get) => $get('jenis') === 'reschedule'),
+                        Forms\Components\TextInput::make('bunga_persen')->label('Bunga Baru (%)')
+                            ->numeric()->visible(fn (Forms\Get $get) => $get('jenis') === 'reconditioning'),
+                        Forms\Components\TextInput::make('margin_persen')->label('Margin Baru (%)')
+                            ->numeric()->visible(fn (Forms\Get $get) => $get('jenis') === 'reconditioning'),
+                        Forms\Components\TextInput::make('diskon_pokok')->label('Diskon Pokok (Rp)')
+                            ->numeric()->prefix('Rp')->visible(fn (Forms\Get $get) => $get('jenis') === 'reconditioning'),
+                        Forms\Components\Toggle::make('hapus_denda')->label('Hapus Semua Denda')
+                            ->visible(fn (Forms\Get $get) => $get('jenis') === 'reconditioning'),
+                        Forms\Components\Textarea::make('alasan')->label('Alasan')->required()->rows(2),
+                    ])
+                    ->action(function (Pinjaman $r, array $data) {
+                        PinjamanService::restrukturisasi($r, $data['jenis'], $data, $data['alasan']);
+                        Notification::make()->title('Restrukturisasi berhasil')->success()->send();
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
