@@ -8,13 +8,10 @@ use App\Filament\Resources\PinjamanResource\Pages;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\Pinjaman;
-use App\Models\PinjamanPembayaran;
 use App\Models\ProdukPinjaman;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -187,7 +184,7 @@ class PinjamanResource extends Resource
                                 ")),
                         ];
                     })
-                    ->action(fn () => null),
+                    ->modalSubmitAction(false),
                 Tables\Actions\Action::make('kontrak')->label('Kontrak PDF')
                     ->icon('heroicon-o-document-text')->color('info')
                     ->url(fn (Pinjaman $r) => route('dokumen.kontrak', $r->id), shouldOpenInNewTab: true),
