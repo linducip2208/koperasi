@@ -7,9 +7,13 @@ use App\Models\KasTransaksi;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class KasTransaksiResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'kas';
     protected static ?string $model = KasTransaksi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
     protected static ?string $navigationGroup = '🧮 Akuntansi';
@@ -17,8 +21,6 @@ class KasTransaksiResource extends Resource
     protected static ?string $modelLabel = 'Kas Transaksi';
     protected static ?string $pluralModelLabel = 'Kas Transaksi';
     protected static ?int $navigationSort = 41;
-
-    protected static bool $shouldRegisterNavigation = true;
 
     public static function canCreate(): bool
     {

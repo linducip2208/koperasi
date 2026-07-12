@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokoSatuanResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\TokoSatuan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class TokoSatuanResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pos';
+
     protected static ?string $model = TokoSatuan::class;
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';

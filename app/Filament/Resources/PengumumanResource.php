@@ -9,9 +9,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class PengumumanResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = Pengumuman::class;
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
     protected static ?string $navigationGroup = 'Blog & Marketing';

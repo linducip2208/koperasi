@@ -7,9 +7,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Spatie\Activitylog\Models\Activity;
+use App\Filament\Concerns\HasRoleAccess;
 
 class ActivityLogResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'setting';
     protected static ?string $model = Activity::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';

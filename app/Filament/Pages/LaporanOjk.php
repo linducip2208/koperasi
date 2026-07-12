@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggota;
 use App\Models\Pinjaman;
 use App\Models\Simpanan;
@@ -15,8 +16,10 @@ use Filament\Pages\Page;
 
 class LaporanOjk extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan OJK';

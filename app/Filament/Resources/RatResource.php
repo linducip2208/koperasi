@@ -9,9 +9,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class RatResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'rat';
     protected static ?string $model = Rat::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';

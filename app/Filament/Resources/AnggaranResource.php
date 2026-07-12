@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnggaranResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggaran;
 use App\Models\Coa;
 use Filament\Forms;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class AnggaranResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'jurnal';
+
     protected static ?string $model = Anggaran::class;
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
     protected static ?string $navigationGroup = 'Akuntansi';

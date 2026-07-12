@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokoPembelianResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Cabang;
 use App\Models\TokoPembelian;
 use App\Models\TokoSupplier;
@@ -16,6 +17,9 @@ use Filament\Tables\Table;
 
 class TokoPembelianResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pos';
+
     protected static ?string $model = TokoPembelian::class;
     protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';

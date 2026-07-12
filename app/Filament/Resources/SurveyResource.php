@@ -10,9 +10,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class SurveyResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = Survey::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
     protected static ?string $navigationGroup = '📝 Blog & Marketing';

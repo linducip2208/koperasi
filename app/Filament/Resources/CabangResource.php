@@ -9,9 +9,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class CabangResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'setting';
     protected static ?string $model = Cabang::class;
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $navigationGroup = '⚙️ Pengaturan';

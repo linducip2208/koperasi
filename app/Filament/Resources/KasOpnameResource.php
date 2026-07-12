@@ -12,9 +12,13 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class KasOpnameResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'kas';
     protected static ?string $model = KasOpname::class;
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
     protected static ?string $navigationGroup = 'Akuntansi';

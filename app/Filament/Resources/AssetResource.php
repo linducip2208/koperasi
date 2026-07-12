@@ -10,9 +10,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class AssetResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'asset';
     protected static ?string $model = Asset::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';

@@ -14,9 +14,13 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class AsuransiPolisResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'asuransi';
     protected static ?string $model = AsuransiPolis::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
     protected static ?string $navigationGroup = 'Asuransi';

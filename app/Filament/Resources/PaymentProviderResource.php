@@ -10,9 +10,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class PaymentProviderResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'setting';
     protected static ?string $model = PaymentProvider::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';

@@ -8,6 +8,7 @@ use App\Filament\Resources\PinjamanResource\Pages;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\Pinjaman;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\ProdukPinjaman;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -20,6 +21,9 @@ use Illuminate\Support\HtmlString;
 
 class PinjamanResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pinjaman';
+
     protected static ?string $model = Pinjaman::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
     protected static ?string $navigationGroup = 'Simpan Pinjam';

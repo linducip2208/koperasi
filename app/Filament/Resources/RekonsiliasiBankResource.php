@@ -12,9 +12,13 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class RekonsiliasiBankResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'bank';
     protected static ?string $model = RekonsiliasiBank::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
     protected static ?string $navigationGroup = 'Akuntansi';

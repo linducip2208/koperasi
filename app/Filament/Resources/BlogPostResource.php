@@ -11,9 +11,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use App\Filament\Concerns\HasRoleAccess;
 
 class BlogPostResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = BlogPost::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Blog & Marketing';

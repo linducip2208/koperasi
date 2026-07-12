@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PinjamanRestrukturisasiResource\Pages;
 use App\Models\Pinjaman;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\PinjamanRestrukturisasi;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class PinjamanRestrukturisasiResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pinjaman';
+
     protected static ?string $model = PinjamanRestrukturisasi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
     protected static ?string $navigationGroup = 'Simpan Pinjam';

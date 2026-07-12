@@ -11,9 +11,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Filament\Concerns\HasRoleAccess;
 
 class UserResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'user';
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';

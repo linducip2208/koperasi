@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokoPenjualanResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggota;
 use App\Models\Cabang;
 use App\Models\Kas;
@@ -19,6 +20,9 @@ use Filament\Tables\Table;
 
 class TokoPenjualanResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pos';
+
     protected static ?string $model = TokoPenjualan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PeriodeAkuntansiResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\PeriodeAkuntansi;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class PeriodeAkuntansiResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'jurnal';
+
     protected static ?string $model = PeriodeAkuntansi::class;
     protected static ?string $navigationIcon = 'heroicon-o-lock-open';
     protected static ?string $navigationGroup = 'Akuntansi';

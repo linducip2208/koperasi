@@ -10,9 +10,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class KasResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'kas';
     protected static ?string $model = Kas::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';

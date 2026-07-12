@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SimpananBlokirResource\Pages;
 use App\Models\Simpanan;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\SimpananBlokir;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class SimpananBlokirResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'simpanan';
+
     protected static ?string $model = SimpananBlokir::class;
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
     protected static ?string $navigationGroup = 'Simpan Pinjam';

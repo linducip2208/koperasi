@@ -9,9 +9,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class CoaResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'coa';
     protected static ?string $model = Coa::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';

@@ -11,9 +11,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class SewaAsetResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'asset';
     protected static ?string $model = SewaAset::class;
     protected static ?string $navigationIcon = 'heroicon-o-key';
     protected static ?string $navigationGroup = '👥 HR & Asset';

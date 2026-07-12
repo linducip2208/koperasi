@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokoKategoriResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\TokoKategori;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class TokoKategoriResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pos';
+
     protected static ?string $model = TokoKategori::class;
     protected static ?string $navigationIcon = 'heroicon-o-folder';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';

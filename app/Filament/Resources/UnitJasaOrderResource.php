@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitJasaOrderResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\UnitJasaLayanan;
@@ -17,6 +18,9 @@ use Filament\Tables\Table;
 
 class UnitJasaOrderResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'jasa';
+
     protected static ?string $model = UnitJasaOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';

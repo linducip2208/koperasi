@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasRoleAccess;
 use App\Services\PajakService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Components\DatePicker;
@@ -14,8 +15,10 @@ use Filament\Pages\Page;
 
 class LaporanPajak extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan Pajak';

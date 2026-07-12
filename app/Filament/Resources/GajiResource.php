@@ -12,9 +12,13 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class GajiResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'gaji';
     protected static ?string $model = Gaji::class;
     protected static ?string $navigationIcon = 'heroicon-o-receipt-refund';
     protected static ?string $navigationGroup = 'HR & Asset';

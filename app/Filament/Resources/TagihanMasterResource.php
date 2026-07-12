@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TagihanMasterResource\Pages;
 use App\Models\Coa;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\TagihanMaster;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class TagihanMasterResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'tagihan';
+
     protected static ?string $model = TagihanMaster::class;
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
     protected static ?string $navigationGroup = 'Pengaturan';

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JurnalResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Coa;
 use App\Models\Jurnal;
 use Filament\Forms;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class JurnalResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'jurnal';
+
     protected static ?string $model = Jurnal::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';

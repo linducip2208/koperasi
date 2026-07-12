@@ -7,6 +7,7 @@ use App\Filament\Resources\SimpananResource\Pages;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\ProdukSimpanan;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Simpanan;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -18,6 +19,9 @@ use Filament\Tables\Table;
 
 class SimpananResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'simpanan';
+
     protected static ?string $model = Simpanan::class;
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
     protected static ?string $navigationGroup = 'Simpan Pinjam';

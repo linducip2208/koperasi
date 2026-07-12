@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Setting;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -15,8 +16,10 @@ use Filament\Pages\Page;
 
 class Pengaturan extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'setting';
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationGroup = 'Pengaturan';
     protected static ?string $navigationLabel = 'Pengaturan Sistem';

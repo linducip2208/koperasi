@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProdukSimpananResource\Pages;
 use App\Models\Coa;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\ProdukSimpanan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 
 class ProdukSimpananResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'simpanan';
+
     protected static ?string $model = ProdukSimpanan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';

@@ -7,9 +7,12 @@ use App\Models\ShuDistribusi;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class ShuDistribusiResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'shu';
     protected static ?string $model = ShuDistribusi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square';
     protected static ?string $navigationGroup = '🎂 SHU & RAT';

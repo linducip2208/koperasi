@@ -9,9 +9,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class AsuransiProdukResource extends Resource
 {
+    use HasRoleAccess;
+
+    protected static ?string $permissionModule = 'asuransi';
     protected static ?string $model = AsuransiProduk::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationGroup = 'Asuransi';

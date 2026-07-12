@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Domain\Calculation\CalculatorFactory;
 use App\Filament\Resources\ProdukPinjamanResource\Pages;
 use App\Models\Coa;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\ProdukPinjaman;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -14,6 +15,9 @@ use Filament\Tables\Table;
 
 class ProdukPinjamanResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pinjaman';
+
     protected static ?string $model = ProdukPinjaman::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';

@@ -11,9 +11,12 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class ShuPerhitunganResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'shu';
     protected static ?string $model = ShuPerhitungan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cake';

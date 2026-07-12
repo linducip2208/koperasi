@@ -31,7 +31,7 @@ class RoleSeeder extends Seeder
             'manajer'     => ['*.view', '*.approve', '*.export', '*.print', 'pinjaman.update'],
             'kasir'       => ['anggota.view', 'simpanan.*', 'kas.*', 'pinjaman.view', 'pinjaman.update', 'pos.*', 'tagihan.*'],
             'ao'          => ['anggota.view', 'pinjaman.*', 'simpanan.view', 'jurnal.view'],
-            'kolektor'    => ['anggota.view', 'pinjaman.view', 'pinjaman.update'],
+            'kolektor'    => ['anggota.view', 'pinjaman.view', 'pinjaman.update', 'tagihan.view'],
             'pengawas'    => ['*.view', 'laporan.*'],
             'akuntan'     => ['jurnal.*', 'coa.*', 'laporan.*', 'setting.view'],
             'anggota'     => [], // guard berbeda nanti

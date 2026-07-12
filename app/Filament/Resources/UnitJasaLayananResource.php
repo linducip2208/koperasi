@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitJasaLayananResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\UnitJasaLayanan;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class UnitJasaLayananResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'jasa';
+
     protected static ?string $model = UnitJasaLayanan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench';

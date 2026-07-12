@@ -10,9 +10,12 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use App\Filament\Concerns\HasRoleAccess;
 
 class BlogCategoryResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = BlogCategory::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
     protected static ?string $navigationGroup = 'Blog & Marketing';

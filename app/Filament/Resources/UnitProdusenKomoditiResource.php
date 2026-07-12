@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitProdusenKomoditiResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\UnitProdusenKomoditi;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class UnitProdusenKomoditiResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'produsen';
+
     protected static ?string $model = UnitProdusenKomoditi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';

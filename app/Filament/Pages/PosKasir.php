@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\Kas;
 use App\Models\TokoBarang;
 use App\Models\TokoPenjualan;
+use App\Filament\Concerns\HasRoleAccess;
 use Filament\Pages\Page;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -18,8 +19,10 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class PosKasir extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'pos';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     protected static ?string $navigationGroup = 'Toko & Unit Usaha';
     protected static ?string $navigationLabel = 'POS Kasir (Touch)';

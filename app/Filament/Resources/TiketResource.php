@@ -9,9 +9,12 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Concerns\HasRoleAccess;
 
 class TiketResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'setting';
     protected static ?string $model = Tiket::class;
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
     protected static ?string $navigationGroup = 'Pengaturan';

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitProdusenSetoranResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggota;
 use App\Models\Kas;
 use App\Models\UnitProdusenKomoditi;
@@ -17,6 +18,9 @@ use Filament\Tables\Table;
 
 class UnitProdusenSetoranResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'produsen';
+
     protected static ?string $model = UnitProdusenSetoran::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square';

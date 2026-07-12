@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Cabang;
 use App\Models\ProdukPinjaman;
 use App\Models\ProdukSimpanan;
@@ -14,8 +15,10 @@ use Filament\Pages\Page;
 
 class LaporanKeuangan extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan Keuangan';

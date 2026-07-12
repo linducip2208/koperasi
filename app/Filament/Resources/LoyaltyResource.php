@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LoyaltyResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\LoyaltyPoint;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class LoyaltyResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'anggota';
+
     protected static ?string $model = LoyaltyPoint::class;
     protected static ?string $navigationIcon = 'heroicon-o-star';
     protected static ?string $navigationGroup = 'Keanggotaan';

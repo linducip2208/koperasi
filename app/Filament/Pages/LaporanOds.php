@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\Anggota;
 use App\Models\Pinjaman;
 use App\Models\Simpanan;
@@ -16,8 +17,10 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class LaporanOds extends Page implements HasForms
 {
+    use HasRoleAccess;
     use InteractsWithForms;
 
+    protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?string $navigationLabel = 'Laporan ODS';

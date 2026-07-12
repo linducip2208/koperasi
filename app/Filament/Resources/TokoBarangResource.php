@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TokoBarangResource\Pages;
+use App\Filament\Concerns\HasRoleAccess;
 use App\Models\TokoBarang;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +13,9 @@ use Filament\Tables\Table;
 
 class TokoBarangResource extends Resource
 {
+    use HasRoleAccess;
+    protected static ?string $permissionModule = 'pos';
+
     protected static ?string $model = TokoBarang::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
