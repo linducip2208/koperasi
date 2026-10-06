@@ -22,7 +22,7 @@ class LaporanOds extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Laporan ODS';
     protected static ?string $title = 'Laporan ODS Kemenkop';
     protected static ?int $navigationSort = 60;

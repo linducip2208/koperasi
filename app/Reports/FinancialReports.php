@@ -279,8 +279,7 @@ class IncomeExpenseReport extends ReportDefinition
 }
 
 class ReceivablePayableReport extends ReportDefinition
-{
-    public function key(): string { return 'piutang-hutang'; }
+{    public function key(): string { return 'piutang-hutang'; }
     public function name(): string { return 'Piutang & Hutang'; }
     public function description(): string { return 'Posisi akun piutang dan hutang dari COA.'; }
     public function category(): string { return 'financial'; }
@@ -304,6 +303,109 @@ class ReceivablePayableReport extends ReportDefinition
             [['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'],
                 ['key' => 'posisi', 'label' => 'Posisi', 'format' => 'badge'], $this->moneyCol('saldo', 'Saldo (Rp)')],
             $rows, ['saldo' => collect($rows)->sum('saldo')], []
+        );
+    }
+}
+
+class CashForecastReport extends ReportDefinition
+{
+    public function key(): string { return 'kas-forecast'; }
+    public function name(): string { return 'Forecast Kas 30 Hari'; }
+    public function description(): string { return 'Masuk (angsuran jatuh tempo) vs keluar (estimasi operasional) 4 minggu ke depan.'; }
+    public function category(): string { return 'financial'; }
+    public function supportsChart(): bool { return true; }
+
+    public function run(array $params): ReportResult
+    {
+        $labels = $masuk = $keluar = [];
+        $rataBeban = (int) \App\Models\JurnalDetail::whereHas('jurnal', fn ($q) => $q->where('is_posted', true)
+                ->whereDate('tanggal', '>=', now()->subDays(30)->toDateString()))
+            ->whereHas('coa', fn ($q) => $q->where('tipe', 'beban'))->sum('kredit');
+        $mingguan = (int) round($rataBeban / 4);
+        for ($w = 0; $w < 4; $w++) {
+            $a = now()->addDays($w * 7)->toDateString();
+            $b = now()->addDays($w * 7 + 6)->toDateString();
+            $labels[] = "Minggu ".($w + 1);
+            $masuk[] = (int) \App\Models\PinjamanJadwal::whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])
+                ->whereDate('tanggal_jatuh_tempo', '>=', $a)->whereDate('tanggal_jatuh_tempo', '<=', $b)->sum('total_angsuran');
+            $keluar[] = $mingguan;
+        }
+        $rows = [];
+        foreach ($labels as $i => $l) $rows[] = ['minggu' => $l, 'masuk' => $masuk[$i], 'keluar' => $keluar[$i], 'neto' => $masuk[$i] - $keluar[$i]];
+        return new ReportResult(
+            [['key' => 'minggu', 'label' => 'Minggu'], $this->moneyCol('masuk', 'Masuk'), $this->moneyCol('keluar', 'Keluar (est)'), $this->moneyCol('neto', 'Neto')],
+            $rows,
+            ['masuk' => array_sum($masuk), 'keluar' => array_sum($keluar), 'neto' => array_sum($masuk) - array_sum($keluar)],
+            [['label' => 'Neto 30 Hari', 'value' => array_sum($masuk) - array_sum($keluar), 'format' => 'money']],
+            [[
+                'type' => 'bar', 'title' => 'Forecast Masuk vs Keluar',
+                'labels' => $labels,
+                'datasets' => [
+                    ['label' => 'Masuk', 'data' => $masuk, 'color' => '#059669'],
+                    ['label' => 'Keluar (est)', 'data' => $keluar, 'color' => '#e11d48'],
+                ],
+            ]]
+        );
+    }
+}
+
+class BudgetActualReport extends ReportDefinition
+{
+    public function key(): string { return 'anggaran-realisasi'; }
+    public function name(): string { return 'Anggaran vs Realisasi'; }
+    public function description(): string { return 'Per akun per bulan berjalan + varians.'; }
+    public function category(): string { return 'financial'; }
+    public function filters(): array
+    {
+        return [[
+            'name' => 'tahun', 'type' => 'select', 'label' => 'Tahun', 'required' => true,
+            'options' => array_combine($y = range(now()->year, now()->year - 5), $y),
+        ]];
+    }
+
+    public function run(array $params): ReportResult
+    {
+        $tahun = (int) ($params['tahun'] ?? now()->year);
+        $bulan = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'];
+        $rows = \App\Models\Anggaran::with('coa')->where('tahun', $tahun)->get()->map(function ($a) use ($bulan, $tahun) {
+            $rencana = collect($bulan)->sum(fn ($b) => (int) $a->$b);
+            $realisasi = 0;
+            foreach ($bulan as $i => $b) {
+                $d = \Carbon\Carbon::create($tahun, $i + 1, 1);
+                $realisasi += LaporanKeuanganService::saldoAkun($a->coa, $d->startOfMonth()->toDateString(), $d->endOfMonth()->toDateString());
+            }
+            return ['akun' => $a->coa->kode.' — '.$a->coa->nama, 'rencana' => $rencana, 'realisasi' => $realisasi, 'varians' => $rencana - $realisasi];
+        })->all();
+        return new ReportResult(
+            [['key' => 'akun', 'label' => 'Akun'], $this->moneyCol('rencana', 'Rencana'), $this->moneyCol('realisasi', 'Realisasi'), $this->moneyCol('varians', 'Varians')],
+            $rows,
+            ['rencana' => collect($rows)->sum('rencana'), 'realisasi' => collect($rows)->sum('realisasi'), 'varians' => collect($rows)->sum('varians')],
+            []
+        );
+    }
+}
+
+class InventoryValuationReport extends ReportDefinition
+{
+    public function key(): string { return 'toko-valuasi'; }
+    public function name(): string { return 'Valuasi Persediaan Toko'; }
+    public function description(): string { return 'Stok × harga beli (average) per barang.'; }
+    public function category(): string { return 'financial'; }
+
+    public function run(array $params): ReportResult
+    {
+        $rows = \App\Models\TokoBarang::where('is_jasa', false)->orderBy('nama')->limit(2000)->get()
+            ->map(fn ($b) => [
+                'sku' => $b->sku, 'nama' => $b->nama,
+                'stok' => (float) $b->stok, 'harga_beli' => (int) $b->harga_beli,
+                'nilai' => (int) round(((float) $b->stok) * (int) $b->harga_beli),
+                'status' => $b->stok <= $b->stok_minimum ? 'Menipis' : 'Aman',
+            ])->all();
+        return new ReportResult(
+            [['key' => 'sku', 'label' => 'SKU'], ['key' => 'nama', 'label' => 'Barang'],
+                ['key' => 'stok', 'label' => 'Stok', 'align' => 'right'], $this->moneyCol('harga_beli', 'HPP/Beli'),
+                $this->moneyCol('nilai', 'Nilai'), ['key' => 'status', 'label' => 'Status', 'format' => 'badge']],
+            $rows, ['nilai' => collect($rows)->sum('nilai')], []
         );
     }
 }

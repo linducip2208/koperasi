@@ -283,15 +283,18 @@ class LaporanKeuanganService
      */
     public static function agingPiutang(string $sampai, ?int $cabangId = null): array
     {
+        $diffExpr = \Illuminate\Support\Facades\DB::getDriverName() === 'sqlite'
+            ? "CAST(julianday(?) - julianday(tanggal_jatuh_tempo) AS INTEGER)"
+            : 'DATEDIFF(?, tanggal_jatuh_tempo)';
         $rows = \App\Models\Pinjaman::with(['anggota', 'produk'])
             ->whereIn('status', ['aktif', 'macet'])
             ->when($cabangId, fn ($q) => $q->where('cabang_id', $cabangId))
-            ->get()->map(function ($p) use ($sampai) {
+            ->get()->map(function ($p) use ($sampai, $diffExpr) {
                 $sisa = max(0, (int) $p->saldo_pokok + (int) $p->saldo_margin);
                 $maxTelat = (int) ($p->jadwal()
                     ->whereIn('status', ['jatuh_tempo', 'telat'])
                     ->whereDate('tanggal_jatuh_tempo', '<=', $sampai)
-                    ->selectRaw('MAX(DATEDIFF(?, tanggal_jatuh_tempo)) as d', [$sampai])
+                    ->selectRaw("MAX({$diffExpr}) as d", [$sampai])
                     ->value('d') ?? 0);
                 $bucket = match (true) {
                     $maxTelat <= 0 => 'lancar',

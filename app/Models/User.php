@@ -51,4 +51,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Cabang::class);
     }
+
+    public function followups()
+    {
+        return $this->hasMany(CollectionFollowup::class);
+    }
 }

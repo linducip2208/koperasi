@@ -19,7 +19,7 @@ class RatResource extends Resource
     protected static ?string $model = Rat::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
-    protected static ?string $navigationGroup = 'SHU & RAT';
+    protected static ?string $navigationGroup = 'GOVERNANCE';
     protected static ?string $navigationLabel = 'Rapat Anggota Tahunan';
     protected static ?int $navigationSort = 71;
 

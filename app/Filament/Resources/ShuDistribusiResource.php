@@ -15,7 +15,7 @@ class ShuDistribusiResource extends Resource
     protected static ?string $permissionModule = 'shu';
     protected static ?string $model = ShuDistribusi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-on-square';
-    protected static ?string $navigationGroup = '🎂 SHU & RAT';
+    protected static ?string $navigationGroup = 'GOVERNANCE';
     protected static ?string $navigationLabel = 'Distribusi SHU';
     protected static ?string $modelLabel = 'Distribusi SHU';
     protected static ?string $pluralModelLabel = 'Distribusi SHU';

@@ -19,7 +19,7 @@ class AsuransiKlaimResource extends Resource
     protected static ?string $permissionModule = 'asuransi';
     protected static ?string $model = AsuransiKlaim::class;
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationGroup = 'Asuransi';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Klaim Asuransi';
     protected static ?string $modelLabel = 'Klaim Asuransi';
     protected static ?string $pluralModelLabel = 'Klaim Asuransi';

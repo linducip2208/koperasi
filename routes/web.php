@@ -66,6 +66,7 @@ Route::get('/admin/theme/{name}', function (string $name, \Illuminate\Http\Reque
 
 /* ===== Document PDF (kuitansi, kontrak, slip, invoice) ===== */
 Route::middleware(['auth'])->prefix('dokumen')->name('dokumen.')->group(function () {
+    Route::get('/anggota-doc/{id}', [\App\Http\Controllers\DocumentController::class, 'memberDoc'])->name('anggota');
     Route::get('/kuitansi-setoran/{tx}', [\App\Http\Controllers\DocumentController::class, 'kuitansiSetoran'])->name('kuitansi');
     Route::get('/kontrak-pinjaman/{p}', [\App\Http\Controllers\DocumentController::class, 'kontrakPinjaman'])->name('kontrak');
     Route::get('/slip-cicilan/{bayar}', [\App\Http\Controllers\DocumentController::class, 'slipCicilan'])->name('slip');

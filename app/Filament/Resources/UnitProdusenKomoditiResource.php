@@ -19,7 +19,7 @@ class UnitProdusenKomoditiResource extends Resource
     protected static ?string $model = UnitProdusenKomoditi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Master Komoditi';
     protected static ?string $modelLabel = 'Komoditi';
     protected static ?string $pluralModelLabel = 'Komoditi';

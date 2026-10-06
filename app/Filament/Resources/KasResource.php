@@ -20,7 +20,7 @@ class KasResource extends Resource
     protected static ?string $model = Kas::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Kas & Bank';
     protected static ?string $modelLabel = 'Kas';
     protected static ?string $pluralModelLabel = 'Kas & Bank';

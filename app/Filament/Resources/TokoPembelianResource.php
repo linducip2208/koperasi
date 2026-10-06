@@ -22,7 +22,7 @@ class TokoPembelianResource extends Resource
 
     protected static ?string $model = TokoPembelian::class;
     protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Pembelian Barang';
     protected static ?string $modelLabel = 'Pembelian';
     protected static ?string $pluralModelLabel = 'Pembelian';

@@ -12,7 +12,7 @@ class ExportCenterPage extends Page
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-tray';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Export Center';
     protected static ?string $title = 'Export Center';
     protected static ?int $navigationSort = 54;

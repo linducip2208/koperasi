@@ -20,7 +20,7 @@ class ReportViewerPage extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Lihat Report';
     protected static ?string $title = 'Report Viewer';
     protected static ?int $navigationSort = 51;

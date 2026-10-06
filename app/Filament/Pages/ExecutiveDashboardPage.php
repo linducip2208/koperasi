@@ -18,7 +18,7 @@ class ExecutiveDashboardPage extends Page
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Executive Dashboard';
     protected static ?string $title = 'Executive Dashboard';
     protected static ?int $navigationSort = 49;

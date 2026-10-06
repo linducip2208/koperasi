@@ -19,7 +19,7 @@ class AnggotaResource extends Resource
 
     protected static ?string $model = Anggota::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'Keanggotaan';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Anggota';
     protected static ?string $modelLabel = 'Anggota';
     protected static ?string $pluralModelLabel = 'Anggota';

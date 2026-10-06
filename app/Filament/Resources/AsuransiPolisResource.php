@@ -23,7 +23,7 @@ class AsuransiPolisResource extends Resource
     protected static ?string $permissionModule = 'asuransi';
     protected static ?string $model = AsuransiPolis::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
-    protected static ?string $navigationGroup = 'Asuransi';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Polis Anggota';
     protected static ?string $modelLabel = 'Polis Asuransi';
     protected static ?string $pluralModelLabel = 'Polis Asuransi';

@@ -12,7 +12,7 @@ class ReportCenterPage extends Page
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Report Center';
     protected static ?string $title = 'Report Center';
     protected static ?int $navigationSort = 50;

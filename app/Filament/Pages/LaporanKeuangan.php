@@ -20,7 +20,7 @@ class LaporanKeuangan extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
-    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Laporan Keuangan';
     protected static ?int $navigationSort = 100;
     protected static string $view = 'filament.pages.laporan-keuangan';

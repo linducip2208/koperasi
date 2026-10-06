@@ -19,7 +19,7 @@ class SimpananBlokirResource extends Resource
 
     protected static ?string $model = SimpananBlokir::class;
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Blokir Simpanan';
     protected static ?string $modelLabel = 'Blokir';
     protected static ?string $pluralModelLabel = 'Blokir Simpanan';

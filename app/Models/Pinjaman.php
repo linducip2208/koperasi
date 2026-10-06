@@ -37,7 +37,7 @@ class Pinjaman extends Model
         'tujuan', 'analisa_kredit', 'survey_data',
         'status', 'kolektabilitas',
         'tunggakan_hari', 'tunggakan_pokok', 'tunggakan_margin', 'tunggakan_denda',
-        'ao_id', 'approved_by', 'approved_at',
+        'ao_id', 'kolektor_id', 'approved_by', 'approved_at',
         'rejected_by', 'rejected_at', 'alasan_tolak',
         'meta',
     ];
@@ -102,6 +102,16 @@ class Pinjaman extends Model
     public function approval(): HasMany
     {
         return $this->hasMany(PinjamanApproval::class)->orderBy('level');
+    }
+
+    public function kolektor()
+    {
+        return $this->belongsTo(User::class, 'kolektor_id');
+    }
+
+    public function followups(): HasMany
+    {
+        return $this->hasMany(CollectionFollowup::class)->latest();
     }
 
     public function cabang()

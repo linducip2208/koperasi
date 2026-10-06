@@ -20,7 +20,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'User Sistem';
     protected static ?string $modelLabel = 'User';
     protected static ?string $pluralModelLabel = 'Users';

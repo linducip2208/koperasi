@@ -156,14 +156,17 @@ class AgingReport extends ReportDefinition
 
     public function run(array $params): ReportResult
     {
+        $diffExpr = \Illuminate\Support\Facades\DB::getDriverName() === 'sqlite'
+            ? "CAST(julianday(?) - julianday(tanggal_jatuh_tempo) AS INTEGER)"
+            : 'DATEDIFF(?, tanggal_jatuh_tempo)';
         $buckets = ['current' => 0, 'd1_7' => 0, 'd8_30' => 0, 'd31_60' => 0, 'd61_90' => 0, 'd91_180' => 0, 'd180' => 0];
         $rows = \App\Models\Pinjaman::with(['anggota', 'produk'])->whereIn('status', ['aktif', 'macet'])
             ->when($this->cabangId($params), fn ($q, $c) => $q->where('cabang_id', $c))
-            ->get()->map(function ($p) use ($params, &$buckets) {
+            ->get()->map(function ($p) use ($params, &$buckets, $diffExpr) {
                 $sisa = max(0, (int) $p->saldo_pokok + (int) $p->saldo_margin);
                 $maxTelat = (int) ($p->jadwal()->whereIn('status', ['jatuh_tempo', 'telat'])
                     ->whereDate('tanggal_jatuh_tempo', '<=', $params['sampai'])
-                    ->selectRaw('MAX(DATEDIFF(?, tanggal_jatuh_tempo)) as d', [$params['sampai']])->value('d') ?? 0);
+                    ->selectRaw("MAX({$diffExpr}) as d", [$params['sampai']])->value('d') ?? 0);
                 $b = match (true) {
                     $maxTelat <= 0 => 'current', $maxTelat <= 7 => 'd1_7', $maxTelat <= 30 => 'd8_30',
                     $maxTelat <= 60 => 'd31_60', $maxTelat <= 90 => 'd61_90', $maxTelat <= 180 => 'd91_180', default => 'd180',

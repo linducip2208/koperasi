@@ -20,7 +20,7 @@ class JurnalResource extends Resource
     protected static ?string $model = Jurnal::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Jurnal';
     protected static ?string $modelLabel = 'Jurnal';
     protected static ?string $pluralModelLabel = 'Jurnal';

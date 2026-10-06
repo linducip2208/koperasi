@@ -61,16 +61,13 @@ class AdminPanelProvider extends PanelProvider
             ->font('Plus Jakarta Sans')
             ->maxContentWidth(MaxWidth::Full)
             ->navigationGroups([
-                NavigationGroup::make('👥 Keanggotaan'),
-                NavigationGroup::make('💰 Simpan Pinjam'),
-                NavigationGroup::make('🛒 Toko & Unit Usaha'),
-                NavigationGroup::make('🧮 Akuntansi'),
-                NavigationGroup::make('🎂 SHU & RAT'),
-                NavigationGroup::make('👥 HR & Asset'),
-                NavigationGroup::make('🛡️ Asuransi'),
-                NavigationGroup::make('📊 Laporan'),
-                NavigationGroup::make('📝 Blog & Marketing')->collapsed(),
-                NavigationGroup::make('⚙️ Pengaturan')->collapsed(),
+                NavigationGroup::make('DASHBOARD'),
+                NavigationGroup::make('OPERASIONAL'),
+                NavigationGroup::make('ACCOUNTING'),
+                NavigationGroup::make('REPORTS'),
+                NavigationGroup::make('OPERATIONS'),
+                NavigationGroup::make('GOVERNANCE'),
+                NavigationGroup::make('SYSTEM')->collapsed(),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

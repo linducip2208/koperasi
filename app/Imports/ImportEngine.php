@@ -85,7 +85,9 @@ class ImportEngine
 
         foreach (array_slice($rows, 1) as $n => $row) {
             $line = $n + 2;
+            // Semua field definisi selalu ada (null bila kolom tidak dipetakan).
             $data = [];
+            foreach ($cols as $c) $data[$c['field']] = null;
             foreach ($map as $i => $c) $data[$c['field']] = $row[$i] ?? null;
 
             $errors = self::validateRow($type, $data, $cols);

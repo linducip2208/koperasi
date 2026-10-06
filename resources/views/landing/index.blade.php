@@ -116,7 +116,7 @@
     <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <a href="#" class="flex items-center gap-2.5 group">
+                <a href="{{ url('/') }}" class="flex items-center gap-2.5 group">
                     <div class="w-9 h-9 rounded-xl gradient-bg flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition">K</div>
                     <span class="font-bold text-slate-900 text-lg tracking-tight">Koperasi<span class="gradient-text">App</span></span>
                 </a>

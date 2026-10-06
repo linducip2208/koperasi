@@ -18,7 +18,7 @@ class PpobTransaksiResource extends Resource
 
     protected static ?string $model = PpobTransaksi::class;
     protected static ?string $navigationIcon = 'heroicon-o-receipt-percent';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Transaksi PPOB';
     protected static ?string $modelLabel = 'Transaksi PPOB';
     protected static ?int $navigationSort = 28;

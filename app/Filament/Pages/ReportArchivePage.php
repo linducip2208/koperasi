@@ -17,7 +17,7 @@ class ReportArchivePage extends Page implements HasTable
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Arsip Report';
     protected static ?string $title = 'Arsip Report';
     protected static ?int $navigationSort = 55;

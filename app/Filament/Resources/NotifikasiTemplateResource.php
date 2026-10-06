@@ -17,7 +17,7 @@ class NotifikasiTemplateResource extends Resource
     protected static ?string $permissionModule = 'setting';
     protected static ?string $model = NotifikasiTemplate::class;
     protected static ?string $navigationIcon = 'heroicon-o-envelope-open';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Template Notifikasi';
     protected static ?string $modelLabel = 'Template';
     protected static ?string $pluralModelLabel = 'Template Notifikasi';

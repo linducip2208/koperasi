@@ -16,7 +16,7 @@ class KasTransaksiResource extends Resource
     protected static ?string $permissionModule = 'kas';
     protected static ?string $model = KasTransaksi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
-    protected static ?string $navigationGroup = '🧮 Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Kas Transaksi';
     protected static ?string $modelLabel = 'Kas Transaksi';
     protected static ?string $pluralModelLabel = 'Kas Transaksi';

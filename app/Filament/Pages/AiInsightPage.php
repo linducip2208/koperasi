@@ -19,7 +19,7 @@ class AiInsightPage extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'AI Insights';
     protected static ?string $title = 'AI Insights';
     protected static ?int $navigationSort = 58;

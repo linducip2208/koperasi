@@ -17,7 +17,7 @@ class CabangResource extends Resource
     protected static ?string $permissionModule = 'setting';
     protected static ?string $model = Cabang::class;
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
-    protected static ?string $navigationGroup = '⚙️ Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Cabang';
     protected static ?string $modelLabel = 'Cabang';
     protected static ?string $pluralModelLabel = 'Cabang';

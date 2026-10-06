@@ -18,7 +18,7 @@ class AsuransiProdukResource extends Resource
     protected static ?string $permissionModule = 'asuransi';
     protected static ?string $model = AsuransiProduk::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-    protected static ?string $navigationGroup = 'Asuransi';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Produk Asuransi';
     protected static ?string $modelLabel = 'Produk Asuransi';
     protected static ?string $pluralModelLabel = 'Produk Asuransi';

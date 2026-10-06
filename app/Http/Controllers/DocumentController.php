@@ -59,10 +59,22 @@ class DocumentController extends Controller
         return $pdf->stream("slip-cicilan-{$bayar->id}.pdf");
     }
 
+    /** Unduh dokumen anggota: via storage privat + cek kepemilikan (anti path traversal & IDOR). */
+    public function memberDoc(int $id)
+    {
+        $doc = \App\Models\MemberDocument::findOrFail($id);
+        $this->authorizeAnggota($doc->anggota_id);
+
+        $disk = \Illuminate\Support\Facades\Storage::disk('local');
+        abort_unless($disk->exists($doc->file_path), 404);
+        abort_if(str_contains($doc->file_path, '..'), 400);
+
+        return $disk->download($doc->file_path, $doc->nama.'.'.pathinfo($doc->file_path, PATHINFO_EXTENSION));
+    }
+
     public function invoicePenjualan(int $penjualanId)
     {
-        $jual = TokoPenjualan::with(['anggota', 'detail.barang'])->findOrFail($penjualanId);
-        $user = auth()->user();
+        $jual = TokoPenjualan::with(['anggota', 'detail.barang'])->findOrFail($penjualanId);        $user = auth()->user();
         // Nota toko: pemilik, kasir (pos.view), atau staf anggota.view.
         $ok = $user->can('anggota.view') || $user->can('pos.view');
         if (! $ok && $jual->anggota_id) {

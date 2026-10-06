@@ -19,7 +19,7 @@ class CoaResource extends Resource
     protected static ?string $model = Coa::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Chart of Accounts';
     protected static ?string $modelLabel = 'COA';
     protected static ?string $pluralModelLabel = 'Chart of Accounts';

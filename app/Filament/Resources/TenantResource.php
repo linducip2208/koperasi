@@ -18,7 +18,7 @@ class TenantResource extends Resource
     protected static ?string $model = Tenant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Profil Koperasi';
     protected static ?string $modelLabel = 'Koperasi';
     protected static ?string $pluralModelLabel = 'Koperasi';

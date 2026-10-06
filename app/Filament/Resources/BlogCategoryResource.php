@@ -18,7 +18,7 @@ class BlogCategoryResource extends Resource
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = BlogCategory::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?string $navigationGroup = 'Blog & Marketing';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Kategori Blog';
     protected static ?string $modelLabel = 'Kategori Blog';
     protected static ?string $pluralModelLabel = 'Kategori Blog';

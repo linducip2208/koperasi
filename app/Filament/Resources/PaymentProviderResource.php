@@ -19,7 +19,7 @@ class PaymentProviderResource extends Resource
     protected static ?string $model = PaymentProvider::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Payment Gateway';
     protected static ?string $modelLabel = 'Payment Provider';
     protected static ?int $navigationSort = 37;

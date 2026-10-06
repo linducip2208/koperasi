@@ -285,7 +285,7 @@
                     <div class="text-[10px] font-extrabold uppercase tracking-wider opacity-90 mb-1 sidebar-app-info">📱 Mobile App</div>
                     <div class="font-extrabold text-sm leading-tight mb-2.5 sidebar-app-info">Akses dari HP-mu</div>
                     <a href="https://wa.me/{{ $koperasi->whatsapp ?? config('support.whatsapp') }}?text=Saya%20mau%20info%20mobile%20app" class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-white text-emerald-700 px-3 py-1.5 rounded-md hover:scale-105 transition sidebar-app-info">
-                        Coming Soon →
+                        Minta Info →
                     </a>
                 </div>
             </div>

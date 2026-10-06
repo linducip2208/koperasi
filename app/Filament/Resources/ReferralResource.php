@@ -18,7 +18,7 @@ class ReferralResource extends Resource
 
     protected static ?string $model = Referral::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
-    protected static ?string $navigationGroup = 'Keanggotaan';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Referral';
     protected static ?string $modelLabel = 'Referral';
     protected static ?string $pluralModelLabel = 'Referral';

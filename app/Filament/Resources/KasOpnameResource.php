@@ -21,7 +21,7 @@ class KasOpnameResource extends Resource
     protected static ?string $permissionModule = 'kas';
     protected static ?string $model = KasOpname::class;
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Kas Opname';
     protected static ?string $modelLabel = 'Kas Opname';
     protected static ?string $pluralModelLabel = 'Kas Opname';

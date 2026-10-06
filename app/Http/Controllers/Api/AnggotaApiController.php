@@ -55,7 +55,6 @@ class AnggotaApiController extends Controller
     {
         $user = $request->user();
         $anggota = Anggota::where('user_id', $user->id)->firstOrFail();
-
         $pinjaman = Pinjaman::with(['produk', 'jadwal' => fn ($q) => $q->where('status', '!=', 'lunas')->orderBy('angsuran_ke')->limit(3)])
             ->where('anggota_id', $anggota->id)
             ->where('status', 'aktif')
@@ -79,5 +78,24 @@ class AnggotaApiController extends Controller
             ]);
 
         return response()->json(['data' => $pinjaman]);
+    }
+
+    /** Notifikasi anggota: pengumuman published + angsuran jatuh tempo 7 hari. */
+    public function notifikasi(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $anggota = Anggota::where('user_id', $user->id)->firstOrFail();
+
+        $pengumuman = \App\Models\Pengumuman::published()->orderByDesc('published_at')->limit(10)->get()
+            ->map(fn ($p) => ['tipe' => 'pengumuman', 'judul' => $p->judul, 'isi' => $p->isi, 'waktu' => $p->published_at]);
+
+        $jatuhTempo = Pinjaman::with('jadwal')->where('anggota_id', $anggota->id)->where('status', 'aktif')->get()
+            ->flatMap(fn ($p) => $p->jadwal->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])
+                ->filter(fn ($j) => \Carbon\Carbon::parse($j->tanggal_jatuh_tempo)->between(now(), now()->addDays(7)))
+                ->map(fn ($j) => ['tipe' => 'angsuran', 'judul' => "Angsuran {$p->nomor_akad} jatuh tempo",
+                    'isi' => 'Rp '.number_format($j->total_angsuran, 0, ',', '.').' pada '.$j->tanggal_jatuh_tempo->format('d M Y'),
+                    'waktu' => $j->tanggal_jatuh_tempo]));
+
+        return response()->json(['data' => $pengumuman->concat($jatuhTempo)->sortByDesc('waktu')->values()]);
     }
 }

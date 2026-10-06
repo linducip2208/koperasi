@@ -30,6 +30,9 @@ class ReportRegistry
             Financial\CashPositionReport::class,
             Financial\IncomeExpenseReport::class,
             Financial\ReceivablePayableReport::class,
+            Financial\CashForecastReport::class,
+            Financial\BudgetActualReport::class,
+            Financial\InventoryValuationReport::class,
             // Savings
             Savings\SavingsSummaryReport::class,
             Savings\SavingsGrowthReport::class,

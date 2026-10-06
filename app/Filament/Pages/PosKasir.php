@@ -24,7 +24,7 @@ class PosKasir extends Page implements HasForms
 
     protected static ?string $permissionModule = 'pos';
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'POS Kasir (Touch)';
     protected static ?string $title = 'POS Kasir';
     protected static ?int $navigationSort = 31;

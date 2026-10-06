@@ -21,7 +21,7 @@ class ProdukPinjamanResource extends Resource
     protected static ?string $model = ProdukPinjaman::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Produk Pinjaman';
     protected static ?string $modelLabel = 'Produk Pinjaman';
     protected static ?string $pluralModelLabel = 'Produk Pinjaman';

@@ -17,7 +17,7 @@ class PengumumanResource extends Resource
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = Pengumuman::class;
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
-    protected static ?string $navigationGroup = 'Blog & Marketing';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Pengumuman';
     protected static ?string $modelLabel = 'Pengumuman';
     protected static ?string $pluralModelLabel = 'Pengumuman';

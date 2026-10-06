@@ -20,7 +20,7 @@ class LaporanPajak extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
-    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Laporan Pajak';
     protected static ?string $title = 'Laporan Pajak';
     protected static ?int $navigationSort = 61;

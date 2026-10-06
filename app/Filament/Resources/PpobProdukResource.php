@@ -18,7 +18,7 @@ class PpobProdukResource extends Resource
 
     protected static ?string $model = PpobProduk::class;
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Produk PPOB';
     protected static ?string $modelLabel = 'Produk PPOB';
     protected static ?string $pluralModelLabel = 'Produk PPOB';

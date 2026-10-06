@@ -20,7 +20,7 @@ class SewaAsetResource extends Resource
     protected static ?string $permissionModule = 'asset';
     protected static ?string $model = SewaAset::class;
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationGroup = '👥 HR & Asset';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Sewa Aset';
     protected static ?string $modelLabel = 'Sewa Aset';
     protected static ?string $pluralModelLabel = 'Sewa Aset';

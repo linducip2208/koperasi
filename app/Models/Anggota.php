@@ -93,6 +93,11 @@ class Anggota extends Model
         return $this->hasMany(Pinjaman::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(MemberDocument::class);
+    }
+
     public function statusLog(): HasMany
     {
         return $this->hasMany(AnggotaStatusLog::class);

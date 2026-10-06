@@ -1,6 +1,36 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Report Center + Tabler + Import/Export (commercial-grade)
+## 2026-10-07 — Sesi Platform: navigasi baru + kredit koleksi + workflow + dokumen + closing + quality
+
+### Navigasi
+- Grup Filament baru: DASHBOARD, OPERASIONAL, ACCOUNTING, REPORTS, OPERATIONS, GOVERNANCE, SYSTEM (ganti 73 resource/page, permission-aware tetap)
+
+### Kredit & koleksi
+- Simulasi Pinjaman (semua kalkulator, jadwal integer), CreditScoringService (8 faktor, configurable, tested)
+- Collection Center: bucket 1–7…180+, assign kolektor, follow-up + PTP + bukti, WA reminder, performa; migrasi `kolektor_id` + `collection_followups`
+
+### Workflow & approval & pengadaan
+- WorkflowService generik (transisi + izin + audit); Approval Center (pinjaman/pembayaran/pengadaan/calon anggota); Procurement + resource + nomor PR
+
+### Dokumen, OCR, audit, compliance
+- MemberDocument + resource (upload aman, random filename, versi, expiry, unduh via controller privat); DocumentController::memberDoc (IDOR + traversal guard)
+- OCR abstraction (interface + manual + propose-tanpa-timpa); AuditFinding + resource; Compliance checklist (settings)
+
+### Akuntansi & laporan baru
+- Year-End Closing wizard (checklist + job + lock tahun); Buku: kas-forecast, anggaran-realisasi, valuasi persediaan (registry 33)
+- Portal statement PDF + tombol unduh; API notifikasi anggota
+
+### Quality, fraud, search, notif, webhook
+- Data Quality (8 cek: NIK ganda, jurnal bocor, …); Fraud rule-based (besar/malam/duplikat/reversal, driver-aware); Universal Search (permission-aware); Notification Center (activity); Webhook Center (status + replay)
+- Fix driver: whereDate, DATEDIFF/julianday, HOUR/strftime; seed jurnal balance; index hotpath
+
+### Dead-UI & CDN
+- href="#"/Coming Soon dibersihkan (semua beraksi nyata); grep CDN views/js/css = NOL
+
+### Test
+- 119 OK (458 assertion): CollectionWorkflowTest 6 + ReportCenterTest 12 + suite lama; `reports:health` 33/33 OK
+
+---
 
 ### Arsitektur
 - `CooperativeContext` — ganti semua `Tenant::find(1)` (8 titik) + view-share

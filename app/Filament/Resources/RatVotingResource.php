@@ -20,7 +20,7 @@ class RatVotingResource extends Resource
     protected static ?string $model = RatVoting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-check-circle';
-    protected static ?string $navigationGroup = 'SHU & RAT';
+    protected static ?string $navigationGroup = 'GOVERNANCE';
     protected static ?string $navigationLabel = 'E-Voting RAT';
     protected static ?int $navigationSort = 72;
 

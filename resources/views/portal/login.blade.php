@@ -119,7 +119,7 @@
                 <div class="input-group">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem">
                         <label style="margin-bottom:0">Password</label>
-                        <a href="#" style="font-size:.7rem;color:#a855f7;font-weight:700;text-decoration:none">Lupa?</a>
+                        <a href="https://wa.me/{{ $koperasi->whatsapp ?? config('support.whatsapp') }}?text=Lupa%20password%20portal%20anggota" target="_blank" style="font-size:.7rem;color:#a855f7;font-weight:700;text-decoration:none">Lupa?</a>
                     </div>
                     <div class="input-wrap">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>

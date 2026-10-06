@@ -19,7 +19,7 @@ class AnggaranResource extends Resource
 
     protected static ?string $model = Anggaran::class;
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Anggaran (Budget)';
     protected static ?string $modelLabel = 'Anggaran';
     protected static ?string $pluralModelLabel = 'Anggaran';

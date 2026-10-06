@@ -13,7 +13,7 @@ class ImportCenterPage extends Page
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Import Center';
     protected static ?string $title = 'Import Center';
     protected static ?int $navigationSort = 53;

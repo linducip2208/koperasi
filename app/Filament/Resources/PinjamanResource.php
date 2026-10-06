@@ -26,7 +26,7 @@ class PinjamanResource extends Resource
 
     protected static ?string $model = Pinjaman::class;
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Pinjaman / Pembiayaan';
     protected static ?string $modelLabel = 'Pinjaman';
     protected static ?string $pluralModelLabel = 'Pinjaman';

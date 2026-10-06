@@ -22,7 +22,7 @@ class ScheduledReportPage extends Page implements HasTable
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Scheduled Reports';
     protected static ?string $title = 'Scheduled Reports';
     protected static ?int $navigationSort = 57;

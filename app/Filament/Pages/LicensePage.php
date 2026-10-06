@@ -13,7 +13,7 @@ class LicensePage extends Page
 
     protected static ?string $permissionModule = 'license';
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationGroup = '⚙️ Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'License';
     protected static ?string $title = 'License';
     protected static ?int $navigationSort = 97;

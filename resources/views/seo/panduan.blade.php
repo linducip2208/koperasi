@@ -6,7 +6,7 @@
     <nav class="text-sm text-slate-500 mb-6 flex items-center gap-2">
         <a href="{{ url('/') }}" class="hover:text-indigo-600">Beranda</a>
         <span>/</span>
-        <a href="#" class="hover:text-indigo-600">Panduan</a>
+        <span class="text-slate-500">Panduan</span>
         <span>/</span>
         <span class="text-slate-700 truncate">{{ $panduan['judul'] }}</span>
     </nav>

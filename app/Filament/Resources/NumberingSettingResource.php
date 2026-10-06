@@ -17,7 +17,7 @@ class NumberingSettingResource extends Resource
     protected static ?string $permissionModule = 'setting';
     protected static ?string $model = NumberingSetting::class;
     protected static ?string $navigationIcon = 'heroicon-o-hashtag';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Format Penomoran';
     protected static ?string $modelLabel = 'Format Nomor';
     protected static ?string $pluralModelLabel = 'Format Penomoran';

@@ -13,7 +13,7 @@ class UpdateCenterPage extends Page
 
     protected static ?string $permissionModule = 'setting';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-circle';
-    protected static ?string $navigationGroup = '⚙️ Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Update Center';
     protected static ?string $title = 'Update Center';
     protected static ?int $navigationSort = 98;

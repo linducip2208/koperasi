@@ -20,7 +20,7 @@ class ProdukSimpananResource extends Resource
     protected static ?string $model = ProdukSimpanan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Produk Simpanan';
     protected static ?string $modelLabel = 'Produk Simpanan';
     protected static ?string $pluralModelLabel = 'Produk Simpanan';

@@ -21,7 +21,7 @@ class LaporanOjk extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
-    protected static ?string $navigationGroup = 'Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Laporan OJK';
     protected static ?string $title = 'Laporan OJK';
     protected static ?int $navigationSort = 62;

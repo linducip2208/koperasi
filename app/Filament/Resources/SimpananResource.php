@@ -24,7 +24,7 @@ class SimpananResource extends Resource
 
     protected static ?string $model = Simpanan::class;
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Simpanan';
     protected static ?string $modelLabel = 'Simpanan';
     protected static ?string $pluralModelLabel = 'Simpanan';

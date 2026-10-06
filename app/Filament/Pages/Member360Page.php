@@ -20,7 +20,7 @@ class Member360Page extends Page implements HasForms
 
     protected static ?string $permissionModule = 'anggota';
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Anggota 360';
     protected static ?string $title = 'Anggota 360';
     protected static ?int $navigationSort = 52;

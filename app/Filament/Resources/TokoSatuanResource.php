@@ -18,7 +18,7 @@ class TokoSatuanResource extends Resource
 
     protected static ?string $model = TokoSatuan::class;
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Master Satuan';
     protected static ?string $modelLabel = 'Satuan';
     protected static ?string $pluralModelLabel = 'Satuan Barang';

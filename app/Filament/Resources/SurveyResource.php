@@ -18,7 +18,7 @@ class SurveyResource extends Resource
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = Survey::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
-    protected static ?string $navigationGroup = '📝 Blog & Marketing';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Survey';
     protected static ?string $modelLabel = 'Survey';
     protected static ?string $pluralModelLabel = 'Survey';

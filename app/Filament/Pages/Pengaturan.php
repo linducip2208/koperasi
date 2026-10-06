@@ -21,7 +21,7 @@ class Pengaturan extends Page implements HasForms
 
     protected static ?string $permissionModule = 'setting';
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Pengaturan Sistem';
     protected static ?string $title = 'Pengaturan Sistem';
     protected static ?int $navigationSort = 99;

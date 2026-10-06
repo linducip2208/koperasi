@@ -19,7 +19,7 @@ class BlogPostResource extends Resource
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $model = BlogPost::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Blog & Marketing';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Artikel Blog';
     protected static ?string $modelLabel = 'Artikel';
     protected static ?string $pluralModelLabel = 'Artikel';

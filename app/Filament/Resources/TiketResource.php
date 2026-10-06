@@ -17,7 +17,7 @@ class TiketResource extends Resource
     protected static ?string $permissionModule = 'setting';
     protected static ?string $model = Tiket::class;
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
-    protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Tiket Support';
     protected static ?string $modelLabel = 'Tiket';
     protected static ?string $pluralModelLabel = 'Tiket Support';

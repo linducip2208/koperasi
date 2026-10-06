@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/reports/{key}', [\App\Http\Controllers\Api\ReportApiController::class, 'show']);
         Route::post('/reports/{key}/run', [\App\Http\Controllers\Api\ReportApiController::class, 'run']);
         Route::post('/reports/{key}/export', [\App\Http\Controllers\Api\ReportApiController::class, 'export']);
+        Route::get('/notifikasi', [AnggotaApiController::class, 'notifikasi']);
     });
 });
 

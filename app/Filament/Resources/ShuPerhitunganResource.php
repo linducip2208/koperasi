@@ -20,7 +20,7 @@ class ShuPerhitunganResource extends Resource
     protected static ?string $model = ShuPerhitungan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cake';
-    protected static ?string $navigationGroup = 'SHU & RAT';
+    protected static ?string $navigationGroup = 'GOVERNANCE';
     protected static ?string $navigationLabel = 'Perhitungan SHU';
     protected static ?string $modelLabel = 'Perhitungan SHU';
     protected static ?string $pluralModelLabel = 'Perhitungan SHU';

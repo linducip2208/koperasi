@@ -12,7 +12,7 @@ class SystemHealthPage extends Page
 
     protected static ?string $permissionModule = 'setting';
     protected static ?string $navigationIcon = 'heroicon-o-heart';
-    protected static ?string $navigationGroup = '⚙️ Pengaturan';
+    protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'System Health';
     protected static ?string $title = 'System Health';
     protected static ?int $navigationSort = 96;

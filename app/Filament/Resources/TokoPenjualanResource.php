@@ -26,7 +26,7 @@ class TokoPenjualanResource extends Resource
     protected static ?string $model = TokoPenjualan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Penjualan (POS)';
     protected static ?string $modelLabel = 'Transaksi Penjualan';
     protected static ?string $pluralModelLabel = 'Transaksi Penjualan';

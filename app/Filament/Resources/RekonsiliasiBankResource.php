@@ -21,7 +21,7 @@ class RekonsiliasiBankResource extends Resource
     protected static ?string $permissionModule = 'bank';
     protected static ?string $model = RekonsiliasiBank::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Rekonsiliasi Bank';
     protected static ?string $modelLabel = 'Rekonsiliasi Bank';
     protected static ?string $pluralModelLabel = 'Rekonsiliasi Bank';

@@ -18,7 +18,7 @@ class PeriodeAkuntansiResource extends Resource
 
     protected static ?string $model = PeriodeAkuntansi::class;
     protected static ?string $navigationIcon = 'heroicon-o-lock-open';
-    protected static ?string $navigationGroup = 'Akuntansi';
+    protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Periode Akuntansi';
     protected static ?string $modelLabel = 'Periode';
     protected static ?string $pluralModelLabel = 'Periode Akuntansi';

@@ -18,7 +18,7 @@ class LoyaltyResource extends Resource
 
     protected static ?string $model = LoyaltyPoint::class;
     protected static ?string $navigationIcon = 'heroicon-o-star';
-    protected static ?string $navigationGroup = 'Keanggotaan';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Poin Loyalitas';
     protected static ?string $modelLabel = 'Poin Loyalitas';
     protected static ?string $pluralModelLabel = 'Poin Loyalitas';

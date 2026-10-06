@@ -19,7 +19,7 @@ class PinjamanRestrukturisasiResource extends Resource
 
     protected static ?string $model = PinjamanRestrukturisasi::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
-    protected static ?string $navigationGroup = 'Simpan Pinjam';
+    protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Restrukturisasi';
     protected static ?string $modelLabel = 'Restrukturisasi';
     protected static ?string $pluralModelLabel = 'Restrukturisasi Pinjaman';

@@ -24,7 +24,7 @@ class UnitJasaOrderResource extends Resource
     protected static ?string $model = UnitJasaOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Order Jasa';
     protected static ?string $modelLabel = 'Order Jasa';
     protected static ?string $pluralModelLabel = 'Order Jasa';

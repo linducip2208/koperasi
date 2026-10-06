@@ -21,7 +21,7 @@ class CustomReportPage extends Page implements HasForms
 
     protected static ?string $permissionModule = 'laporan';
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?string $navigationGroup = '📊 Laporan';
+    protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Custom Builder';
     protected static ?string $title = 'Custom Report Builder';
     protected static ?int $navigationSort = 56;

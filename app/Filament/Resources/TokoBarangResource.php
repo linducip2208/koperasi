@@ -19,7 +19,7 @@ class TokoBarangResource extends Resource
     protected static ?string $model = TokoBarang::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?string $navigationGroup = 'Toko & Unit Usaha';
+    protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Master Barang';
     protected static ?string $modelLabel = 'Barang';
     protected static ?string $pluralModelLabel = 'Master Barang';
