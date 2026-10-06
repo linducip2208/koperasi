@@ -82,7 +82,7 @@ Route::get('/struk/penjualan/{id}/{size?}', function ($id, $size = '58') {
         abort(403, 'Tidak berhak melihat struk ini.');
     }
     $width = in_array($size, ['58','80']) ? (int)$size : 58;
-    return view('struk.thermal', ['jual' => $jual, 'tenant' => \App\Models\Tenant::find(1), 'width' => $width]);
+    return view('struk.thermal', ['jual' => $jual, 'tenant' => \App\Support\CooperativeContext::current(), 'width' => $width]);
 })->middleware('auth')->name('struk.penjualan');
 
 /* Diagnostic page — hanya admin berizin (berisi info sensitif environment). */
@@ -225,6 +225,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', [PortalController::class, 'dashboard'])->name('dashboard');
         Route::get('/simpanan', [PortalController::class, 'simpanan'])->name('simpanan');
+        Route::get('/statement', [PortalController::class, 'statement'])->name('statement');
         Route::get('/pinjaman', [PortalController::class, 'pinjaman'])->name('pinjaman');
         Route::get('/transaksi', [PortalController::class, 'transaksi'])->name('transaksi');
         Route::get('/profil', [PortalController::class, 'profil'])->name('profil');
@@ -260,6 +261,20 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
         ->name('excel');
 });
 
+/* ===== Report Center export (otorisasi granular di ReportRunner) ===== */
+Route::middleware('auth')->prefix('reports')->name('reports.')->group(function () {
+    Route::get('/export/{key}/{format}', [\App\Http\Controllers\ReportExportController::class, 'export'])
+        ->where('format', 'pdf|excel|csv')
+        ->name('export');
+});
+
+/* ===== Import Center (otorisasi di controller; finansial perlu reports.import_financial) ===== */
+Route::middleware('auth')->prefix('imports')->name('imports.')->group(function () {
+    Route::get('/template/{tipe}', [\App\Http\Controllers\ImportController::class, 'template'])->name('template');
+    Route::post('/upload/{tipe}', [\App\Http\Controllers\ImportController::class, 'upload'])->name('upload');
+    Route::post('/confirm/{batch}', [\App\Http\Controllers\ImportController::class, 'confirm'])->name('confirm');
+    Route::get('/errors/{batch}', [\App\Http\Controllers\ImportController::class, 'errorFile'])->name('errors');
+});
 /* ===== E-RAT: QR check-in + Buku Tahunan =====
    Check-in memakai signed URL (dibuat dari admin, kedaluwarsa 30 hari) + throttle.
    POST memvalidasi signature juga — URL publik tanpa signature valid ditolak. */

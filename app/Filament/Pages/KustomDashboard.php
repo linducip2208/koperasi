@@ -173,7 +173,7 @@ class KustomDashboard extends BaseDashboard
                 ->count()
             : 0;
 
-        $tenant = \App\Models\Tenant::find(1);
+        $tenant = \App\Support\CooperativeContext::current();
         $licenseStatus = $tenant?->status ?? 'tidak_aktif';
 
         return [

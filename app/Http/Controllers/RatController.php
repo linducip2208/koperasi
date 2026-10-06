@@ -90,7 +90,7 @@ class RatController extends Controller
         $data = [
             'rat' => $rat,
             'tahun' => $tahun,
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
             'cabang' => null,
             'neraca' => $neraca,
             'labaRugi' => $labaRugi,

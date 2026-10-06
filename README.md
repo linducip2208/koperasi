@@ -2,9 +2,9 @@
 
 Aplikasi manajemen koperasi **standalone & komersial** — 1 instalasi = 1 koperasi = 1 database = 1 lisensi = 1 brand.
 
-Stack: Laravel 12 · PHP 8.2+ · MySQL/MariaDB (production) · Filament 3 · Blade + Tailwind (Vite, tanpa CDN) · Sanctum · Spatie (Permission, Activity Log, Backup, Media Library) · Dompdf · Laravel Excel.
+Stack: Laravel 12 · PHP 8.2+ · MySQL/MariaDB (production) · Filament 3 · Tabler + Tailwind lokal via Vite/npm (0 CDN) · Blade · Sanctum · Spatie (Permission, Activity Log, Backup, Media Library) · Dompdf · Laravel Excel · Chart.js lokal.
 
-Modul: Anggota (kartu + QR), Simpanan (pokok/wajib/sukarela/berjangka + mutasi + bunga otomatis), Pinjaman konvensional & syariah (workflow approval 3 level, denda, kolektabilitas, restrukturisasi), Toko/POS, Unit Produsen & Jasa, Akuntansi SAK EP (jurnal, buku besar, neraca saldo, neraca, laba rugi, arus kas, perubahan ekuitas, CALK, aging), SHU, RAT/E-RAT (QR check-in, quorum otomatis, e-voting, buku tahunan), Portal anggota + API v1, Payment gateway abstraction (redirect/QRIS/VA + webhook idempotent), WhatsApp (Fonnte/WAblas/log + template DB + queue), PPOB, PDF Engine white-label, Backup terjadwal, System Health, License pairing v3 (RSA + AES-GCM + heartbeat + grace 7 hari), Installer web, Update Center.
+Modul: Anggota 360 (kartu + QR + statement), Simpanan (pokok/wajib/sukarela/berjangka + mutasi + bunga otomatis), Pinjaman konvensional & syariah (workflow approval 3 level, denda, kolektabilitas, restrukturisasi), Toko/POS, Unit Produsen & Jasa, Akuntansi SAK EP (jurnal immutable + reversal, tutup periode, buku besar, neraca saldo, neraca, laba rugi, arus kas, perubahan ekuitas, CALK, aging), SHU (snapshot alokasi), RAT/E-RAT (QR check-in, quorum otomatis, e-voting, buku tahunan), Portal anggota + API v1, **Report Center (30 report + executive dashboard + custom builder + arsip + scheduled + AI insights)**, **Import/Export Center (CSV/XLSX validasi + template + queue)**, Payment gateway abstraction (redirect/QRIS/VA + webhook idempotent), WhatsApp (Fonnte/WAblas/log + template DB + queue), PPOB, PDF Engine white-label, Backup terjadwal, System Health, License pairing v3 (RSA + AES-GCM + heartbeat + grace 7 hari), Installer web, Update Center.
 
 ## Persyaratan
 
@@ -36,7 +36,7 @@ Software licensed, not sold — aktivasi per instalasi via pairing key (`/__pair
 
 ## Dokumentasi
 
-Lihat folder `docs/`: installation, configuration, white-label, licensing, backup-restore, update, accounting, loans, savings, rat, api, deployment, security, troubleshooting.
+Lihat folder `docs/`: installation, configuration, white-label, licensing, backup-restore-update, accounting, loans-savings, rat, api, deployment-security, reports, import-export, syariah.
 
 ## Lisensi pihak ketiga
 

@@ -32,7 +32,7 @@ class DocumentController extends Controller
         $this->authorizeAnggota($tx->simpanan->anggota_id ?? null);
         $pdf = Pdf::loadView('documents.kuitansi-setoran', [
             'tx'     => $tx,
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
         ])->setPaper('a5', 'landscape');
         return $pdf->stream("kuitansi-{$tx->id}.pdf");
     }
@@ -43,7 +43,7 @@ class DocumentController extends Controller
         $this->authorizeAnggota($p->anggota_id);
         $pdf = Pdf::loadView('documents.kontrak-pinjaman', [
             'p'      => $p,
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
         ])->setPaper('a4');
         return $pdf->stream("kontrak-pinjaman-{$p->nomor}.pdf");
     }
@@ -54,7 +54,7 @@ class DocumentController extends Controller
         $this->authorizeAnggota($bayar->pinjaman->anggota_id ?? null);
         $pdf = Pdf::loadView('documents.slip-cicilan', [
             'bayar'  => $bayar,
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
         ])->setPaper('a5', 'landscape');
         return $pdf->stream("slip-cicilan-{$bayar->id}.pdf");
     }
@@ -71,7 +71,7 @@ class DocumentController extends Controller
         abort_unless($ok, 403, 'Tidak berhak melihat dokumen ini.');
         $pdf = Pdf::loadView('documents.invoice-penjualan', [
             'jual'   => $jual,
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
         ])->setPaper('a4');
         return $pdf->stream("invoice-{$jual->nomor}.pdf");
     }

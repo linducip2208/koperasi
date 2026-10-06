@@ -1,0 +1,150 @@
+/**
+ * KOPERASI DESIGN SYSTEM — Tabler visual language, local assets only.
+ *
+ * Semua class komponen memakai prefix `kop-` agar tidak bentrok dengan
+ * Tailwind utilities maupun Filament. Tema warna via CSS variables yang
+ * di-override dari settings koperasi (theme).
+ */
+
+:root {
+    --kop-primary: #059669;
+    --kop-primary-dark: #047857;
+    --kop-secondary: #0d9488;
+    --kop-accent: #0891b2;
+    --kop-bg: #f8fafc;
+    --kop-card: #ffffff;
+    --kop-border: #e2e8f0;
+    --kop-text: #0f172a;
+    --kop-muted: #64748b;
+    --kop-success: #059669;
+    --kop-warning: #d97706;
+    --kop-danger: #e11d48;
+    --kop-info: #0284c7;
+    --kop-radius: 0.75rem;
+    --kop-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.12);
+}
+
+[data-kop-theme="blue"] { --kop-primary: #2563eb; --kop-primary-dark: #1d4ed8; --kop-secondary: #0284c7; }
+[data-kop-theme="indigo"] { --kop-primary: #4f46e5; --kop-primary-dark: #4338ca; --kop-secondary: #7c3aed; }
+[data-kop-theme="cyan"] { --kop-primary: #0891b2; --kop-primary-dark: #0e7490; --kop-secondary: #059669; }
+[data-kop-theme="teal"] { --kop-primary: #0d9488; --kop-primary-dark: #0f766e; --kop-secondary: #059669; }
+[data-kop-theme="violet"] { --kop-primary: #7c3aed; --kop-primary-dark: #6d28d9; --kop-secondary: #4f46e5; }
+[data-kop-theme="orange"] { --kop-primary: #ea580c; --kop-primary-dark: #c2410c; --kop-secondary: #d97706; }
+[data-kop-theme="rose"] { --kop-primary: #e11d48; --kop-primary-dark: #be123c; --kop-secondary: #f43f5e; }
+[data-kop-theme="slate"] { --kop-primary: #475569; --kop-primary-dark: #334155; --kop-secondary: #64748b; }
+
+/* ---------- Cards & stats ---------- */
+.kop-card {
+    background: var(--kop-card);
+    border: 1px solid var(--kop-border);
+    border-radius: var(--kop-radius);
+    box-shadow: var(--kop-shadow);
+}
+.kop-stat {
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+}
+.kop-stat-icon {
+    width: 2.75rem; height: 2.75rem; flex: none;
+    border-radius: 0.65rem;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    background: linear-gradient(135deg, var(--kop-primary), var(--kop-secondary));
+}
+.kop-stat-icon svg { width: 1.35rem; height: 1.35rem; }
+.kop-stat-value { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--kop-text); line-height: 1.1; }
+.kop-stat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--kop-muted); }
+.kop-stat-sub { font-size: 0.8rem; color: var(--kop-muted); }
+
+/* ---------- Badges & status ---------- */
+.kop-badge {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0.2rem 0.6rem; border-radius: 999px;
+    border: 1px solid transparent;
+}
+.kop-badge.success { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.kop-badge.warning { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+.kop-badge.danger { background: #fff1f2; color: #be123c; border-color: #fecdd3; }
+.kop-badge.info { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+.kop-badge.neutral { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+
+/* ---------- Tables ---------- */
+.kop-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.kop-table thead th {
+    text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--kop-muted); font-weight: 700;
+    padding: 0.65rem 0.9rem; border-bottom: 2px solid var(--kop-border);
+    position: sticky; top: 0; background: var(--kop-card); z-index: 1;
+}
+.kop-table tbody td { padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--kop-border); color: var(--kop-text); }
+.kop-table tbody tr:hover { background: #f8fafc; }
+.kop-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.kop-table tfoot td { font-weight: 800; background: #f8fafc; border-top: 2px solid var(--kop-border); }
+
+/* ---------- Filters & chips ---------- */
+.kop-filters { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: end; }
+.kop-field label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--kop-muted); margin-bottom: 0.3rem; }
+.kop-field input, .kop-field select {
+    border: 1px solid var(--kop-border); border-radius: 0.55rem;
+    padding: 0.5rem 0.75rem; font-size: 0.875rem; background: #fff; color: var(--kop-text);
+    min-width: 10rem;
+}
+.kop-field input:focus, .kop-field select:focus { outline: 2px solid var(--kop-primary); border-color: var(--kop-primary); }
+.kop-chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;
+    font-size: 0.75rem; font-weight: 600; border-radius: 999px; padding: 0.25rem 0.7rem;
+}
+.kop-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    background: var(--kop-primary); color: #fff; font-weight: 700; font-size: 0.85rem;
+    padding: 0.55rem 1.1rem; border-radius: 0.55rem; border: none; cursor: pointer;
+}
+.kop-btn:hover { background: var(--kop-primary-dark); }
+.kop-btn.secondary { background: #f1f5f9; color: var(--kop-text); border: 1px solid var(--kop-border); }
+.kop-btn.secondary:hover { background: #e2e8f0; }
+
+/* ---------- Page header & breadcrumb ---------- */
+.kop-page-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1.25rem; }
+.kop-page-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.01em; color: var(--kop-text); }
+.kop-page-sub { font-size: 0.85rem; color: var(--kop-muted); }
+.kop-crumb { display: flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--kop-muted); margin-bottom: 0.35rem; }
+.kop-crumb a { color: var(--kop-primary); font-weight: 600; text-decoration: none; }
+.kop-crumb a:hover { text-decoration: underline; }
+
+/* ---------- Empty / error states ---------- */
+.kop-empty { text-align: center; padding: 3rem 1.5rem; color: var(--kop-muted); }
+.kop-empty .kop-empty-icon { font-size: 2.75rem; margin-bottom: 0.75rem; opacity: 0.5; }
+.kop-empty h3 { font-size: 1rem; font-weight: 800; color: var(--kop-text); margin-bottom: 0.35rem; }
+.kop-empty p { font-size: 0.85rem; margin-bottom: 1rem; }
+
+/* ---------- Timeline ---------- */
+.kop-timeline { list-style: none; margin: 0; padding: 0; }
+.kop-timeline li { position: relative; padding: 0 0 1.25rem 1.75rem; border-left: 2px solid var(--kop-border); margin-left: 0.4rem; }
+.kop-timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.kop-timeline .kop-dot {
+    position: absolute; left: -0.5rem; top: 0.15rem;
+    width: 0.9rem; height: 0.9rem; border-radius: 999px;
+    background: var(--kop-primary); border: 2px solid #fff; box-shadow: 0 0 0 2px var(--kop-primary);
+}
+
+/* ---------- Progress ---------- */
+.kop-progress { height: 0.5rem; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+.kop-progress > span { display: block; height: 100%; background: linear-gradient(90deg, var(--kop-primary), var(--kop-secondary)); border-radius: 999px; }
+
+/* ---------- Grid helpers ---------- */
+.kop-grid { display: grid; gap: 1rem; }
+.kop-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.kop-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.kop-grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1024px) { .kop-grid.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kop-grid.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .kop-grid.cols-2, .kop-grid.cols-3, .kop-grid.cols-4 { grid-template-columns: 1fr; } }
+
+/* ---------- Print ---------- */
+@media print {
+    .kop-no-print { display: none !important; }
+    .kop-card { box-shadow: none; }
+}

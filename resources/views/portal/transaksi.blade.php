@@ -7,6 +7,10 @@
 @section('content')
 <div class="space-y-6 max-w-7xl">
 
+    <div class="flex justify-end">
+        <a href="{{ route('portal.statement', ['download' => 1]) }}" class="inline-flex items-center gap-1 text-xs font-extrabold bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700">⬇ Unduh Statement (PDF)</a>
+    </div>
+
     <div class="card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">

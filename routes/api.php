@@ -16,6 +16,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/me', [AnggotaApiController::class, 'profile']);
         Route::get('/simpanan', [AnggotaApiController::class, 'simpanan']);
         Route::get('/pinjaman', [AnggotaApiController::class, 'pinjaman']);
+        Route::get('/reports', [\App\Http\Controllers\Api\ReportApiController::class, 'index']);
+        Route::get('/reports/{key}', [\App\Http\Controllers\Api\ReportApiController::class, 'show']);
+        Route::post('/reports/{key}/run', [\App\Http\Controllers\Api\ReportApiController::class, 'run']);
+        Route::post('/reports/{key}/export', [\App\Http\Controllers\Api\ReportApiController::class, 'export']);
     });
 });
 
@@ -26,4 +30,8 @@ Route::middleware(['auth:sanctum', 'throttle:120,1'])->group(function () {
     Route::get('/me', [AnggotaApiController::class, 'profile']);
     Route::get('/simpanan', [AnggotaApiController::class, 'simpanan']);
     Route::get('/pinjaman', [AnggotaApiController::class, 'pinjaman']);
+    Route::get('/reports', [\App\Http\Controllers\Api\ReportApiController::class, 'index']);
+    Route::get('/reports/{key}', [\App\Http\Controllers\Api\ReportApiController::class, 'show']);
+    Route::post('/reports/{key}/run', [\App\Http\Controllers\Api\ReportApiController::class, 'run']);
+    Route::post('/reports/{key}/export', [\App\Http\Controllers\Api\ReportApiController::class, 'export']);
 });

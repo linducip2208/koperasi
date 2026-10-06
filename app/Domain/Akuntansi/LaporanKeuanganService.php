@@ -19,8 +19,8 @@ class LaporanKeuanganService
 
         $query = JurnalDetail::where('coa_id', $coa->id)
             ->whereHas('jurnal', function ($q) use ($dari, $sampai, $isLR, $cabangId) {
-                $q->where('is_posted', true)->where('tanggal', '<=', $sampai);
-                if ($isLR && $dari) $q->where('tanggal', '>=', $dari);
+                $q->where('is_posted', true)->whereDate('tanggal', '<=', $sampai);
+                if ($isLR && $dari) $q->whereDate('tanggal', '>=', $dari);
                 if ($cabangId) $q->where('cabang_id', $cabangId);
             });
 
@@ -71,13 +71,13 @@ class LaporanKeuanganService
         })->pluck('id');
         $masuk = (int) JurnalDetail::whereIn('coa_id', $kasBankIds)
             ->whereHas('jurnal', fn ($q) => $q->where('is_posted', true)
-                ->whereBetween('tanggal', [$dari, $sampai])
+                ->whereDate('tanggal', '>=', $dari)->whereDate('tanggal', '<=', $sampai)
                 ->when($cabangId, fn ($qq) => $qq->where('cabang_id', $cabangId)))
             ->sum('debit');
 
         $keluar = (int) JurnalDetail::whereIn('coa_id', $kasBankIds)
             ->whereHas('jurnal', fn ($q) => $q->where('is_posted', true)
-                ->whereBetween('tanggal', [$dari, $sampai])
+                ->whereDate('tanggal', '>=', $dari)->whereDate('tanggal', '<=', $sampai)
                 ->when($cabangId, fn ($qq) => $qq->where('cabang_id', $cabangId)))
             ->sum('kredit');
 
@@ -226,7 +226,7 @@ class LaporanKeuanganService
 
         $lines = JurnalDetail::where('coa_id', $coa->id)
             ->whereHas('jurnal', function ($q) use ($dari, $sampai, $cabangId) {
-                $q->where('is_posted', true)->whereBetween('tanggal', [$dari, $sampai]);
+                $q->where('is_posted', true)->whereDate('tanggal', '>=', $dari)->whereDate('tanggal', '<=', $sampai);
                 if ($cabangId) $q->where('cabang_id', $cabangId);
             })
             ->with('jurnal')
@@ -320,16 +320,35 @@ class LaporanKeuanganService
         ];
     }
 
-    private static function groupSaldo(string $tipe, ?string $dari, string $sampai, ?int $cabangId = null): array    {
-        $coas = Coa::where('tipe', $tipe)->where('is_aktif', true)
-            ->whereNull('parent_id')
-            ->orWhere(fn ($q) => $q->where('tipe', $tipe)->where('is_postable', true))
-            ->get();
+    /**
+     * Saldo per kelompok: induk = saldo sendiri + ROLL-UP seluruh keturunan.
+     * Posting selalu di akun leaf postable; tanpa roll-up neraca tampil kosong.
+     */
+    private static function groupSaldo(string $tipe, ?string $dari, string $sampai, ?int $cabangId = null): array
+    {
+        $all = Coa::where('tipe', $tipe)->where('is_aktif', true)->get()->keyBy('id');
 
-        return $coas->map(fn ($c) => [
-            'kode'  => $c->kode,
-            'nama'  => $c->nama,
-            'saldo' => self::saldoAkun($c, $dari, $sampai, $cabangId),
+        // Saldo tiap akun (satu query per akun; hasilnya di-cache per request via statis).
+        $saldoOf = [];
+        foreach ($all as $c) {
+            $saldoOf[$c->id] = self::saldoAkun($c, $dari, $sampai, $cabangId);
+        }
+
+        $rollup = function ($id) use (&$rollup, $all, $saldoOf) {
+            $total = $saldoOf[$id] ?? 0;
+            foreach ($all->where('parent_id', $id) as $child) {
+                $total += $rollup($child->id);
+            }
+            return $total;
+        };
+
+        // Tampilkan: induk top-level (dengan roll-up) + leaf postable tanpa induk.
+        $shown = $all->filter(fn ($c) => $c->parent_id === null || ($c->is_postable && ! $all->has($c->parent_id)));
+
+        return $shown->map(fn ($c) => [
+            'kode' => $c->kode,
+            'nama' => $c->nama,
+            'saldo' => $rollup($c->id),
         ])->filter(fn ($r) => $r['saldo'] != 0)->values()->all();
     }
 }

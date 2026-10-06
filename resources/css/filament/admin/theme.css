@@ -2,6 +2,9 @@
 
 @import '../../../../vendor/filament/filament/resources/css/base.css';
 
+/* Koperasi design system (kop-* components) — tersedia di semua halaman admin. */
+@import '../../koperasi.css';
+
 @source '../../../../app/Filament';
 @source '../../../../resources/views/filament';
 @source '../../../../vendor/filament/**/*.blade.php';

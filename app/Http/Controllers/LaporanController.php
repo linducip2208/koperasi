@@ -167,7 +167,7 @@ class LaporanController extends Controller
     private function commonHeaderData(Request $request, ?int $cabangId): array
     {
         return [
-            'tenant' => Tenant::find(1),
+            'tenant' => \App\Support\CooperativeContext::current(),
             'cabang' => $cabangId ? Cabang::find($cabangId) : null,
         ];
     }

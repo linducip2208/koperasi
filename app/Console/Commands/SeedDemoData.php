@@ -531,11 +531,21 @@ class SeedDemoData extends Command
 
         $now = now();
         $rows = [];
+        $detailRows = [];
         $nomorIdx = (int) (DB::table('jurnal')->where('tenant_id', $tenantId)->count() + 1);
+        $jurnalIdNext = (int) (DB::table('jurnal')->max('id') ?? 0) + 1;
+
+        // Akun postable untuk baris jurnal demo yang balance (debit == kredit).
+        $coaIds = DB::table('coa')->where('tenant_id', $tenantId)->where('is_postable', true)->pluck('id')->all();
+        if (empty($coaIds)) {
+            $coaIds = DB::table('coa')->where('tenant_id', $tenantId)->pluck('id')->all();
+        }
 
         for ($i = 0; $i < $count; $i++) {
             $total = rand(500_000, 50_000_000);
+            $jid = $jurnalIdNext++;
             $rows[] = [
+                'id'           => $jid,
                 'tenant_id'    => $tenantId,
                 'nomor'        => 'JU-' . str_pad((string) $nomorIdx++, 8, '0', STR_PAD_LEFT),
                 'tanggal'      => Carbon::createFromTimestamp(rand(strtotime('-1 year'), time()))->toDateString(),
@@ -549,11 +559,24 @@ class SeedDemoData extends Command
                 'updated_at'   => $now,
             ];
 
+            // 2 baris balance per jurnal: debit akun A, kredit akun B (berbeda).
+            $coaD = $coaIds[array_rand($coaIds)];
+            do { $coaK = $coaIds[array_rand($coaIds)]; } while ($coaK === $coaD && count($coaIds) > 1);
+            $detailRows[] = ['tenant_id' => $tenantId, 'jurnal_id' => $jid, 'coa_id' => $coaD, 'debit' => $total, 'kredit' => 0, 'keterangan' => 'Demo debit', 'created_at' => $now, 'updated_at' => $now];
+            $detailRows[] = ['tenant_id' => $tenantId, 'jurnal_id' => $jid, 'coa_id' => $coaK, 'debit' => 0, 'kredit' => $total, 'keterangan' => 'Demo kredit', 'created_at' => $now, 'updated_at' => $now];
+
             if (count($rows) >= $chunk) {
                 DB::table('jurnal')->insert($rows);
+                DB::table('jurnal_detail')->insert($detailRows);
                 $bar->advance(count($rows));
-                $rows = [];
+                $rows = []; $detailRows = [];
             }
+        }
+        if ($rows) {
+            DB::table('jurnal')->insert($rows);
+            DB::table('jurnal_detail')->insert($detailRows);
+            $bar->advance(count($rows));
+        }
         }
         if ($rows) {
             DB::table('jurnal')->insert($rows);

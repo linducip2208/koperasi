@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth" x-data="{ darkMode: localStorage.getItem('portal_dark') === '1' }" x-init="$watch('darkMode', v => { localStorage.setItem('portal_dark', v ? '1' : '0'); document.documentElement.classList.toggle('dark', v); }); if (darkMode) document.documentElement.classList.add('dark')">
+<html lang="id" data-kop-theme="{{ $koperasi->theme ?? 'emerald' }}" class="scroll-smooth" x-data="{ darkMode: localStorage.getItem('portal_dark') === '1' }" x-init="$watch('darkMode', v => { localStorage.setItem('portal_dark', v ? '1' : '0'); document.documentElement.classList.toggle('dark', v); }); if (darkMode) document.documentElement.classList.add('dark')">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,8 +22,8 @@
             });
         }
     </script>
-    {{-- Asset lokal via Vite (tanpa CDN). Font memakai system stack. --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Asset lokal via Vite (tanpa CDN): Tabler + design system + utilities. --}}
+    @vite(['resources/css/tabler-app.css', 'resources/css/app.css', 'resources/js/app.js'])
     {{-- Tema & animasi kustom kini di resources/css/app.css (build Vite). --}}
     <style>
         :root {

@@ -110,8 +110,7 @@ class PortalController extends Controller
 
     public function transaksi(Request $request): View
     {
-        $anggota = $this->getAnggotaOrAbort($request);
-        $simpananIds = $anggota->simpanan()->pluck('id');
+        $anggota = $this->getAnggotaOrAbort($request);        $simpananIds = $anggota->simpanan()->pluck('id');
         $pinjamanIds = $anggota->pinjaman()->pluck('id');
 
         $simpananTrx = SimpananTransaksi::whereIn('simpanan_id', $simpananIds)
@@ -286,6 +285,31 @@ class PortalController extends Controller
         ]);
 
         return redirect()->route('portal.simpanan')->with('success', 'Pengajuan setoran berhasil dikirim. Tunggu verifikasi admin (max 1x24 jam).');
+    }
+
+    /** Unduh statement mutasi milik sendiri (PDF branded). */
+    public function statement(Request $request)
+    {
+        $anggota = $this->getAnggotaOrAbort($request);
+        $dari = $request->input('dari', now()->startOfYear()->toDateString());
+        $sampai = $request->input('sampai', now()->toDateString());
+
+        $simpananIds = $anggota->simpanan()->pluck('id');
+        $trx = SimpananTransaksi::whereIn('simpanan_id', $simpananIds)
+            ->whereDate('tanggal', '>=', $dari)->whereDate('tanggal', '<=', $sampai)
+            ->orderBy('tanggal')->orderBy('id')->limit(2000)->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('portal.statement', [
+            'anggota' => $anggota,
+            'transaksi' => $trx,
+            'dari' => $dari, 'sampai' => $sampai,
+            'tenant' => \App\Support\CooperativeContext::current(),
+            'cabang' => null,
+        ])->setPaper('a4');
+
+        return $request->boolean('download')
+            ? $pdf->download("statement-{$anggota->nomor_anggota}-{$dari}-{$sampai}.pdf")
+            : $pdf->stream("statement-{$anggota->nomor_anggota}.pdf");
     }
 
     private function getAnggotaOrAbort(Request $request): Anggota

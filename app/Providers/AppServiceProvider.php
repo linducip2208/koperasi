@@ -28,11 +28,7 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             static $koperasi = 'unresolved';
             if ($koperasi === 'unresolved') {
-                try {
-                    $koperasi = \App\Models\Tenant::current();
-                } catch (\Throwable) {
-                    $koperasi = null;
-                }
+                $koperasi = \App\Support\CooperativeContext::current();
             }
             $view->with('koperasi', $koperasi);
         });

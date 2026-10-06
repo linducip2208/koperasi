@@ -1,6 +1,22 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Pelengkapan SAK EP + E-RAT + Stabilisasi
+## 2026-10-07 — Sesi Report Center + Tabler + Import/Export (commercial-grade)
+
+### Arsitektur
+- `CooperativeContext` — ganti semua `Tenant::find(1)` (8 titik) + view-share
+- `app/Reports/`: ReportDefinition/Filter/Result/Registry(30)/Runner(audit)/Exporter(CSV stream/Excel/PDF)/Archiver(checksum)/CustomReportRunner(whitelist)
+- `ReportPermissionSeeder` (aman rerun), `ReportArchive/SavedReport/ScheduledReport/CustomReport/ImportBatch` + migrasi
+- Filament: ReportCenter (search/favorit/recent), ReportViewer (filter dinamis + chips + chart + export), ExecutiveDashboard (9 KPI + periode), Member360, ExportCenter, ReportArchive, ScheduledReports, CustomBuilder, AiInsight
+- API `/api/v1/reports*` + legacy alias; commands `reports:list|health|generate|scheduled` (scheduler 06:30)
+- Import Center: engine CSV/XLSX (delimiter/BOM/ID-number/date), preview valid/invalid/duplikat + Error CSV, atomic 500/batch + jurnal penyeimbang, queue >1000 (`ProcessImport`), template per tipe
+- ProfitSharingCalculator (integer + largest-remainder + snapshot) + AiManager (interface + local-heuristic + sanitasi + label)
+- Portal: statement PDF + tombol unduh di transaksi
+- Tabler lokal (@tabler/core + chart.js via npm), `koperasi.css` design system (tema koperasi), portal pakai tabler-app, admin dapat kop-* — 0 CDN di views
+- Fix nyata: groupSaldo roll-up akun anak; whereDate tahan-driver (sqlite artifact); SeedDemoData jurnal kini balance berbaris; NIK unique; index hotpath; SecurityHeaders; installer/license bypass RequirePair; CSRF-except webhook
+- Portal statement PDF; error pages; i18n id/en reports; docs reports/import-export/syariah; README produk
+- Test: 113 OK (444 assertion) termasuk ReportCenterTest 12 (neraca balance, profit sharing, import, archive immutable, custom whitelist, AI sanitize, API auth)
+
+---
 
 ### SAK EP (baru)
 - `LaporanKeuanganService::perubahanEkuitas()` + `::calk()` — SAK EP koperasi
