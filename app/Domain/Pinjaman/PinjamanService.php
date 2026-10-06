@@ -126,7 +126,6 @@ class PinjamanService
     public static function approve(Pinjaman $pinjaman, int $userId): Pinjaman
     {
         $user = \App\Models\User::findOrFail($userId);
-        $userRole = $user->roles->first()?->name;
 
         $nextPending = $pinjaman->approval()
             ->where('keputusan', 'pending')
@@ -137,6 +136,14 @@ class PinjamanService
             throw new InvalidArgumentException('Semua level sudah memberikan keputusan.');
         }
 
+        // Penegakan wewenang: hanya role level berjalan (atau super-admin) yang sah.
+        $requiredRole = self::APPROVAL_LEVELS[$nextPending->level]['role'] ?? null;
+        $userRoles = $user->roles->pluck('name')->all();
+        $boleh = $requiredRole
+            && (in_array($requiredRole, $userRoles, true) || in_array('super-admin', $userRoles, true));
+        if (! $boleh) {
+            throw new InvalidArgumentException("Level {$nextPending->level} ({$nextPending->jabatan}) hanya boleh disetujui role '{$requiredRole}'.");
+        }
         $nextPending->update([
             'user_id'    => $userId,
             'keputusan'  => 'setuju',

@@ -31,9 +31,7 @@
     <meta name="twitter:title" content="{{ $title }}">
     <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($description), 158) }}">
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+        @vite('resources/css/app.css')
     <style>
         body{font-family:'Inter','system-ui',sans-serif;font-feature-settings:'cv02','cv03','cv04','cv11';-webkit-font-smoothing:antialiased}
         .brand-gradient{background:linear-gradient(135deg,#059669,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}

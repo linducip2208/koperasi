@@ -89,7 +89,26 @@ class JurnalResource extends Resource
                         ->when($data['dari'], fn ($q, $v) => $q->whereDate('tanggal', '>=', $v))
                         ->when($data['sampai'], fn ($q, $v) => $q->whereDate('tanggal', '<=', $v))),
             ])
-            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\EditAction::make()])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('post')
+                    ->label('Post')->icon('heroicon-o-check-circle')->color('success')
+                    ->visible(fn ($record) => ! $record->is_posted)
+                    ->requiresConfirmation()
+                    ->action(fn ($record) => \App\Domain\Akuntansi\JurnalService::post($record)),
+                Tables\Actions\Action::make('unpost')
+                    ->label('Unpost')->icon('heroicon-o-arrow-uturn-left')->color('warning')
+                    ->visible(fn ($record) => (bool) $record->is_posted)
+                    ->requiresConfirmation()
+                    ->modalDescription('Jurnal kembali ke draft dan bisa diedit. Tercatat di audit log.')
+                    ->action(fn ($record) => \App\Domain\Akuntansi\JurnalService::unpost($record)),
+                Tables\Actions\Action::make('reverse')
+                    ->label('Reverse')->icon('heroicon-o-document-duplicate')->color('danger')
+                    ->visible(fn ($record) => (bool) $record->is_posted)
+                    ->form([\Filament\Forms\Components\Textarea::make('alasan')->label('Alasan reversal')->required()])
+                    ->action(fn ($record, array $data) => \App\Domain\Akuntansi\JurnalService::reverse($record, null, $data['alasan'])),
+                Tables\Actions\EditAction::make()->visible(fn ($record) => ! $record->is_posted),
+            ])
             ->defaultSort('tanggal', 'desc');
     }
 

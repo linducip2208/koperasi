@@ -17,6 +17,14 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 Route::get('/demo', [\App\Http\Controllers\DemoController::class, 'index'])->name('demo');
 Route::get('/docs', [DocsController::class, 'index'])->name('docs');
 
+/* ===== Installer standalone (terkunci otomatis setelah selesai) ===== */
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/{step?}', [\App\Http\Controllers\InstallController::class, 'show'])
+        ->where('step', '[a-z]+')->name('show');
+    Route::post('/{step}', [\App\Http\Controllers\InstallController::class, 'store'])
+        ->where('step', '[a-z]+')->name('store');
+});
+
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
@@ -35,9 +43,14 @@ Route::get('/sitemap{id}.xml', [LandingController::class, 'sitemapChunk'])->wher
    Filament admin punya halaman login sendiri di /admin/login (sudah handled). */
 Route::redirect('/login', '/portal/login')->name('login');
 
-/* Kartu anggota dengan QR Code (printable) */
+/* Kartu anggota dengan QR Code (printable) — pemilik atau staf berizin. */
 Route::get('/anggota/{id}/kartu', function ($id) {
     $anggota = \App\Models\Anggota::findOrFail($id);
+    $user = \Illuminate\Support\Facades\Auth::user();
+    $milikSendiri = $user && \App\Models\Anggota::where('user_id', $user->id)->where('id', $anggota->id)->exists();
+    if (! $milikSendiri && ! $user->can('anggota.view')) {
+        abort(403, 'Tidak berhak melihat kartu anggota ini.');
+    }
     return view('anggota.kartu', ['anggota' => $anggota]);
 })->middleware('auth')->name('anggota.kartu');
 
@@ -59,15 +72,24 @@ Route::middleware(['auth'])->prefix('dokumen')->name('dokumen.')->group(function
     Route::get('/invoice-penjualan/{jual}', [\App\Http\Controllers\DocumentController::class, 'invoicePenjualan'])->name('invoice');
 });
 
-/* ===== Struk thermal POS — auto-print 58mm/80mm ===== */
+/* ===== Struk thermal POS — auto-print 58mm/80mm (pemilik atau kasir) ===== */
 Route::get('/struk/penjualan/{id}/{size?}', function ($id, $size = '58') {
     $jual = \App\Models\TokoPenjualan::with(['anggota', 'detail.barang'])->findOrFail($id);
+    $user = \Illuminate\Support\Facades\Auth::user();
+    $anggotaId = $user ? \App\Models\Anggota::where('user_id', $user->id)->value('id') : null;
+    $milikSendiri = $anggotaId && (int) $jual->anggota_id === (int) $anggotaId;
+    if (! $milikSendiri && ! $user->can('pos.view')) {
+        abort(403, 'Tidak berhak melihat struk ini.');
+    }
     $width = in_array($size, ['58','80']) ? (int)$size : 58;
     return view('struk.thermal', ['jual' => $jual, 'tenant' => \App\Models\Tenant::find(1), 'width' => $width]);
 })->middleware('auth')->name('struk.penjualan');
 
-/* Diagnostic page — akses via browser untuk troubleshoot */
+/* Diagnostic page — hanya admin berizin (berisi info sensitif environment). */
 Route::get('/diagnose', function () {
+    if (! \Illuminate\Support\Facades\Auth::user()->can('setting.view')) {
+        abort(403, 'Hanya administrator.');
+    }
     \Illuminate\Support\Facades\Artisan::call('koperasi:diagnose-auth');
     $output = \Illuminate\Support\Facades\Artisan::output();
     // Strip ANSI color codes
@@ -77,24 +99,18 @@ Route::get('/diagnose', function () {
         'pre{white-space:pre-wrap;word-break:break-word}.ok{color:#10b981}.fail{color:#ef4444}.section{color:#06b6d4;font-weight:bold}' .
         'a{color:#10b981;text-decoration:none;font-weight:bold}a:hover{text-decoration:underline}</style></head><body>' .
         '<h1>🔬 Auth Diagnostic Report</h1><pre>' . htmlspecialchars($clean) . '</pre>' .
-        '<hr><p><a href="/admin/login">→ Coba login Filament</a> · <a href="/login-admin">→ Coba login simple</a> · <a href="/clear-session">→ Clear session</a></p>' .
+        '<hr><p><a href="/admin/login">→ Coba login Filament</a> · <a href="/login-admin">→ Coba login simple</a></p>' .
         '</body></html>');
-})->name('diagnose');
+})->middleware(['auth'])->name('diagnose');
 
-/* Emergency: clear session & cookie (untuk fix login problem dari sisi browser) */
-Route::get('/clear-session', function (\Illuminate\Http\Request $request) {
+/* Reset session sendiri (POST + auth + CSRF). Dipakai saat ada masalah login di browser. */
+Route::post('/clear-session', function (\Illuminate\Http\Request $request) {
     \Illuminate\Support\Facades\Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    \Illuminate\Support\Facades\DB::table('sessions')->delete();
 
-    $cookies = collect($request->cookies->all())->keys();
-    $response = redirect('/admin/login')->with('success', 'Session & cookie dibersihkan. Silakan login ulang.');
-    foreach ($cookies as $name) {
-        $response->withCookie(cookie()->forget($name));
-    }
-    return $response;
-})->name('clear.session');
+    return redirect('/portal/login')->with('success', 'Session dibersihkan. Silakan login ulang.');
+})->middleware('auth')->name('clear.session');
 
 /* Login admin alternatif (super-simple, plain HTML, no Filament/Livewire dep)
    — fallback kalau Filament login broken di sisi user. */
@@ -105,14 +121,8 @@ Route::get('/login-admin', function () {
     return view('auth.simple-login');
 })->name('admin.simple-login');
 
-/* Filament admin/login fallback (non-JS) — Livewire form pakai wire:submit
-   yang submit via X-CSRF-TOKEN header. Saat JS gagal load, browser fallback
-   POST native ke /admin/login tanpa _token field → tanpa route ini = 405,
-   dengan VerifyCsrfToken aktif = 419 Page Expired.
-
-   CSRF di-exempt karena: (1) login adalah entry point, belum ada session
-   yang perlu dilindungi; (2) Auth::attempt + rate limiting Laravel sudah
-   mencegah brute force; (3) hanya aktif sebagai fallback non-JS. */
+/* Filament admin/login fallback (non-JS) — form menyertakan @csrf normal.
+   CSRF tetap aktif: login-CSRF dicegah, brute force dibatasi rate limiter. */
 Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     $request->validate([
         'email'    => ['required', 'email'],
@@ -137,7 +147,7 @@ Route::post('/admin/login', function (\Illuminate\Http\Request $request) {
     \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
     return back()->withErrors(['email' => 'Email atau password salah.'])->withInput($request->only('email'));
 })
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+    ->middleware('throttle:10,1')
     ->name('filament.admin.auth.login.fallback');
 
 /* ----------------------------- Programmatic SEO ---------------------------- */
@@ -210,7 +220,7 @@ Route::prefix('portal')->name('portal.')->group(function () {
     Route::get('/login', [PortalController::class, 'showLogin'])->name('login');
     Route::post('/login', [PortalController::class, 'login'])->name('login.post');
     Route::get('/qr-login/{anggota}', [PortalController::class, 'qrLogin'])
-        ->middleware('signed')
+        ->middleware(['signed', 'throttle:10,1'])
         ->name('qr-login');
     Route::middleware('auth')->group(function () {
         Route::get('/', [PortalController::class, 'dashboard'])->name('dashboard');
@@ -241,17 +251,23 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
     Route::get('/arus-kas', [LaporanController::class, 'arusKas'])->name('arus-kas');
     Route::get('/perubahan-ekuitas', [LaporanController::class, 'perubahanEkuitas'])->name('perubahan-ekuitas');
     Route::get('/calk', [LaporanController::class, 'calk'])->name('calk');
+    Route::get('/buku-besar', [LaporanController::class, 'bukuBesar'])->name('buku-besar');
+    Route::get('/trial-balance', [LaporanController::class, 'trialBalance'])->name('trial-balance');
+    Route::get('/aging', [LaporanController::class, 'aging'])->name('aging');
     Route::get('/ringkasan-produk', [LaporanController::class, 'ringkasanProduk'])->name('ringkasan-produk');
     Route::get('/excel/{laporan}', [LaporanController::class, 'excel'])
-        ->where('laporan', 'neraca|laba-rugi|arus-kas|perubahan-ekuitas|calk')
+        ->where('laporan', 'neraca|laba-rugi|arus-kas|perubahan-ekuitas|calk|trial-balance|aging')
         ->name('excel');
 });
 
-/* ===== E-RAT: QR check-in + Buku Tahunan ===== */
+/* ===== E-RAT: QR check-in + Buku Tahunan =====
+   Check-in memakai signed URL (dibuat dari admin, kedaluwarsa 30 hari) + throttle.
+   POST memvalidasi signature juga — URL publik tanpa signature valid ditolak. */
 Route::prefix('rat')->name('rat.')->group(function () {
-    // QR check-in: link signed 30 hari, contoh dibuat dari admin (RatResource action)
-    Route::get('/{rat}/checkin', [RatController::class, 'checkin'])->name('checkin');
-    Route::post('/{rat}/checkin', [RatController::class, 'storeCheckin'])->name('checkin.store');
+    Route::get('/{rat}/checkin', [RatController::class, 'checkin'])
+        ->middleware(['signed', 'throttle:60,1'])->name('checkin');
+    Route::post('/{rat}/checkin', [RatController::class, 'storeCheckin'])
+        ->middleware(['signed', 'throttle:60,1'])->name('checkin.store');
     Route::get('/{rat}/buku-tahunan', [RatController::class, 'bukuTahunan'])
         ->middleware('auth')->name('buku-tahunan');
 });

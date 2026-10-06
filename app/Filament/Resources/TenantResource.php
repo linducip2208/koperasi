@@ -30,20 +30,57 @@ class TenantResource extends Resource
             Forms\Components\Tabs::make()->tabs([
                 Forms\Components\Tabs\Tab::make('Identitas')->schema([
                     Forms\Components\Grid::make(2)->schema([
-                        Forms\Components\TextInput::make('nama')->label('Nama Koperasi')->required(),
+                        Forms\Components\TextInput::make('nama')->label('Nama Koperasi')->required()->columnSpanFull(),
+                        Forms\Components\TextInput::make('short_name')->label('Nama Pendek')->maxLength(50)
+                            ->helperText('Untuk kop dokumen & tampilan ringkas.'),
+                        Forms\Components\TextInput::make('slogan')->label('Slogan / Motto')->columnSpanFull(),
                         Forms\Components\TextInput::make('badan_hukum')->label('No. Badan Hukum'),
                         Forms\Components\TextInput::make('nik_koperasi')->label('NIK Koperasi'),
                         Forms\Components\TextInput::make('npwp')->label('NPWP'),
                         Forms\Components\TextInput::make('akta_pendirian')->label('No. Akta Pendirian'),
+                        Forms\Components\DatePicker::make('tanggal_akta')->label('Tanggal Akta'),
                         Forms\Components\FileUpload::make('logo_path')->label('Logo')->image()->directory('koperasi'),
                     ]),
                 ]),
-                Forms\Components\Tabs\Tab::make('Kontak')->schema([
+                Forms\Components\Tabs\Tab::make('Kontak & Wilayah')->schema([
                     Forms\Components\Grid::make(2)->schema([
-                        Forms\Components\Textarea::make('alamat')->label('Alamat')->rows(2)->columnSpanFull(),
+                        Forms\Components\Textarea::make('alamat')->label('Alamat Jalan')->rows(2)->columnSpanFull(),
+                        Forms\Components\TextInput::make('desa')->label('Desa/Kelurahan'),
+                        Forms\Components\TextInput::make('kecamatan')->label('Kecamatan'),
+                        Forms\Components\TextInput::make('kabupaten')->label('Kabupaten/Kota'),
+                        Forms\Components\TextInput::make('provinsi')->label('Provinsi'),
+                        Forms\Components\TextInput::make('kode_pos')->label('Kode Pos')->maxLength(10),
                         Forms\Components\TextInput::make('telp')->label('Telepon'),
+                        Forms\Components\TextInput::make('whatsapp')->label('WhatsApp')->maxLength(30),
                         Forms\Components\TextInput::make('email')->label('Email')->email(),
                         Forms\Components\TextInput::make('website')->label('Website')->url(),
+                    ]),
+                ]),
+                Forms\Components\Tabs\Tab::make('Pengurus')->schema([
+                    Forms\Components\Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('nama_ketua')->label('Nama Ketua'),
+                        Forms\Components\TextInput::make('nama_sekretaris')->label('Nama Sekretaris'),
+                        Forms\Components\TextInput::make('nama_bendahara')->label('Nama Bendahara'),
+                    ]),
+                ]),
+                Forms\Components\Tabs\Tab::make('Branding')->schema([
+                    Forms\Components\Grid::make(2)->schema([
+                        Forms\Components\Select::make('theme')->label('Tema')->options([
+                            'emerald' => 'Emerald', 'teal' => 'Teal', 'blue' => 'Blue', 'amber' => 'Amber',
+                        ])->default('emerald'),
+                        Forms\Components\ColorPicker::make('primary_color')->label('Warna Primer'),
+                        Forms\Components\ColorPicker::make('secondary_color')->label('Warna Sekunder'),
+                        Forms\Components\Textarea::make('footer_text')->label('Teks Footer Dokumen')->rows(2)->columnSpanFull(),
+                        Forms\Components\FileUpload::make('logo_dark_path')->label('Logo Mode Gelap')->image()->directory('koperasi'),
+                        Forms\Components\FileUpload::make('favicon_path')->label('Favicon')->image()->directory('koperasi'),
+                    ]),
+                ]),
+                Forms\Components\Tabs\Tab::make('Penomoran')->schema([
+                    Forms\Components\Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('prefix_invoice')->label('Prefix Invoice')->maxLength(10),
+                        Forms\Components\TextInput::make('prefix_member')->label('Prefix Anggota')->maxLength(10),
+                        Forms\Components\TextInput::make('prefix_loan')->label('Prefix Pinjaman')->maxLength(10),
+                        Forms\Components\TextInput::make('prefix_savings')->label('Prefix Simpanan')->maxLength(10),
                     ]),
                 ]),
                 Forms\Components\Tabs\Tab::make('Operasional')->schema([
@@ -54,10 +91,15 @@ class TenantResource extends Resource
                             'dual'         => 'Dual (Konvensional + Syariah)',
                         ])->required(),
                         Forms\Components\TextInput::make('mata_uang')->label('Mata Uang')->default('IDR')->maxLength(3),
+                        Forms\Components\Select::make('timezone')->label('Zona Waktu')->options([
+                            'Asia/Jakarta' => 'WIB (Asia/Jakarta)',
+                            'Asia/Makassar' => 'WITA (Asia/Makassar)',
+                            'Asia/Jayapura' => 'WIT (Asia/Jayapura)',
+                        ])->default('Asia/Jakarta'),
                         Forms\Components\TextInput::make('tahun_buku')->label('Tahun Buku Aktif')->numeric()->required(),
                     ]),
                 ]),
-                Forms\Components\Tabs\Tab::make('Subscription (SaaS)')->schema([
+                Forms\Components\Tabs\Tab::make('Lisensi & Plan')->schema([
                     Forms\Components\Grid::make(2)->schema([
                         Forms\Components\Select::make('status')->label('Status')->options([
                             'aktif'      => 'Aktif',

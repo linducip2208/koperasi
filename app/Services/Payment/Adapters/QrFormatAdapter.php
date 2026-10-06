@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
  */
 class QrFormatAdapter implements PaymentAdapter
 {
+    use VerifiesWebhookSignature;
     public function createSession(PaymentProvider $provider, array $payload): array
     {
         $orderId = $payload['order_id'] ?? Str::uuid()->toString();
@@ -48,11 +49,15 @@ class QrFormatAdapter implements PaymentAdapter
     public function verifyCallback(PaymentProvider $provider, array $callback): array
     {
         $status = strtolower($callback['status'] ?? '');
+        $orderId = $callback['partner_reference_no'] ?? $callback['order_id'] ?? null;
+        $amount = (int) ($callback['amount']['value'] ?? $callback['amount'] ?? 0);
+        $signature = $callback['signature'] ?? $callback['signature_key'] ?? null;
+
         return [
-            'valid'      => true,
+            'valid'      => $orderId && $this->signatureValid($provider, $orderId, $status, $amount, $signature ? (string) $signature : null, $callback),
             'paid'       => in_array($status, ['paid', 'success', 'completed'], true),
-            'order_id'   => $callback['partner_reference_no'] ?? $callback['order_id'] ?? null,
-            'amount'     => (int) ($callback['amount']['value'] ?? $callback['amount'] ?? 0),
+            'order_id'   => $orderId,
+            'amount'     => $amount,
             'payment_id' => $callback['reference_no'] ?? $callback['transaction_id'] ?? null,
             'raw'        => $callback,
         ];

@@ -8,10 +8,7 @@
     <link rel="canonical" href="{{ url('/docs') }}">
     <meta property="og:title" content="Dokumentasi & Demo — KoperasiApp">
     <meta property="og:description" content="Software koperasi simpan pinjam + unit usaha. 41 modul, 8 role, multi-cabang.">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
+        @vite('resources/css/app.css')
 </head>
 <body class="bg-zinc-50 text-zinc-900 font-sans antialiased">
 

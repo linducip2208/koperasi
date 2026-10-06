@@ -105,6 +105,63 @@ class LicenseClient
         Cache::forget(self::GRACE_KEY);
     }
 
+    /**
+     * Status lisensi untuk halaman admin — tanpa efek samping jaringan.
+     * Status: UNPAIRED | ACTIVE | GRACE_PERIOD | EXPIRED | INVALID (+ server: SUSPENDED/REVOKED).
+     */
+    public function status(string $domain): array
+    {
+        $domain = strtolower($domain);
+        $payload = $this->readLock($domain);
+        $now = time();
+
+        $base = [
+            'domain' => $domain,
+            'paired' => $payload !== null,
+            'installation_id' => substr(hash('sha256', (string) config('app.key').':'.$domain), 0, 16),
+            'last_heartbeat' => Cache::get(self::HEARTBEAT_KEY) ? date('Y-m-d H:i:s', (int) Cache::get(self::HEARTBEAT_KEY)) : null,
+            'offline_since' => Cache::get(self::GRACE_KEY) ? date('Y-m-d H:i:s', (int) Cache::get(self::GRACE_KEY)) : null,
+            'grace_seconds' => (int) config('license.heartbeat_grace', 604800),
+        ];
+
+        if (! $payload) {
+            return $base + ['status' => 'UNPAIRED', 'data' => null];
+        }
+
+        $data = $payload['data'] ?? null;
+        if (! $data || ($data['domain'] ?? null) !== $domain) {
+            return $base + ['status' => 'INVALID', 'data' => null];
+        }
+
+        if (! empty($data['expires_at']) && strtotime($data['expires_at']) < $now) {
+            return $base + ['status' => 'EXPIRED', 'data' => $data];
+        }
+
+        if ($base['offline_since']) {
+            $deadline = (int) Cache::get(self::GRACE_KEY) + $base['grace_seconds'];
+            return $base + [
+                'status' => 'GRACE_PERIOD',
+                'grace_deadline' => date('Y-m-d H:i:s', $deadline),
+                'data' => $data,
+            ];
+        }
+
+        $serverStatus = strtolower((string) ($data['status'] ?? 'active'));
+        if (in_array($serverStatus, ['suspended', 'revoked'], true)) {
+            return $base + ['status' => strtoupper($serverStatus), 'data' => $data];
+        }
+
+        return $base + ['status' => 'ACTIVE', 'data' => $data];
+    }
+
+    /** Paksa heartbeat sekarang — dipakai tombol "Recheck" & command. */
+    public function recheck(string $domain): array
+    {
+        Cache::forget(self::HEARTBEAT_KEY);
+        $data = $this->verify($domain);
+        return $this->status($domain) + ['verified_data' => $data];
+    }
+
     // ─────────────────────────────────────────────────────────────────
     // Heartbeat
     // ─────────────────────────────────────────────────────────────────

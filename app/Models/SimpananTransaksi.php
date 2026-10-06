@@ -25,6 +25,22 @@ class SimpananTransaksi extends Model
         'saldo_sesudah' => 'integer',
     ];
 
+    protected static function booted(): void
+    {
+        // Transaksi finansial immutable: koreksi hanya via transaksi baru / reversal.
+        // Pengecualian: penautan jurnal_id sekali (dibuat service tepat setelah create).
+        static::updating(function (SimpananTransaksi $trx) {
+            $dirty = array_keys($trx->getDirty());
+            $hanyaTautJurnal = $dirty === ['jurnal_id'] && $trx->getOriginal('jurnal_id') === null;
+            if (! $hanyaTautJurnal) {
+                throw new \RuntimeException("Transaksi simpanan {$trx->nomor} immutable — buat koreksi via transaksi baru.");
+            }
+        });
+        static::deleting(function (SimpananTransaksi $trx) {
+            throw new \RuntimeException("Transaksi simpanan {$trx->nomor} tidak boleh dihapus.");
+        });
+    }
+
     public function simpanan()
     {
         return $this->belongsTo(Simpanan::class);

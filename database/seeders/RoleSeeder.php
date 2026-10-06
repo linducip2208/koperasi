@@ -28,7 +28,12 @@ class RoleSeeder extends Seeder
         $roles = [
             'super-admin' => null, // semua permission
             'admin'       => null, // semua kecuali tenant/license
+            'ketua'       => ['*.view', '*.approve', '*.export', '*.print', 'rat.*', 'laporan.*'],
+            'sekretaris'  => ['anggota.*', 'rat.*', 'laporan.view', 'laporan.export', 'laporan.print'],
+            'bendahara'   => ['simpanan.*', 'pinjaman.view', 'pinjaman.approve', 'kas.*', 'bank.*', 'jurnal.view', 'laporan.*', 'tagihan.*'],
             'manajer'     => ['*.view', '*.approve', '*.export', '*.print', 'pinjaman.update'],
+            'auditor'     => ['*.view', 'laporan.*'],
+            'staff'       => ['anggota.view', 'simpanan.view', 'pinjaman.view', 'pos.view', 'tagihan.view'],
             'kasir'       => ['anggota.view', 'simpanan.*', 'kas.*', 'pinjaman.view', 'pinjaman.update', 'pos.*', 'tagihan.*'],
             'ao'          => ['anggota.view', 'pinjaman.*', 'simpanan.view', 'jurnal.view'],
             'kolektor'    => ['anggota.view', 'pinjaman.view', 'pinjaman.update', 'tagihan.view'],

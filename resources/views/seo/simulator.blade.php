@@ -20,8 +20,8 @@
     'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'IDR'],
 ], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}
 </script>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+@vite('resources/css/app.css')
+
 <style>body{font-family:'Inter',sans-serif}</style>
 </head>
 <body class="bg-slate-50 text-slate-800">

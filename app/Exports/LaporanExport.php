@@ -18,7 +18,8 @@ class LaporanExport implements FromArray, WithHeadings, WithTitle, WithStyles, S
         public string $jenis,
         public string $dari,
         public string $sampai,
-        public ?int $cabangId = null
+        public ?int $cabangId = null,
+        public ?int $coaId = null
     ) {}
 
     public function array(): array
@@ -29,6 +30,8 @@ class LaporanExport implements FromArray, WithHeadings, WithTitle, WithStyles, S
             'arus-kas'  => $this->rowsArusKas(),
             'perubahan-ekuitas' => $this->rowsEkuitas(),
             'calk' => $this->rowsCalk(),
+            'trial-balance' => $this->rowsTrialBalance(),
+            'aging' => $this->rowsAging(),
             default     => [],
         };
     }
@@ -132,6 +135,28 @@ class LaporanExport implements FromArray, WithHeadings, WithTitle, WithStyles, S
         foreach ($d['segmen_usaha'] as $k => $v) {
             $rows[] = ['', strtoupper(str_replace('_', ' ', $k)), $v];
         }
+        return $rows;
+    }
+
+    private function rowsTrialBalance(): array
+    {
+        $d = LaporanKeuanganService::trialBalance($this->sampai, $this->cabangId);
+        $rows = [];
+        foreach ($d['rows'] as $r) {
+            $rows[] = [$r['kode'], $r['nama'], $r['debit'], $r['kredit']];
+        }
+        $rows[] = ['', 'TOTAL', $d['total_debit'], $d['total_kredit']];
+        return $rows;
+    }
+
+    private function rowsAging(): array
+    {
+        $d = LaporanKeuanganService::agingPiutang($this->sampai, $this->cabangId);
+        $rows = [];
+        foreach ($d['rows'] as $r) {
+            $rows[] = [$r['nomor_akad'], "{$r['anggota']} ({$r['produk']})", $r['outstanding'], $r['hari_telat'].' hr / '.$r['bucket']];
+        }
+        $rows[] = ['', 'TOTAL OUTSTANDING', $d['total_outstanding'], ''];
         return $rows;
     }
 }

@@ -31,6 +31,22 @@ class PinjamanPembayaran extends Model
         'verified_at'     => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        // Nominal pembayaran yang sudah diverifikasi immutable.
+        // Verifikasi pending→disetujui/ditolak tetap lewat service (kolom non-nominal).
+        static::updating(function (PinjamanPembayaran $b) {
+            $nominal = ['total_bayar', 'alokasi_pokok', 'alokasi_margin', 'alokasi_denda', 'alokasi_admin', 'alokasi_titipan', 'pinjaman_id', 'tanggal'];
+            $ubahNominal = count(array_intersect($nominal, array_keys($b->getDirty()))) > 0;
+            if ($ubahNominal && $b->getOriginal('status') !== 'pending') {
+                throw new \RuntimeException("Pembayaran {$b->nomor} sudah diverifikasi — nominal immutable.");
+            }
+        });
+        static::deleting(function (PinjamanPembayaran $b) {
+            throw new \RuntimeException("Pembayaran {$b->nomor} tidak boleh dihapus.");
+        });
+    }
+
     public function pinjaman()
     {
         return $this->belongsTo(Pinjaman::class);

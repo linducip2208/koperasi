@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 class PaymentProvider extends Model
 {
     protected $fillable = [
-        'nama', 'api_format', 'base_url', 'session_endpoint',
+        'nama', 'kode', 'api_format', 'base_url', 'session_endpoint',
         'api_key', 'api_key_encrypted', 'merchant_id', 'extra_headers',
         'is_sandbox', 'aktif', 'catatan',
     ];

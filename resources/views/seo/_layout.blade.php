@@ -18,8 +18,8 @@
     <meta name="twitter:title" content="{{ $seoTitle ?? '' }}">
     <meta name="twitter:description" content="{{ $seoDescription ?? '' }}">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+        @vite('resources/css/app.css')
+
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         h1, h2, h3 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; letter-spacing: -0.02em; }

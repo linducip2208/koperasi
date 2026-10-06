@@ -33,9 +33,14 @@ class ActivationController extends Controller
         $domain = strtolower($request->getHost());
         $result = $this->client->activate($request->input('activation_key'), $domain);
 
+        // LicenseClient::activate() mengembalikan ['ok' => bool, 'error' => ?string, 'data' => ?array]
+        if ($result['ok'] ?? false) {
+            return redirect()->route('activation.show')->with('success', 'Lisensi berhasil diaktivasi.');
+        }
+
         return redirect()->route('activation.show')->with(
-            ($result['success'] ?? false) ? 'success' : 'error',
-            $result['message'] ?? 'Aktivasi tidak diketahui hasilnya.'
+            'error',
+            $result['error'] ?? 'Aktivasi tidak diketahui hasilnya.'
         );
     }
 

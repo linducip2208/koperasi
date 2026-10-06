@@ -22,6 +22,31 @@ class Anggota extends Model
             ->useLogName('anggota');
     }
 
+    protected static function booted(): void
+    {
+        // Anggota bertransaksi tidak boleh dihapus fisik (audit finansial).
+        // Nonaktifkan via status keluar/meninggal/dikeluarkan.
+        static::deleting(function (Anggota $anggota) {
+            if ($anggota->simpanan()->exists() || $anggota->pinjaman()->exists()) {
+                throw new \RuntimeException("Anggota {$anggota->nomor_anggota} memiliki riwayat transaksi — tidak boleh dihapus. Gunakan status Keluar/Dikeluarkan.");
+            }
+        });
+
+        static::updating(function (Anggota $anggota) {
+            if ($anggota->isDirty('status')) {
+                \App\Models\AnggotaStatusLog::create([
+                    'tenant_id' => $anggota->tenant_id,
+                    'anggota_id' => $anggota->id,
+                    'dari_status' => $anggota->getOriginal('status'),
+                    'ke_status' => $anggota->status,
+                    'tanggal' => now()->toDateString(),
+                    'catatan' => 'Perubahan status via admin',
+                    'user_id' => auth()->id(),
+                ]);
+            }
+        });
+    }
+
     protected $table = 'anggota';
 
     protected $fillable = [

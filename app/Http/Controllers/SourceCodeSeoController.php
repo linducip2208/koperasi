@@ -20,8 +20,8 @@ class SourceCodeSeoController extends Controller
             'brand'          => $brand,
             'apps'           => $apps,
             'faqs'           => $faqs,
-            'seoTitle'       => 'Beli Source Code Aplikasi Koperasi — Konvensional & Syariah | WA 0812-9605-2010',
-            'seoDescription' => 'Beli source code aplikasi koperasi lengkap. Konvensional & Syariah, multi-tenant ready, Filament admin panel, portal anggota. Instalasi 10 menit. WA 0812-9605-2010.',
+            'seoTitle'       => 'Beli Source Code Aplikasi Koperasi — Konvensional & Syariah | WA ' . config('support.whatsapp_display') . '',
+            'seoDescription' => 'Beli source code aplikasi koperasi lengkap. Konvensional & Syariah, multi-tenant ready, Filament admin panel, portal anggota. Instalasi 10 menit. WA ' . config('support.whatsapp_display') . '.',
             'canonical'      => url('/beli-aplikasi-koperasi'),
             'jsonLd'         => $this->productJsonLd(),
         ]);
@@ -40,8 +40,8 @@ class SourceCodeSeoController extends Controller
         return view('seo.source-code-kota', [
             'kota'           => $kota,
             'brand'          => $brand,
-            'seoTitle'       => "Jual Source Code Aplikasi Koperasi di {$kota['nama']} — Siap Pakai | WA 0812-9605-2010",
-            'seoDescription' => "Beli source code aplikasi koperasi untuk {$kota['nama']}. Instalasi 10 menit, bisa direbrand. Konvensional & Syariah lengkap. WA 0812-9605-2010.",
+            'seoTitle'       => "Jual Source Code Aplikasi Koperasi di {$kota['nama']} — Siap Pakai | WA ' . config('support.whatsapp_display') . '",
+            'seoDescription' => "Beli source code aplikasi koperasi untuk {$kota['nama']}. Instalasi 10 menit, bisa direbrand. Konvensional & Syariah lengkap. WA ' . config('support.whatsapp_display') . '.",
             'canonical'      => url("/source-code-koperasi-{$kota['slug']}"),
         ]);
     }
@@ -59,8 +59,8 @@ class SourceCodeSeoController extends Controller
         return view('seo.source-code-jenis', [
             'jenis'          => $jenis,
             'brand'          => $brand,
-            'seoTitle'       => "Beli Aplikasi {$jenis['nama']} ({$jenis['singkatan']}) — Source Code | WA 0812-9605-2010",
-            'seoDescription' => "Source code aplikasi {$jenis['nama']} siap pakai. {$jenis['tagline']}. Instalasi 10 menit, support 1 tahun. WA 0812-9605-2010.",
+            'seoTitle'       => "Beli Aplikasi {$jenis['nama']} ({$jenis['singkatan']}) — Source Code | WA ' . config('support.whatsapp_display') . '",
+            'seoDescription' => "Source code aplikasi {$jenis['nama']} siap pakai. {$jenis['tagline']}. Instalasi 10 menit, support 1 tahun. WA ' . config('support.whatsapp_display') . '.",
             'canonical'      => url("/beli-aplikasi-koperasi-{$jenis['slug']}"),
         ]);
     }
@@ -90,8 +90,8 @@ class SourceCodeSeoController extends Controller
             'fitur'          => $f,
             'fiturSlug'      => $fitur,
             'brand'          => $brand,
-            'seoTitle'       => "Aplikasi Koperasi dengan {$f['nama']} — Source Code | WA 0812-9605-2010",
-            'seoDescription' => "{$f['desc']}. Source code aplikasi koperasi lengkap, siap pakai. WA 0812-9605-2010.",
+            'seoTitle'       => "Aplikasi Koperasi dengan {$f['nama']} — Source Code | WA ' . config('support.whatsapp_display') . '",
+            'seoDescription' => "{$f['desc']}. Source code aplikasi koperasi lengkap, siap pakai. WA ' . config('support.whatsapp_display') . '.",
             'canonical'      => url("/aplikasi-koperasi-{$fitur}"),
         ]);
     }
@@ -111,8 +111,8 @@ class SourceCodeSeoController extends Controller
             'kota'           => $kota,
             'jenis'          => $jenis,
             'brand'          => $brand,
-            'seoTitle'       => "Beli Aplikasi {$jenis['singkatan']} di {$kota['nama']} — Source Code | WA 0812-9605-2010",
-            'seoDescription' => "Source code aplikasi {$jenis['nama']} untuk koperasi di {$kota['nama']}, {$kota['provinsi']}. Siap pakai, support penuh. WA 0812-9605-2010.",
+            'seoTitle'       => "Beli Aplikasi {$jenis['singkatan']} di {$kota['nama']} — Source Code | WA ' . config('support.whatsapp_display') . '",
+            'seoDescription' => "Source code aplikasi {$jenis['nama']} untuk koperasi di {$kota['nama']}, {$kota['provinsi']}. Siap pakai, support penuh. WA ' . config('support.whatsapp_display') . '.",
             'canonical'      => url("/source-code-koperasi-{$kota['slug']}-{$jenis['slug']}"),
         ]);
     }
@@ -132,8 +132,8 @@ class SourceCodeSeoController extends Controller
             'app'            => $data,
             'appSlug'        => $app,
             'brand'          => $brand,
-            'seoTitle'       => "Beli Source Code Aplikasi {$data['nama']} — Siap Pakai | WA 0812-9605-2010",
-            'seoDescription' => "{$data['desc']} Source code lengkap, instalasi mudah, support penuh. WA 0812-9605-2010.",
+            'seoTitle'       => "Beli Source Code Aplikasi {$data['nama']} — Siap Pakai | WA ' . config('support.whatsapp_display') . '",
+            'seoDescription' => "{$data['desc']} Source code lengkap, instalasi mudah, support penuh. WA ' . config('support.whatsapp_display') . '.",
             'canonical'      => url("/beli-aplikasi-{$app}"),
         ]);
     }
@@ -200,7 +200,7 @@ class SourceCodeSeoController extends Controller
             ['q' => 'Apakah saya dapat source code lengkap?',
              'a' => 'Ya. Anda mendapatkan 100% source code (bukan SaaS/berlangganan). Bisa dimodifikasi, direbrand, dihosting sendiri, bahkan dijual kembali.'],
             ['q' => 'Berapa harga source code aplikasi koperasi?',
-             'a' => 'Harga mulai dari Rp 3.000.000 untuk paket regular (1 domain). Tersedia juga paket whitelabel dengan hak jual kembali. Hubungi WA 0812-9605-2010 untuk detail.'],
+             'a' => 'Harga mulai dari Rp 3.000.000 untuk paket regular (1 domain). Tersedia juga paket whitelabel dengan hak jual kembali. Hubungi WA ' . config('support.whatsapp_display') . ' untuk detail.'],
             ['q' => 'Apakah bisa request custom fitur?',
              'a' => 'Bisa. Kami sediakan layanan kustomisasi sesuai kebutuhan koperasi Anda. Biaya tergantung kompleksitas fitur.'],
             ['q' => 'Apakah ada demo yang bisa dicoba?',

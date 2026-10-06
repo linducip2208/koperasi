@@ -22,41 +22,9 @@
             });
         }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
-                    animation: {
-                        'fade-in': 'fadeIn .5s cubic-bezier(.16,1,.3,1)',
-                        'slide-up': 'slideUp .5s cubic-bezier(.16,1,.3,1)',
-                        'blob': 'blob 14s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 2.5s ease-in-out infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'shimmer': 'shimmer 3s linear infinite',
-                    },
-                    keyframes: {
-                        fadeIn: { '0%': {opacity:0}, '100%': {opacity:1} },
-                        slideUp: { '0%': {opacity:0, transform:'translateY(16px)'}, '100%': {opacity:1, transform:'translateY(0)'} },
-                        blob: {
-                            '0%,100%': { transform: 'translate(0,0) scale(1)' },
-                            '33%': { transform: 'translate(40px,-30px) scale(1.1)' },
-                            '66%': { transform: 'translate(-30px,20px) scale(0.95)' },
-                        },
-                        pulseGlow: { '0%,100%': { boxShadow: '0 0 0 0 rgba(16,185,129,.45)' }, '50%': { boxShadow: '0 0 0 14px rgba(16,185,129,0)' } },
-                        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
-                        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
-                    },
-                },
-            },
-        };
-    </script>
+    {{-- Asset lokal via Vite (tanpa CDN). Font memakai system stack. --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Tema & animasi kustom kini di resources/css/app.css (build Vite). --}}
     <style>
         :root {
             --shadow-soft: 0 1px 2px rgba(15,23,42,.04), 0 4px 12px rgba(15,23,42,.04);
@@ -303,7 +271,7 @@
                     <span class="flex-1 h-px bg-gradient-to-r from-slate-300 to-transparent"></span>
                 </div>
 
-                <a href="https://wa.me/6281296052010" target="_blank" class="nav-item flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-white/60">
+                <a href="https://wa.me/{{ $koperasi->whatsapp ?? config('support.whatsapp') }}" target="_blank" class="nav-item flex items-center gap-3 pl-4 pr-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-white/60">
                     <span class="nav-icon" style="background: linear-gradient(135deg, #25d366, #128c7e); color: white;">💬</span>
                     <span class="sidebar-label">WhatsApp</span>
                     <svg class="w-3 h-3 ml-auto text-slate-400 sidebar-badge" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5 19.5 4.5M19.5 4.5h-9m9 0v9"/></svg>
@@ -316,7 +284,7 @@
                 <div class="relative">
                     <div class="text-[10px] font-extrabold uppercase tracking-wider opacity-90 mb-1 sidebar-app-info">📱 Mobile App</div>
                     <div class="font-extrabold text-sm leading-tight mb-2.5 sidebar-app-info">Akses dari HP-mu</div>
-                    <a href="https://wa.me/6281296052010?text=Saya%20mau%20info%20mobile%20app" class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-white text-emerald-700 px-3 py-1.5 rounded-md hover:scale-105 transition sidebar-app-info">
+                    <a href="https://wa.me/{{ $koperasi->whatsapp ?? config('support.whatsapp') }}?text=Saya%20mau%20info%20mobile%20app" class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-white text-emerald-700 px-3 py-1.5 rounded-md hover:scale-105 transition sidebar-app-info">
                         Coming Soon →
                     </a>
                 </div>
@@ -378,7 +346,7 @@
         </main>
 
         <footer class="px-4 md:px-8 py-6 border-t border-slate-200/60 text-center text-xs text-slate-500">
-            © {{ date('Y') }} {{ config('app.name') }} · Bantuan: <a href="https://wa.me/6281296052010" class="text-emerald-600 hover:underline font-bold">0812-9605-2010</a>
+            © {{ date('Y') }} {{ $koperasi?->displayName() ?? config('app.name') }} · Bantuan: <a href="https://wa.me/{{ $koperasi->whatsapp ?? config('support.whatsapp') }}" class="text-emerald-600 hover:underline font-bold">{{ $koperasi->whatsapp ?? config('support.whatsapp_display') }}</a>
         </footer>
     </div>
 </div>

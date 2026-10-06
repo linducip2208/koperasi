@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
  */
 class VirtualAccountFormatAdapter implements PaymentAdapter
 {
+    use VerifiesWebhookSignature;
     public function createSession(PaymentProvider $provider, array $payload): array
     {
         $orderId = $payload['order_id'] ?? Str::uuid()->toString();
@@ -48,11 +49,17 @@ class VirtualAccountFormatAdapter implements PaymentAdapter
 
     public function verifyCallback(PaymentProvider $provider, array $callback): array
     {
+        $paid = ($callback['status'] ?? '') === 'COMPLETED' || ($callback['transaction_timestamp'] ?? null) !== null;
+        $orderId = $callback['external_id'] ?? null;
+        $amount = (int) ($callback['transfer_amount'] ?? $callback['amount'] ?? 0);
+        $signature = $callback['signature'] ?? $callback['signature_key'] ?? null;
+        $status = strtolower($callback['status'] ?? '');
+
         return [
-            'valid'      => true,
-            'paid'       => ($callback['status'] ?? '') === 'COMPLETED' || ($callback['transaction_timestamp'] ?? null) !== null,
-            'order_id'   => $callback['external_id'] ?? null,
-            'amount'     => (int) ($callback['transfer_amount'] ?? $callback['amount'] ?? 0),
+            'valid'      => $orderId && $this->signatureValid($provider, $orderId, $status, $amount, $signature ? (string) $signature : null, $callback),
+            'paid'       => $paid,
+            'order_id'   => $orderId,
+            'amount'     => $amount,
             'payment_id' => $callback['id'] ?? null,
             'raw'        => $callback,
         ];

@@ -214,8 +214,113 @@ class LaporanKeuanganService
         ];
     }
 
-    private static function groupSaldo(string $tipe, ?string $dari, string $sampai, ?int $cabangId = null): array
+    /**
+     * Buku Besar: saldo awal + mutasi kronologis + saldo berjalan per akun.
+     */
+    public static function bukuBesar(int $coaId, string $dari, string $sampai, ?int $cabangId = null): array
     {
+        $coa = Coa::findOrFail($coaId);
+        $sebelum = Carbon::parse($dari)->subDay()->toDateString();
+
+        $saldoAwal = self::saldoAkun($coa, null, $sebelum, $cabangId);
+
+        $lines = JurnalDetail::where('coa_id', $coa->id)
+            ->whereHas('jurnal', function ($q) use ($dari, $sampai, $cabangId) {
+                $q->where('is_posted', true)->whereBetween('tanggal', [$dari, $sampai]);
+                if ($cabangId) $q->where('cabang_id', $cabangId);
+            })
+            ->with('jurnal')
+            ->orderBy('id')
+            ->get()
+            ->map(fn ($d) => [
+                'tanggal' => $d->jurnal->tanggal->toDateString(),
+                'nomor' => $d->jurnal->nomor,
+                'keterangan' => $d->keterangan ?? $d->jurnal->keterangan,
+                'debit' => (int) $d->debit,
+                'kredit' => (int) $d->kredit,
+            ])->all();
+
+        $berjalan = $saldoAwal;
+        foreach ($lines as &$l) {
+            $berjalan += $coa->saldo_normal === 'debit' ? $l['debit'] - $l['kredit'] : $l['kredit'] - $l['debit'];
+            $l['saldo'] = $berjalan;
+        }
+
+        return [
+            'coa' => ['kode' => $coa->kode, 'nama' => $coa->nama, 'saldo_normal' => $coa->saldo_normal],
+            'dari' => $dari, 'sampai' => $sampai, 'cabang_id' => $cabangId,
+            'saldo_awal' => $saldoAwal, 'lines' => $lines, 'saldo_akhir' => $berjalan,
+        ];
+    }
+
+    /**
+     * Neraca Saldo (Trial Balance): semua akun postable dengan kolom debit/kredit.
+     * Total debit harus == total kredit.
+     */
+    public static function trialBalance(string $sampai, ?int $cabangId = null): array
+    {
+        $rows = Coa::where('is_postable', true)->where('is_aktif', true)
+            ->orderBy('kode')->get()->map(function ($c) use ($sampai, $cabangId) {
+                $saldo = self::saldoAkun($c, null, $sampai, $cabangId);
+                $debit = $kredit = 0;
+                if ($saldo > 0) {
+                    $c->saldo_normal === 'debit' ? $debit = $saldo : $kredit = $saldo;
+                } elseif ($saldo < 0) {
+                    $c->saldo_normal === 'debit' ? $kredit = -$saldo : $debit = -$saldo;
+                }
+                return ['kode' => $c->kode, 'nama' => $c->nama, 'debit' => $debit, 'kredit' => $kredit];
+            })->filter(fn ($r) => $r['debit'] != 0 || $r['kredit'] != 0)->values()->all();
+
+        return [
+            'tanggal' => $sampai, 'cabang_id' => $cabangId, 'rows' => $rows,
+            'total_debit' => collect($rows)->sum('debit'),
+            'total_kredit' => collect($rows)->sum('kredit'),
+        ];
+    }
+
+    /**
+     * Aging piutang pembiayaan: outstanding per akad + bucket keterlambatan.
+     */
+    public static function agingPiutang(string $sampai, ?int $cabangId = null): array
+    {
+        $rows = \App\Models\Pinjaman::with(['anggota', 'produk'])
+            ->whereIn('status', ['aktif', 'macet'])
+            ->when($cabangId, fn ($q) => $q->where('cabang_id', $cabangId))
+            ->get()->map(function ($p) use ($sampai) {
+                $sisa = max(0, (int) $p->saldo_pokok + (int) $p->saldo_margin);
+                $maxTelat = (int) ($p->jadwal()
+                    ->whereIn('status', ['jatuh_tempo', 'telat'])
+                    ->whereDate('tanggal_jatuh_tempo', '<=', $sampai)
+                    ->selectRaw('MAX(DATEDIFF(?, tanggal_jatuh_tempo)) as d', [$sampai])
+                    ->value('d') ?? 0);
+                $bucket = match (true) {
+                    $maxTelat <= 0 => 'lancar',
+                    $maxTelat <= 30 => 'dpk_1_30',
+                    $maxTelat <= 60 => 'kurang_lancar_31_60',
+                    $maxTelat <= 90 => 'diragukan_61_90',
+                    default => 'macet_90_plus',
+                };
+                return [
+                    'nomor_akad' => $p->nomor_akad,
+                    'anggota' => $p->anggota->nama ?? '—',
+                    'produk' => $p->produk->nama ?? '—',
+                    'outstanding' => $sisa,
+                    'hari_telat' => $maxTelat,
+                    'bucket' => $bucket,
+                    'kolektabilitas' => $p->kolektabilitas,
+                ];
+            })->filter(fn ($r) => $r['outstanding'] > 0)->values()->all();
+
+        $perBucket = collect($rows)->groupBy('bucket')->map(fn ($g) => ['count' => $g->count(), 'total' => $g->sum('outstanding')])->all();
+
+        return [
+            'tanggal' => $sampai, 'cabang_id' => $cabangId,
+            'rows' => $rows, 'per_bucket' => $perBucket,
+            'total_outstanding' => collect($rows)->sum('outstanding'),
+        ];
+    }
+
+    private static function groupSaldo(string $tipe, ?string $dari, string $sampai, ?int $cabangId = null): array    {
         $coas = Coa::where('tipe', $tipe)->where('is_aktif', true)
             ->whereNull('parent_id')
             ->orWhere(fn ($q) => $q->where('tipe', $tipe)->where('is_postable', true))

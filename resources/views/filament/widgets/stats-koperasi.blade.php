@@ -41,50 +41,34 @@
                     <p class="text-[28px] font-extrabold text-gray-900 dark:text-white tracking-tighter leading-none mb-1">{{ $s['value'] }}</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium mb-3">{{ $s['sub'] }}</p>
 
-                    {{-- Sparkline --}}
-                    <div class="h-12 -mx-1" id="filament-spark-{{ $i }}" data-spark="{{ json_encode($s['data']) }}" data-color="{{ $s['spark'] }}"></div>
+                    {{-- Sparkline (SVG murni, tanpa CDN/JS) --}}
+                    <div class="h-12 -mx-1">
+                        @php
+                            $pts = $s['data'] ?? [];
+                            $max = max(1, max($pts)); $min = min($pts);
+                            $span = max(1, $max - $min);
+                            $n = max(1, count($pts) - 1);
+                            $coords = [];
+                            foreach ($pts as $k => $v) {
+                                $x = round($k / $n * 100, 1);
+                                $y = round(34 - (($v - $min) / $span) * 30, 1);
+                                $coords[] = "{$x},{$y}";
+                            }
+                            $line = implode(' ', $coords);
+                        @endphp
+                        <svg viewBox="0 0 100 36" preserveAspectRatio="none" class="w-full h-full">
+                            <defs>
+                                <linearGradient id="spark-g-{{ $i }}" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0" stop-color="{{ $s['spark'] }}" stop-opacity="0.45"/>
+                                    <stop offset="1" stop-color="{{ $s['spark'] }}" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <polygon points="0,36 {{ $line }} 100,36" fill="url(#spark-g-{{ $i }})"/>
+                            <polyline points="{{ $line }}" fill="none" stroke="{{ $s['spark'] }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         @endforeach
     </div>
-
-    @once
-    @push('scripts')
-    @endpush
-    @endonce
-
-    <script>
-        (function () {
-            function renderSparks() {
-                if (typeof ApexCharts === 'undefined') {
-                    setTimeout(renderSparks, 200);
-                    return;
-                }
-                document.querySelectorAll('[id^="filament-spark-"]').forEach(el => {
-                    if (el.dataset.rendered === '1') return;
-                    el.dataset.rendered = '1';
-                    const data = JSON.parse(el.dataset.spark);
-                    const color = el.dataset.color;
-                    new ApexCharts(el, {
-                        series: [{ data: data }],
-                        chart: { type: 'area', height: 48, sparkline: { enabled: true }, animations: { enabled: true, speed: 700 } },
-                        stroke: { curve: 'smooth', width: 2.5 },
-                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.45, opacityTo: 0, stops: [0, 100] } },
-                        colors: [color],
-                        tooltip: { enabled: false },
-                    }).render();
-                });
-            }
-            // Load ApexCharts CDN once
-            if (typeof ApexCharts === 'undefined' && !window.__apexLoading) {
-                window.__apexLoading = true;
-                const s = document.createElement('script');
-                s.src = 'https://cdn.jsdelivr.net/npm/apexcharts';
-                s.onload = renderSparks;
-                document.head.appendChild(s);
-            } else {
-                renderSparks();
-            }
-        })();
-    </script>
 </x-filament-widgets::widget>

@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
  */
 class RedirectFormatAdapter implements PaymentAdapter
 {
+    use VerifiesWebhookSignature;
     public function createSession(PaymentProvider $provider, array $payload): array
     {
         $orderId = $payload['order_id'] ?? Str::uuid()->toString();
@@ -53,12 +54,14 @@ class RedirectFormatAdapter implements PaymentAdapter
     {
         $signature = $callback['signature_key'] ?? $callback['signature'] ?? null;
         $status    = strtolower($callback['transaction_status'] ?? $callback['status'] ?? '');
+        $orderId   = $callback['order_id'] ?? null;
+        $amount    = (int) ($callback['gross_amount'] ?? $callback['amount'] ?? 0);
 
         return [
-            'valid'      => $signature !== null,
+            'valid'      => $orderId && $this->signatureValid($provider, $orderId, $status, $amount, $signature ? (string) $signature : null, $callback),
             'paid'       => in_array($status, ['settlement', 'success', 'paid', 'captured', 'completed'], true),
-            'order_id'   => $callback['order_id']        ?? null,
-            'amount'     => (int) ($callback['gross_amount'] ?? $callback['amount'] ?? 0),
+            'order_id'   => $orderId,
+            'amount'     => $amount,
             'payment_id' => $callback['transaction_id']  ?? $callback['payment_id'] ?? null,
             'raw'        => $callback,
         ];

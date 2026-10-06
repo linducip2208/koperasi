@@ -32,7 +32,13 @@ class PaymentProviderResource extends Resource
                 ->schema([
                     Forms\Components\Grid::make(2)->schema([
                         Forms\Components\TextInput::make('nama')->label('Nama Provider')->required()
-                            ->placeholder('mis. Midtrans Production, Xendit Test, BCA QRIS'),
+                            ->placeholder('mis. Midtrans Production, Xendit Test, BCA QRIS')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(fn ($state, callable $set, $get) => empty($get('kode')) && $set('kode', \Illuminate\Support\Str::slug($state ?? ''))),
+                        Forms\Components\TextInput::make('kode')->label('Kode Webhook')
+                            ->required()->unique(ignoreRecord: true)->alphaDash()->maxLength(50)
+                            ->helperText('Dipakai di URL webhook: /webhooks/payment/{kode}. Huruf kecil, tanpa spasi.')
+                            ->placeholder('mis. midtrans-prod'),
                         Forms\Components\Select::make('api_format')->label('Format API')
                             ->options(PaymentManager::availableFormats())
                             ->required()->live()
@@ -56,7 +62,8 @@ class PaymentProviderResource extends Resource
                     ]),
                     Forms\Components\KeyValue::make('extra_headers')->label('Extra Headers (opsional)')
                         ->keyLabel('Header')->valueLabel('Value')
-                        ->addable()->reorderable(false),
+                        ->addable()->reorderable(false)
+                        ->helperText('Tambahkan key webhook_secret untuk verifikasi signature webhook (wajib di production).'),
                 ]),
             Forms\Components\Section::make('Status')->schema([
                 Forms\Components\Grid::make(2)->schema([

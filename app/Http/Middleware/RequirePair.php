@@ -41,6 +41,10 @@ class RequirePair
         // Always allow the wizard itself
         if (str_starts_with($path, '/__pair')) return true;
 
+        // Installer standalone + halaman aktivasi legacy (jalan SEBELUM pairing)
+        if (str_starts_with($path, '/install')) return true;
+        if (str_starts_with($path, '/activation')) return true;
+
         // Health check / debug
         if ($path === '/up') return true;
         if (str_starts_with($path, '/_debugbar')) return true;

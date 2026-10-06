@@ -34,15 +34,18 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <div class="brand">{{ $tenant->nama ?? 'KoperasiApp' }}</div>
-            <div class="tagline">{{ $tenant->slogan ?? 'Sejahtera Bersama Anggota' }}</div>
+            @if($tenant && $tenant->logo_path)
+                <img src="{{ public_path('storage/' . $tenant->logo_path) }}" style="max-height: 44px; margin-bottom: 4px;">
+            @endif
+            <div class="brand">{{ $tenant->displayName() ?? config('product.name') }}</div>
+            <div class="tagline">{{ $tenant->slogan ?? $tenant->nama ?? '' }}</div>
         </div>
         <div class="header-right">
-            @if($tenant && $tenant->alamat)
-                {{ $tenant->alamat }}<br>
+            @if($tenant && $tenant->fullAddress())
+                {{ $tenant->fullAddress() }}<br>
             @endif
-            @if($tenant && $tenant->telepon)
-                Telp: {{ $tenant->telepon }}
+            @if($tenant && $tenant->telp)
+                Telp: {{ $tenant->telp }}@if($tenant->whatsapp) · WA: {{ $tenant->whatsapp }}@endif
             @endif
         </div>
     </div>
@@ -50,7 +53,7 @@
     @yield('content')
 
     <div class="footer">
-        Dicetak otomatis pada {{ now()->format('d/m/Y H:i') }} · Dokumen sah tanpa tanda tangan basah · {{ $tenant->nama ?? 'KoperasiApp' }}
+        Dicetak otomatis pada {{ now()->format('d/m/Y H:i') }} · {{ $tenant->footer_text ?? ('Dokumen sah tanpa tanda tangan basah · ' . ($tenant->displayName() ?? config('product.name'))) }}
     </div>
 </body>
 </html>

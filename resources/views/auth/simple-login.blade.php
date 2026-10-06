@@ -137,16 +137,9 @@
     </form>
 
     <div class="help">
-        <strong>Default credentials:</strong><br>
-        Email: <code>admin@koperasi.local</code><br>
-        Password: <code>admin123</code>
-
-        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #e2e8f0;">
-
         <strong>Halaman lain:</strong><br>
         <a href="/admin/login">→ Login admin (Filament default)</a><br>
         <a href="/portal/login">→ Login portal anggota</a><br>
-        <a href="/clear-session">→ Reset session/cookie (kalau ada masalah)</a><br>
         <a href="/">→ Halaman beranda</a>
     </div>
 </div>

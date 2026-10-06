@@ -22,5 +22,19 @@ class AppServiceProvider extends ServiceProvider
         SimpananTransaksi::observe(SimpananTransaksiObserver::class);
         Pinjaman::observe(PinjamanObserver::class);
         PinjamanPembayaran::observe(PinjamanPembayaranObserver::class);
+
+        // Identitas koperasi tersedia di SEMUA view sebagai $koperasi.
+        // Aman saat installer/DB belum siap: fallback null.
+        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+            static $koperasi = 'unresolved';
+            if ($koperasi === 'unresolved') {
+                try {
+                    $koperasi = \App\Models\Tenant::current();
+                } catch (\Throwable) {
+                    $koperasi = null;
+                }
+            }
+            $view->with('koperasi', $koperasi);
+        });
     }
 }

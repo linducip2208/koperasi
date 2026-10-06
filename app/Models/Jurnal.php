@@ -7,10 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Jurnal extends Model
 {
-    use BelongsToTenant, SoftDeletes;
+    use BelongsToTenant, SoftDeletes, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['nomor', 'tanggal', 'tipe', 'total_debit', 'total_kredit', 'is_posted'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('jurnal');
+    }
+
+    protected static function booted(): void
+    {
+        // Jurnal posted immutable: hapus dilarang — gunakan reversal.
+        static::deleting(function (Jurnal $jurnal) {
+            if ($jurnal->is_posted) {
+                throw new \RuntimeException("Jurnal posted {$jurnal->nomor} tidak boleh dihapus. Gunakan jurnal pembalik (reversal).");
+            }
+        });
+    }
 
     protected $table = 'jurnal';
 

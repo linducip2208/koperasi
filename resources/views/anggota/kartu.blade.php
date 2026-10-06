@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Kartu Anggota — {{ $anggota->nama }}</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+@vite(['resources/css/app.css'])
+
 <style>
     @media print {
         body { background: white !important; }
@@ -42,18 +42,22 @@
     <div class="relative z-10 flex justify-between items-start">
         <div>
             <div class="text-xs font-bold uppercase tracking-[0.2em] opacity-80">Kartu Anggota</div>
-            <div class="text-2xl font-extrabold mt-1">{{ config('app.name', 'Koperasi') }}</div>
+            <div class="text-2xl font-extrabold mt-1">{{ $koperasi?->displayName() ?? config('app.name', 'Koperasi') }}</div>
         </div>
         <div class="bg-white rounded-lg p-2 shadow-lg">
             @php
+                use Endroid\QrCode\QrCode;
+                use Endroid\QrCode\Writer\PngWriter;
+                // QR login dibuat server-side (tanpa pihak ketiga) — signed URL kedaluwarsa 2 tahun.
                 $qrData = \Illuminate\Support\Facades\URL::temporarySignedRoute(
                     'portal.qr-login',
-                    now()->addYears(5),
+                    now()->addYears(2),
                     ['anggota' => $anggota->id]
                 );
-                $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=" . urlencode($qrData);
+                $qr = (new PngWriter)->write(new QrCode($qrData));
+                $qrUri = $qr->getDataUri();
             @endphp
-            <img src="{{ $qrUrl }}" alt="QR Login Portal" width="100" height="100" style="display: block;">
+            <img src="{{ $qrUri }}" alt="QR Login Portal" width="100" height="100" style="display: block;">
         </div>
     </div>
 
@@ -86,7 +90,7 @@
 </div>
 
 <div class="no-print mt-3 max-w-3xl text-xs text-slate-500 text-center">
-    QR Code di kartu ini dapat di-scan oleh anggota untuk <strong>login otomatis ke Portal Anggota</strong> tanpa input email/password. Token aktif 5 tahun. Cetak pada kertas tebal/PVC ukuran kartu standar.
+    QR Code di kartu ini dapat di-scan oleh anggota untuk <strong>login otomatis ke Portal Anggota</strong> tanpa input email/password. Token aktif 2 tahun. Cetak pada kertas tebal/PVC ukuran kartu standar.
 </div>
 
 </body>

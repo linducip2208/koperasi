@@ -25,12 +25,23 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // Aman saat DB belum migrate (installer): fallback ke config produk.
+        try {
+            $tenant = \App\Models\Tenant::current();
+        } catch (\Throwable) {
+            $tenant = null;
+        }
+        $brand = $tenant?->displayName() ?? config('product.name');
+        $wa = config('support.whatsapp');
+        $waDisplay = config('support.whatsapp_display');
+        $version = config('product.version');
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login(\App\Filament\Pages\Auth\Login::class)
-            ->brandName('Admin')
+            ->brandName($brand)
             ->brandLogo(fn () => new HtmlString('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" class="h-9 w-9"><rect width="40" height="40" rx="12" fill="url(#kg)"/><path d="M12 28V16l8 6 8-6v12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="kg" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs></svg>'))
             ->favicon(asset('favicon.ico'))
             ->viteTheme('resources/css/filament/admin/theme.css')
@@ -73,7 +84,7 @@ class AdminPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::FOOTER,
-                fn () => Blade::render('<div class="text-center text-xs text-gray-500 py-4">© ' . date('Y') . ' KoperasiApp · Bantuan: <a href="https://wa.me/6281296052010" class="text-emerald-600 hover:underline font-semibold">WhatsApp 0812-9605-2010</a></div>')
+                fn () => Blade::render('<div class="text-center text-xs text-gray-500 py-4">© ' . date('Y') . ' ' . e($brand) . ' · v' . e($version) . ' · Bantuan: <a href="https://wa.me/' . e($wa) . '" class="text-emerald-600 hover:underline font-semibold">WhatsApp ' . e($waDisplay) . '</a></div>')
             )
             ->middleware([
                 EncryptCookies::class,

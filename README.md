@@ -1,108 +1,43 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Koperasi Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi manajemen koperasi **standalone & komersial** — 1 instalasi = 1 koperasi = 1 database = 1 lisensi = 1 brand.
 
-## About Laravel
+Stack: Laravel 12 · PHP 8.2+ · MySQL/MariaDB (production) · Filament 3 · Blade + Tailwind (Vite, tanpa CDN) · Sanctum · Spatie (Permission, Activity Log, Backup, Media Library) · Dompdf · Laravel Excel.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Modul: Anggota (kartu + QR), Simpanan (pokok/wajib/sukarela/berjangka + mutasi + bunga otomatis), Pinjaman konvensional & syariah (workflow approval 3 level, denda, kolektabilitas, restrukturisasi), Toko/POS, Unit Produsen & Jasa, Akuntansi SAK EP (jurnal, buku besar, neraca saldo, neraca, laba rugi, arus kas, perubahan ekuitas, CALK, aging), SHU, RAT/E-RAT (QR check-in, quorum otomatis, e-voting, buku tahunan), Portal anggota + API v1, Payment gateway abstraction (redirect/QRIS/VA + webhook idempotent), WhatsApp (Fonnte/WAblas/log + template DB + queue), PPOB, PDF Engine white-label, Backup terjadwal, System Health, License pairing v3 (RSA + AES-GCM + heartbeat + grace 7 hari), Installer web, Update Center.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Persyaratan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+PHP >= 8.2 dengan ekstensi: pdo, openssl, mbstring, tokenizer, xml, ctype, json, bcmath, fileinfo (gd opsional). MySQL 8 / MariaDB 10.6+ untuk production (SQLite untuk dev). Composer, Node 18+, cron.
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Opsi A — installer web (disarankan):
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Arahkan web server ke `public/`, copy `.env.example` → `.env`, isi `APP_KEY` (`php artisan key:generate`).
+2. Buka `/install` → ikuti Welcome → Requirements → Database → Application → Cooperative → Admin → License → Finish. Installer terkunci otomatis (`storage/app/.installed`).
+3. Aktivasi lisensi di `/__pair`, lalu login `/admin`.
 
-## Laravel Sponsors
+Opsi B — manual: `composer install && npm install && npm run build`, konfigurasi `.env`, `php artisan migrate --seed`, `php artisan storage:link`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Production wajib: `APP_ENV=production`, `APP_DEBUG=false`, `LICENSE_DEV_BYPASS=false`, `php artisan config:cache route:cache view:cache`, cron `* * * * * php artisan schedule:run`, queue worker untuk `database` queue, SSL, backup offsite. Detail: `docs/deployment.md`.
 
-### Premium Partners
+## Konfigurasi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Semua secret via `.env` — lihat `.env.example` (section APPLICATION, DATABASE, CACHE, QUEUE, MAIL, FILESYSTEM, LICENSE, WHATSAPP, PAYMENT, PPOB, BACKUP, SUPPORT, BRANDING). Identitas koperasi (nama, logo, warna, pengurus, prefix nomor) diatur di admin **Profil Koperasi** — tidak ada hardcode brand di kode. Kontak vendor di `config/support.php`.
 
-## Contributing
+## Lisensi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Software licensed, not sold — aktivasi per instalasi via pairing key (`/__pair`), verifikasi signature RSA lokal, heartbeat 24 jam dengan grace 7 hari. Detail: `docs/licensing.md`, `LICENSE-COMMERCIAL.md`.
 
-## Code of Conduct
+## Perintah penting
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+`php artisan app:health` · `php artisan app:license-status` · `php artisan app:backup [--full]` · `php artisan app:update-check` · `php artisan koperasi:rat-sync-quorum` · `php artisan test`
 
-## Security Vulnerabilities
+## Dokumentasi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Lihat folder `docs/`: installation, configuration, white-label, licensing, backup-restore, update, accounting, loans, savings, rat, api, deployment, security, troubleshooting.
 
-## SEO & Sitemap Submission
+## Lisensi pihak ketiga
 
-Aplikasi ini sudah include **Programmatic SEO (pSEO)** yang otomatis generate halaman SEO-friendly dari data di `config/pseo.php`. Pattern yang aktif:
-
-| Pattern | Contoh URL | Jumlah |
-|---------|-----------|--------|
-| `/aplikasi-koperasi-{kota}` | `/aplikasi-koperasi-jakarta` | 30 kota |
-| `/jenis-koperasi/{tipe}` | `/jenis-koperasi/syariah` | 6 jenis |
-| `/akad-syariah/{nama}` | `/akad-syariah/mudharabah` | 10 akad |
-| `/panduan/{slug}` | `/panduan/akuntansi-koperasi-psak-27` | 8 panduan |
-| `/kalkulator/{slug}` | `/kalkulator/cicilan-pinjaman` | 4 kalkulator |
-| `/alternatif-{competitor}` | `/alternatif-siska` | 6 competitor |
-| `/compare/{a}-vs-{b}` | `/compare/koperasi-app-vs-siska` | 6 comparison |
-
-**Total: ~70+ halaman pSEO** otomatis terdaftar di `sitemap.xml`.
-
-Setiap halaman pSEO sudah dilengkapi:
-- JSON-LD schema (ItemList, FAQPage, Article — sesuai konteks)
-- Meta tags lengkap (title, description, canonical, og:*, twitter:*)
-- Konten unik 500+ kata per halaman (digenerate dari config + template Blade)
-- Internal linking antar pSEO untuk meningkatkan crawl depth
-
-### Submit Sitemap ke Google Search Console
-
-1. Pastikan domain sudah verified di [Google Search Console](https://search.google.com/search-console)
-2. Akses menu **Sitemaps** di sidebar
-3. Submit URL: `https://yourdomain.com/sitemap.xml`
-4. Tunggu indexing (1–14 hari, tergantung otoritas domain)
-5. Pantau performa di tab **Performance** untuk lihat impressions/clicks per halaman pSEO
-
-### Submit ke Bing Webmaster Tools (opsional)
-
-1. Akses [Bing Webmaster Tools](https://www.bing.com/webmasters)
-2. Add site dan verify ownership (DNS / meta tag / file upload)
-3. Submit `sitemap.xml` di menu Sitemaps
-4. Bing biasanya index lebih cepat untuk domain baru
-
-### Menambah/Mengubah Halaman pSEO
-
-Edit `config/pseo.php` — tambah entry di array `kota`, `jenis`, `akad`, `panduan`, `kalkulator`, atau `competitors`. Halaman baru otomatis terdaftar di sitemap setelah cache config di-clear:
-
-```bash
-php artisan config:clear
-```
-
-Untuk panduan dan kalkulator dengan konten kustom, edit file Blade:
-- `resources/views/seo/panduan.blade.php` — tambah case di `@switch($panduan['slug'])`
-- `resources/views/seo/kalkulator.blade.php` — tambah case di `@switch($kalkulator['slug'])`
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Framework Laravel (MIT) dan dependency composer/npm tetap milik pemiliknya masing-masing. Aplikasi koperasi ini berlisensi komersial — lihat `LICENSE-COMMERCIAL.md`.

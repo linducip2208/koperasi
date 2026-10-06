@@ -3,10 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RatVotingSuara extends Model
 {
-    protected $table = 'rat_voting_suara';
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        // Tanpa opsi_index (kerahasiaan pilihan) — catat partisipasi saja.
+        return LogOptions::defaults()
+            ->logOnly(['voting_id', 'anggota_id'])
+            ->dontSubmitEmptyLogs()
+            ->useLogName('rat_suara');
+    }    protected $table = 'rat_voting_suara';
     protected $guarded = ['id'];
 
     public function voting()

@@ -29,7 +29,20 @@ class FinancialHealthWidget extends Widget
         // Health score 0-100, weighted: NPL (40%), LDR sweet spot 70-90% (30%), Diversifikasi (30%)
         $nplScore = max(0, 100 - ($npl * 20));         // NPL 5% = score 0
         $ldrScore = $ldr >= 70 && $ldr <= 90 ? 100 : max(0, 100 - abs($ldr - 80) * 2);
-        $diversifikasiScore = 75; // placeholder, perlu data lebih detail
+        // Diversifikasi nyata: sebaran outstanding pinjaman per produk (HHI terbalik).
+        // 1 produk dominan = skor rendah; tersebar merata = skor tinggi.
+        $perProduk = Pinjaman::whereIn('status', ['aktif', 'macet', 'cair'])
+            ->selectRaw('produk_id, COALESCE(SUM(saldo_pokok),0) as total')
+            ->groupBy('produk_id')->pluck('total');
+        $diversifikasiScore = 100;
+        if ($perProduk->sum() > 0 && $perProduk->count() > 1) {
+            $shares = $perProduk->map(fn ($v) => $v / $perProduk->sum());
+            $hhi = $shares->map(fn ($s) => $s * $s)->sum(); // 1/n .. 1
+            $min = 1 / $perProduk->count();
+            $diversifikasiScore = (int) round(max(0, min(100, (1 - $hhi) / (1 - $min) * 100)));
+        } elseif ($perProduk->count() <= 1) {
+            $diversifikasiScore = 50; // hanya 1 produk aktif
+        }
 
         $healthScore = (int) round(($nplScore * 0.4) + ($ldrScore * 0.3) + ($diversifikasiScore * 0.3));
         $grade = match (true) {

@@ -2,22 +2,34 @@
 
 namespace App\Domain\Notifikasi;
 
+use App\Domain\Notifikasi\Providers\FonnteProvider;
+use App\Domain\Notifikasi\Providers\LogProvider;
+use App\Domain\Notifikasi\Providers\WablasProvider;
 use App\Models\Setting;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Generic WhatsApp Gateway — support Fonnte, WAblas, atau API Cloud.
+ * Generic WhatsApp Gateway — driver via WhatsAppProviderInterface.
  * Konfigurasi disimpan di tabel settings (group=notifikasi).
  */
 class WhatsAppGateway
 {
+    public static function driver(?string $provider = null): WhatsAppProviderInterface
+    {
+        $provider ??= Setting::get('wa_provider', 'fonnte', 'notifikasi');
+        $apiKey = Setting::get('wa_api_key', '', 'notifikasi');
+        $apiUrl = Setting::get('wa_api_url', '', 'notifikasi');
+
+        return match ($provider) {
+            'fonnte' => new FonnteProvider($apiKey),
+            'wablas' => new WablasProvider($apiKey, $apiUrl),
+            default => new LogProvider(),
+        };
+    }
+
     public static function send(string $phone, string $message): bool
     {
-        $provider = Setting::get('wa_provider', 'fonnte', 'notifikasi');
-        $apiKey   = Setting::get('wa_api_key', '', 'notifikasi');
-        $apiUrl   = Setting::get('wa_api_url', '', 'notifikasi');
-
+        $apiKey = Setting::get('wa_api_key', '', 'notifikasi');
         if (empty($apiKey)) {
             Log::warning('WhatsApp API key kosong — skip kirim');
             return false;
@@ -26,40 +38,11 @@ class WhatsAppGateway
         $phone = self::normalize($phone);
 
         try {
-            return match ($provider) {
-                'fonnte' => self::sendFonnte($phone, $message, $apiKey),
-                'wablas' => self::sendWablas($phone, $message, $apiKey, $apiUrl),
-                default  => false,
-            };
+            return self::driver()->send($phone, $message);
         } catch (\Throwable $e) {
-            Log::error('WA send error: ' . $e->getMessage());
+            Log::error('WA send error: '.class_basename($e));
             return false;
         }
-    }
-
-    private static function sendFonnte(string $phone, string $message, string $token): bool
-    {
-        $resp = Http::timeout(10)
-            ->withHeaders(['Authorization' => $token])
-            ->asForm()
-            ->post('https://api.fonnte.com/send', [
-                'target'  => $phone,
-                'message' => $message,
-            ]);
-
-        return $resp->successful();
-    }
-
-    private static function sendWablas(string $phone, string $message, string $token, string $apiUrl): bool
-    {
-        $resp = Http::timeout(10)
-            ->withHeaders(['Authorization' => $token])
-            ->post(rtrim($apiUrl, '/') . '/api/send-message', [
-                'phone'   => $phone,
-                'message' => $message,
-            ]);
-
-        return $resp->successful();
     }
 
     public static function normalize(string $phone): string

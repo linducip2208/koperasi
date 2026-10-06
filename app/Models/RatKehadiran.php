@@ -4,10 +4,20 @@ namespace App\Models;
 
 use App\Support\Tenant\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RatKehadiran extends Model
 {
-    use BelongsToTenant;
+    use BelongsToTenant, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['rat_id', 'anggota_id', 'metode'])
+            ->dontSubmitEmptyLogs()
+            ->useLogName('rat_kehadiran');
+    }
 
     protected $table = 'rat_kehadiran';
 

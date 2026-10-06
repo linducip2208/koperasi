@@ -2,67 +2,96 @@
 
 namespace App\Domain\Notifikasi;
 
+use App\Jobs\SendWhatsApp;
 use App\Models\Anggota;
-use Illuminate\Support\Facades\Mail;
+use App\Models\NotifikasiTemplate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
+/**
+ * Notifikasi terpusat: template dari DB (NotifikasiTemplate, variabel {nama} dsb),
+ * fallback ke teks bawaan bila template belum dikonfigurasi.
+ * WhatsApp dikirim via queue (SendWhatsApp); email via Mail.
+ */
 class NotifikasiService
 {
     public static function reminderAngsuran(Anggota $anggota, array $data): void
     {
-        $template = "Yth. {$anggota->nama},\n\n"
-            . "Kami ingatkan angsuran pinjaman Anda akan jatuh tempo:\n"
-            . "• No. Akad: {$data['nomor_akad']}\n"
-            . "• Jumlah: Rp " . number_format($data['jumlah'], 0, ',', '.') . "\n"
-            . "• Jatuh Tempo: {$data['jatuh_tempo']}\n\n"
-            . "Mohon segera melakukan pembayaran. Terima kasih.";
+        $vars = [
+            'nama' => $anggota->nama,
+            'nomor_akad' => $data['nomor_akad'] ?? '-',
+            'nominal' => 'Rp '.number_format($data['jumlah'] ?? 0, 0, ',', '.'),
+            'jatuh_tempo' => $data['jatuh_tempo'] ?? '-',
+            'koperasi' => \App\Models\Tenant::current()?->displayName() ?? config('app.name'),
+        ];
+        $fallback = "Yth. {nama},\n\nKami ingatkan angsuran pinjaman Anda akan jatuh tempo:\n"
+            ."• No. Akad: {nomor_akad}\n• Jumlah: {nominal}\n• Jatuh Tempo: {jatuh_tempo}\n\nMohon segera melakukan pembayaran. Terima kasih.";
 
-        if ($anggota->telp) {
-            WhatsAppGateway::send($anggota->telp, $template);
-        }
-
-        if ($anggota->email) {
-            self::sendEmail($anggota->email, 'Reminder Angsuran', $template);
-        }
+        self::kirim($anggota, 'cicilan_jatuh_tempo', $vars, $fallback, 'Reminder Angsuran');
     }
 
     public static function konfirmasiSetoran(Anggota $anggota, int $jumlah, string $nomorRekening): void
     {
-        $msg = "Yth. {$anggota->nama},\n\n"
-            . "Setoran simpanan Anda telah berhasil:\n"
-            . "• Rek: {$nomorRekening}\n"
-            . "• Jumlah: Rp " . number_format($jumlah, 0, ',', '.') . "\n\n"
-            . "Terima kasih.";
+        $vars = [
+            'nama' => $anggota->nama,
+            'rekening' => $nomorRekening,
+            'nominal' => 'Rp '.number_format($jumlah, 0, ',', '.'),
+            'koperasi' => \App\Models\Tenant::current()?->displayName() ?? config('app.name'),
+        ];
+        $fallback = "Yth. {nama},\n\nSetoran simpanan Anda telah berhasil:\n• Rek: {rekening}\n• Jumlah: {nominal}\n\nTerima kasih.";
 
-        if ($anggota->telp) {
-            WhatsAppGateway::send($anggota->telp, $msg);
-        }
+        self::kirim($anggota, 'setoran_simpanan', $vars, $fallback, 'Konfirmasi Setoran');
     }
 
     public static function approvalPinjaman(Anggota $anggota, string $nomorAkad, bool $disetujui, ?string $alasan = null): void
     {
-        $status = $disetujui ? 'DISETUJUI' : 'DITOLAK';
-        $msg = "Yth. {$anggota->nama},\n\n"
-            . "Pengajuan pinjaman Anda nomor {$nomorAkad} telah {$status}.";
+        $vars = [
+            'nama' => $anggota->nama,
+            'nomor_akad' => $nomorAkad,
+            'status' => $disetujui ? 'DISETUJUI' : 'DITOLAK',
+            'alasan' => $alasan ? "\nAlasan: {$alasan}" : '',
+            'koperasi' => \App\Models\Tenant::current()?->displayName() ?? config('app.name'),
+        ];
+        $fallback = "Yth. {nama},\n\nPengajuan pinjaman Anda nomor {nomor_akad} telah {status}.{alasan}\n\nSilakan menghubungi koperasi untuk informasi lebih lanjut.";
 
-        if (! $disetujui && $alasan) {
-            $msg .= "\nAlasan: {$alasan}";
-        }
-        $msg .= "\n\nSilakan menghubungi koperasi untuk informasi lebih lanjut.";
+        self::kirim($anggota, 'pencairan_pinjaman', $vars, $fallback, 'Status Pengajuan Pinjaman');
+    }
 
+    protected static function kirim(Anggota $anggota, string $event, array $vars, string $fallback, string $subjectDefault): void
+    {
+        $render = fn (?string $tpl) => self::render($tpl ?? $fallback, $vars);
+
+        $wa = NotifikasiTemplate::where('event', $event)->where('channel', 'whatsapp')->where('aktif', true)->first();
         if ($anggota->telp) {
-            WhatsAppGateway::send($anggota->telp, $msg);
+            SendWhatsApp::dispatch(WhatsAppGateway::normalize($anggota->telp), $render($wa?->body));
+        }
+
+        $email = NotifikasiTemplate::where('event', $event)->where('channel', 'email')->where('aktif', true)->first();
+        if ($anggota->email && $email) {
+            self::sendEmail($anggota->email, $email->subject ?: $subjectDefault, $render($email->body));
+        } elseif ($anggota->email && $event === 'cicilan_jatuh_tempo') {
+            self::sendEmail($anggota->email, $subjectDefault, $render($fallback));
         }
     }
 
-    private static function sendEmail(string $to, string $subject, string $body): void
+    protected static function render(string $template, array $vars): string
+    {
+        foreach ($vars as $k => $v) {
+            $template = str_replace('{'.$k.'}', (string) $v, $template);
+        }
+        return $template;
+    }
+
+    protected static function sendEmail(string $to, string $subject, string $body): void
     {
         try {
-            Mail::raw($body, function ($mail) use ($to, $subject) {
+            $tenant = \App\Models\Tenant::current();
+            Mail::raw($body, function ($mail) use ($to, $subject, $tenant) {
                 $mail->to($to)->subject($subject);
+                if ($tenant?->email) $mail->from($tenant->email, $tenant->displayName());
             });
         } catch (\Throwable $e) {
-            Log::warning('Email send error: ' . $e->getMessage());
+            Log::warning('Email send error: '.class_basename($e));
         }
     }
 }

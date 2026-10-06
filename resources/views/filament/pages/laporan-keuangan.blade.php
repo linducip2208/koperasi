@@ -9,6 +9,7 @@
             'sampai' => $this->data['sampai'] ?? now()->toDateString(),
         ];
         if ($this->data['cabang_id']          ?? null) $base['cabang_id']          = $this->data['cabang_id'];
+        if ($this->data['coa_id']              ?? null) $base['coa_id']              = $this->data['coa_id'];
         if ($this->data['produk_simpanan_id'] ?? null) $base['produk_simpanan_id'] = $this->data['produk_simpanan_id'];
         if ($this->data['produk_pinjaman_id'] ?? null) $base['produk_pinjaman_id'] = $this->data['produk_pinjaman_id'];
 
@@ -22,6 +23,9 @@
             ['name' => 'Arus Kas',        'icon' => '💵', 'desc' => 'Pergerakan Kas Bersih',           'route' => 'laporan.arus-kas',         'color' => 'amber'],
             ['name' => 'Perubahan Ekuitas','icon' => '📈', 'desc' => 'SAK EP: modal awal → mutasi → akhir', 'route' => 'laporan.perubahan-ekuitas', 'color' => 'violet'],
             ['name' => 'CALK',            'icon' => '📝', 'desc' => 'Catatan atas Laporan Keuangan',   'route' => 'laporan.calk',             'color' => 'emerald'],
+            ['name' => 'Neraca Saldo',    'icon' => '⚖️', 'desc' => 'Trial balance: debit = kredit',   'route' => 'laporan.trial-balance',    'color' => 'blue'],
+            ['name' => 'Aging Piutang',   'icon' => '⏳', 'desc' => 'Bucket tunggakan pembiayaan',      'route' => 'laporan.aging',            'color' => 'amber'],
+            ['name' => 'Buku Besar',      'icon' => '📖', 'desc' => 'Mutasi per akun (pilih akun dulu)', 'route' => 'laporan.buku-besar',       'color' => 'emerald'],
             ['name' => 'Ringkasan Produk','icon' => '📦', 'desc' => 'Saldo & Outstanding per Produk',  'route' => 'laporan.ringkasan-produk', 'color' => 'violet'],
         ];
 
@@ -57,7 +61,7 @@
                        class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-2 py-1.5 rounded transition flex-1 text-center">
                        ⬇ PDF
                     </a>
-                    @if($r['route'] !== 'laporan.ringkasan-produk')
+                    @if(!in_array($r['route'], ['laporan.ringkasan-produk', 'laporan.buku-besar']))
                     <a href="{{ route('laporan.excel', array_merge(['laporan' => str_replace('laporan.', '', $r['route'])], $base)) }}"
                        class="bg-white/20 hover:bg-white/30 text-white text-xs font-semibold px-2 py-1.5 rounded transition flex-1 text-center">
                        📊 Excel

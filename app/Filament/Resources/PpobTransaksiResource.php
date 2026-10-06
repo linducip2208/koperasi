@@ -30,7 +30,8 @@ class PpobTransaksiResource extends Resource
             Forms\Components\Select::make('anggota_id')->label('Anggota')->relationship('anggota', 'nama')->searchable()->preload(),
             Forms\Components\TextInput::make('no_tujuan')->label('No. Tujuan')->required()->maxLength(30),
             Forms\Components\TextInput::make('harga')->label('Harga')->prefix('Rp')->numeric()->required(),
-            Forms\Components\Select::make('status')->label('Status')->options(['pending' => 'Pending', 'sukses' => 'Sukses', 'gagal' => 'Gagal', 'refund' => 'Refund'])->default('pending'),
+            Forms\Components\Select::make('status')->label('Status')->options(['pending' => 'Pending', 'processing' => 'Processing', 'sukses' => 'Sukses',
+'gagal' => 'Gagal', 'refund' => 'Refund'])->default('pending'),
             Forms\Components\Textarea::make('keterangan')->label('Keterangan')->columnSpanFull(),
         ]);
     }

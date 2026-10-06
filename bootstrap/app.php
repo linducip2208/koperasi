@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\RequirePair::class,
             ResolveTenantFromUser::class,
         ]);
+        // Webhook gateway tidak bisa kirim CSRF token — keamanan via
+        // signature HMAC + idempotency di controller, bukan CSRF.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/payment/*',
+        ]);
         $middleware->alias([
             'tenant' => ResolveTenantFromUser::class,
         ]);

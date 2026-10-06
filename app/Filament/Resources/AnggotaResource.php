@@ -35,7 +35,9 @@ class AnggotaResource extends Resource
                             ->label('Nomor Anggota')
                             ->default(fn () => NumberingService::next('anggota', 'AGT-', '{prefix}{ymd}{seq:5}'))
                             ->required()->unique(ignoreRecord: true),
-                        Forms\Components\TextInput::make('nik')->label('NIK')->maxLength(20),
+                        Forms\Components\TextInput::make('nik')->label('NIK')
+                            ->maxLength(20)->unique(ignoreRecord: true)
+                            ->helperText('16 digit, unik per anggota. Dipakai deteksi duplikat.'),
                         Forms\Components\TextInput::make('nama')->label('Nama Lengkap')->required()->columnSpanFull(),
                         Forms\Components\TextInput::make('tempat_lahir')->label('Tempat Lahir'),
                         Forms\Components\DatePicker::make('tanggal_lahir')->label('Tanggal Lahir'),
@@ -110,9 +112,15 @@ class AnggotaResource extends Resource
                     ]),
                 ]),
                 Forms\Components\Tabs\Tab::make('Dokumen')->schema([
-                    Forms\Components\FileUpload::make('foto_path')->label('Foto Profil')->image()->directory('anggota/foto'),
-                    Forms\Components\FileUpload::make('ktp_path')->label('KTP')->directory('anggota/ktp'),
-                    Forms\Components\FileUpload::make('kk_path')->label('Kartu Keluarga')->directory('anggota/kk'),
+                    Forms\Components\FileUpload::make('foto_path')->label('Foto Profil')->image()
+                        ->maxSize(2048)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                        ->directory('anggota/foto'),
+                    Forms\Components\FileUpload::make('ktp_path')->label('KTP')->image()
+                        ->maxSize(3072)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+                        ->directory('anggota/ktp'),
+                    Forms\Components\FileUpload::make('kk_path')->label('Kartu Keluarga')->image()
+                        ->maxSize(3072)->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+                        ->directory('anggota/kk'),
                 ]),
             ])->columnSpanFull(),
         ]);
@@ -154,8 +162,9 @@ class AnggotaResource extends Resource
                         Forms\Components\FileUpload::make('file')
                             ->label('File CSV')
                             ->acceptedFileTypes(['text/csv', 'text/plain', 'application/vnd.ms-excel'])
+                            ->maxSize(1024)
                             ->required()
-                            ->helperText('Format: nama,nik,email,telp,alamat,jenis_kelamin (semua optional kecuali nama). Header di baris pertama.'),
+                            ->helperText('Format: nama,nik,email,telp,alamat,jenis_kelamin (semua optional kecuali nama). Header di baris pertama. Maks 1 MB.'),
                     ])
                     ->action(function (array $data) {
                         $path = storage_path('app/public/' . $data['file']);
@@ -222,7 +231,7 @@ class AnggotaResource extends Resource
                             ->label('Password Baru')
                             ->password()
                             ->required()
-                            ->minLength(6),
+                            ->minLength(12),
                     ])
                     ->action(function (\App\Models\Anggota $record, array $data) {
                         $record->user()->update(['password' => \Illuminate\Support\Facades\Hash::make($data['new_password'])]);
@@ -238,7 +247,10 @@ class AnggotaResource extends Resource
                     ->openUrlInNewTab(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn (\App\Models\Anggota $record) => ! $record->simpanan()->exists() && ! $record->pinjaman()->exists())
+                    ->modalHeading('Arsipkan anggota?')
+                    ->modalDescription('Anggota dengan riwayat transaksi finansial TIDAK bisa dihapus — gunakan status Keluar/Dikeluarkan.'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

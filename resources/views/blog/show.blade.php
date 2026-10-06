@@ -126,7 +126,7 @@
            class="px-6 py-3 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-50 transition-colors">
             Lihat Dokumentasi
         </a>
-        <a href="https://wa.me/6281296052010?text=Halo%2C+saya+ingin+tanya+source+code+aplikasi+koperasi"
+        <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo%2C+saya+ingin+tanya+source+code+aplikasi+koperasi"
            target="_blank"
            class="px-6 py-3 bg-emerald-800 text-white font-semibold rounded-xl hover:bg-emerald-900 transition-colors">
             WhatsApp

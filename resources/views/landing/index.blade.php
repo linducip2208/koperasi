@@ -32,46 +32,16 @@
         "description": "Software manajemen koperasi lengkap Indonesia. Konvensional & syariah.",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
-        "offers": {"@type": "Offer", "priceCurrency": "IDR", "price": "0", "url": "https://wa.me/6281296052010"},
+        "offers": {"@type": "Offer", "priceCurrency": "IDR", "price": "0", "url": "https://wa.me/{{ config('support.whatsapp') }}"},
         "publisher": {"@type": "Organization", "name": "Whitelabel.co.id", "telephone": "+6281296052010"},
         "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "127"}
     }
     </script>
     @endverbatim
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
-                        'fade-in':    'fadeIn 0.8s ease-out forwards',
-                        'float':      'float 6s ease-in-out infinite',
-                        'shine':      'shine 3s linear infinite',
-                        'blob':       'blob 15s infinite',
-                        'gradient':   'gradient 8s ease infinite',
-                    },
-                    keyframes: {
-                        fadeInUp: { '0%': {opacity:0, transform:'translateY(30px)'}, '100%': {opacity:1, transform:'translateY(0)'} },
-                        fadeIn:   { '0%': {opacity:0}, '100%': {opacity:1} },
-                        float:    { '0%,100%': {transform:'translateY(0)'}, '50%': {transform:'translateY(-20px)'} },
-                        shine:    { '0%': {backgroundPosition:'-200%'}, '100%': {backgroundPosition:'200%'} },
-                        blob:     { '0%,100%': {transform:'translate(0,0) scale(1)'}, '33%': {transform:'translate(30px,-50px) scale(1.1)'}, '66%': {transform:'translate(-20px,20px) scale(0.9)'} },
-                        gradient: { '0%,100%': {backgroundPosition:'0% 50%'}, '50%': {backgroundPosition:'100% 50%'} },
-                    },
-                },
-            },
-        };
-    </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
@@ -138,7 +108,7 @@
             100% { transform: translateX(-50%); }
         }
     </style>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 <body class="bg-white text-slate-900 overflow-x-hidden" x-data="{ mobileOpen: false }">
 
@@ -159,7 +129,7 @@
                 </nav>
                 <div class="flex items-center gap-3">
                     <a href="{{ url('/admin') }}" class="hidden sm:inline-block text-sm font-medium text-slate-600 hover:text-slate-900">Login</a>
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20tertarik%20dengan%20Aplikasi%20Koperasi"
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20tertarik%20dengan%20Aplikasi%20Koperasi"
                        class="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow-lg shadow-slate-900/20">
                         <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
                         <span class="hidden sm:inline">Demo Gratis</span>
@@ -216,7 +186,7 @@
                 </p>
 
                 <div class="flex flex-wrap justify-center gap-3 mb-12">
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20demo%20Aplikasi%20Koperasi"
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20demo%20Aplikasi%20Koperasi"
                        class="group inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-3.5 rounded-xl font-semibold transition shadow-xl shadow-slate-900/30 hover:shadow-2xl hover:-translate-y-0.5">
                         <svg class="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
                         Mulai Demo Gratis
@@ -578,7 +548,7 @@
                     <div class="text-sm font-bold text-slate-500 uppercase tracking-wider">Regular</div>
                     <div class="mt-2 mb-1"><span class="text-4xl font-extrabold text-slate-900">1 Domain</span></div>
                     <p class="text-slate-500 text-sm mb-6">Untuk satu koperasi</p>
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20minat%20paket%20Regular"
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20minat%20paket%20Regular"
                        class="block text-center border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white px-4 py-3 rounded-xl font-semibold transition mb-6">
                         Tanya Harga
                     </a>
@@ -595,7 +565,7 @@
                     <div class="text-sm font-bold text-amber-300 uppercase tracking-wider">Extended</div>
                     <div class="mt-2 mb-1"><span class="text-4xl font-extrabold">3 Domain</span></div>
                     <p class="text-slate-400 text-sm mb-6">Untuk multi-cabang</p>
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20minat%20paket%20Extended"
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20minat%20paket%20Extended"
                        class="block text-center bg-amber-400 hover:bg-amber-500 text-slate-900 px-4 py-3 rounded-xl font-bold transition mb-6">
                         Tanya Harga →
                     </a>
@@ -612,7 +582,7 @@
                     <div class="text-sm font-bold gradient-text uppercase tracking-wider">SaaS / Whitelabel</div>
                     <div class="mt-2 mb-1"><span class="text-4xl font-extrabold text-slate-900">Unlimited</span></div>
                     <p class="text-slate-500 text-sm mb-6">Multi-tenant + brand sendiri</p>
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20minat%20SaaS%20Whitelabel"
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20minat%20SaaS%20Whitelabel"
                        class="block text-center bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white px-4 py-3 rounded-xl font-bold transition mb-6">
                         Custom Quote
                     </a>
@@ -678,7 +648,7 @@
             <p class="text-xl opacity-90 mb-10 max-w-2xl mx-auto">
                 Demo gratis 30 menit. Kami bantu pilih paket yang cocok dengan skala koperasi Anda.
             </p>
-            <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20demo%20Aplikasi%20Koperasi"
+            <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20demo%20Aplikasi%20Koperasi"
                class="group inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-emerald-500/30 hover:scale-105 transition">
                 <svg class="w-6 h-6 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
                 <span>WhatsApp 0812-9605-2010</span>
@@ -699,7 +669,7 @@
                     </div>
                     <p class="text-sm leading-relaxed mb-4 max-w-md">Software lengkap untuk Koperasi Serba Usaha (KSP, KSPPS, KSU) di Indonesia. Konvensional &amp; syariah dalam satu aplikasi.</p>
                     <div class="flex gap-3">
-                        <a href="https://wa.me/6281296052010" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-emerald-500 flex items-center justify-center transition">
+                        <a href="https://wa.me/{{ config('support.whatsapp') }}" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-emerald-500 flex items-center justify-center transition">
                             <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
                         </a>
                     </div>
@@ -716,7 +686,7 @@
                 <div>
                     <h4 class="font-bold text-white mb-3 text-sm">Hubungi Kami</h4>
                     <ul class="space-y-2 text-sm">
-                        <li class="flex items-center gap-2">📱 <a href="https://wa.me/6281296052010" class="hover:text-white">0812-9605-2010</a></li>
+                        <li class="flex items-center gap-2">📱 <a href="https://wa.me/{{ config('support.whatsapp') }}" class="hover:text-white">0812-9605-2010</a></li>
                         <li class="flex items-center gap-2">🌐 <a href="https://whitelabel.co.id" class="hover:text-white">whitelabel.co.id</a></li>
                         <li class="flex items-center gap-2 text-xs opacity-70">⏰ Respon &lt; 5 menit</li>
                     </ul>
@@ -733,7 +703,7 @@
     </footer>
 
     {{-- Floating WhatsApp --}}
-    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20tanya%20Aplikasi%20Koperasi"
+    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20tanya%20Aplikasi%20Koperasi"
        class="fixed bottom-6 right-6 z-50 group">
         <div class="absolute inset-0 bg-emerald-500 rounded-full animate-ping opacity-40"></div>
         <div class="relative bg-emerald-500 hover:bg-emerald-600 text-white rounded-full p-4 shadow-2xl flex items-center gap-2 transition hover:scale-110">
@@ -793,7 +763,7 @@
                         <div class="flex items-center justify-between gap-3">
                             <div>
                                 <div class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1">Nomor WhatsApp Pembelian</div>
-                                <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20beli%20source%20code%20aplikasi%20koperasi." class="font-extrabold text-2xl md:text-3xl text-emerald-700 hover:text-emerald-800 transition" id="phone-display">0812-9605-2010</a>
+                                <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20beli%20source%20code%20aplikasi%20koperasi." class="font-extrabold text-2xl md:text-3xl text-emerald-700 hover:text-emerald-800 transition" id="phone-display">0812-9605-2010</a>
                                 <div class="text-xs text-slate-500 mt-1">Senin–Sabtu · 09.00–17.00 WIB · Respond &lt; 5 menit</div>
                             </div>
                             <button onclick="copyPhone()" class="bg-white hover:bg-emerald-100 text-emerald-700 font-bold px-3 py-2 rounded-lg text-xs transition flex-shrink-0 border border-emerald-200" id="copy-btn">📋 Salin</button>
@@ -801,7 +771,7 @@
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-3 mb-4">
-                        <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20beli%20source%20code%20aplikasi%20koperasi" class="flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-3 rounded-xl shadow-lg shadow-emerald-500/30 transition">
+                        <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20beli%20source%20code%20aplikasi%20koperasi" class="flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-3 rounded-xl shadow-lg shadow-emerald-500/30 transition">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2z"/></svg>
                             <span>Chat WhatsApp Sekarang</span>
                         </a>
@@ -940,7 +910,7 @@
                 </label>
                 <div class="flex gap-2">
                     <button onclick="closeWelcomePopup()" class="text-slate-600 hover:text-slate-900 font-medium text-sm px-4 py-2 rounded-lg hover:bg-white transition">Nanti saja</button>
-                    <a href="https://wa.me/6281296052010?text=Halo,%20saya%20mau%20info%20aplikasi%20koperasi" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm px-5 py-2 rounded-lg shadow-lg shadow-emerald-500/30 transition">Chat WA: 0812-9605-2010 →</a>
+                    <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo,%20saya%20mau%20info%20aplikasi%20koperasi" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-sm px-5 py-2 rounded-lg shadow-lg shadow-emerald-500/30 transition">Chat WA: 0812-9605-2010 →</a>
                 </div>
             </div>
         </div>
@@ -1019,7 +989,7 @@
          x-init="if (!dismissed) { setTimeout(() => { open = true }, 25000); }"
          class="relative z-50">
         {{-- Floating WhatsApp Button --}}
-        <a href="https://wa.me/6281296052010?text=Halo%2C+saya+tertarik+dengan+source+code+aplikasi+koperasi"
+        <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo%2C+saya+tertarik+dengan+source+code+aplikasi+koperasi"
            target="_blank"
            class="fixed bottom-6 right-6 w-16 h-16 bg-[#25D366] text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center z-40 pulse-wa">
             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
@@ -1042,7 +1012,7 @@
             </div>
             <div class="flex gap-2">
                 <a href="{{ url('/docs') }}" class="flex-1 text-center py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-sm font-semibold transition">Dokumentasi</a>
-                <a href="https://wa.me/6281296052010?text=Halo%2C+saya+ingin+tanya+tentang+beli+source+code+aplikasi+koperasi"
+                <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo%2C+saya+ingin+tanya+tentang+beli+source+code+aplikasi+koperasi"
                    target="_blank"
                    class="flex-1 text-center py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition"
                    @click="open = false; sessionStorage.setItem('koperasi_purchase_dismissed', '1')">WhatsApp</a>

@@ -17,4 +17,10 @@ class NotifikasiTemplate extends Model
     ];
 
     protected $casts = ['aktif' => 'boolean'];
+
+    protected static function booted(): void
+    {
+        // Body template dirender {!! !!} di email — sanitasi saat simpan.
+        static::saving(fn ($m) => $m->body = \App\Support\HtmlSanitizer::clean($m->body));
+    }
 }

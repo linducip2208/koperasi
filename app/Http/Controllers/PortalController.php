@@ -50,7 +50,7 @@ class PortalController extends Controller
 
     public function qrLogin(Request $request, Anggota $anggota)
     {
-        if (!$anggota->user_id) {
+        if (! $anggota->user_id || $anggota->status !== 'aktif') {
             return redirect()->route('portal.login')
                 ->withErrors(['email' => 'Akun anggota belum aktif. Hubungi admin koperasi.']);
         }
@@ -308,15 +308,18 @@ class PortalController extends Controller
     {
         $anggota = $this->getAnggotaOrAbort($request);
         $request->validate(['ppob_produk_id' => 'required|exists:ppob_produk,id', 'no_tujuan' => 'required|string|max:30']);
-        $produk = \App\Models\PpobProduk::findOrFail($request->ppob_produk_id);
-        \App\Models\PpobTransaksi::create([
-            'tenant_id' => $anggota->tenant_id, 'anggota_id' => $anggota->id, 'ppob_produk_id' => $produk->id,
-            'nomor' => 'PPOB-' . now()->format('Ymd-His') . '-' . rand(100, 999),
-            'no_tujuan' => $request->no_tujuan, 'harga' => $produk->harga_jual,
-            'harga_beli' => $produk->harga_beli, 'laba' => $produk->harga_jual - $produk->harga_beli,
-            'status' => 'sukses',
-        ]);
-        return back()->with('success', "PPOB berhasil! {$produk->nama} → {$request->no_tujuan}");
+        $trx = \App\Domain\Ppob\PpobService::beli(
+            $anggota->id, $anggota->tenant_id,
+            (int) $request->ppob_produk_id, (string) $request->no_tujuan,
+            $request->input('_idempotency') // opsional dari klien untuk anti double-submit
+        );
+        $produk = $trx->produk;
+        return back()->with(
+            $trx->status === 'sukses' ? 'success' : 'error',
+            $trx->status === 'sukses'
+                ? "PPOB berhasil! {$produk->nama} → {$request->no_tujuan} (SN: {$trx->sn})"
+                : "PPOB gagal diproses: {$trx->keterangan}"
+        );
     }
 
     public function voting(Request $request)

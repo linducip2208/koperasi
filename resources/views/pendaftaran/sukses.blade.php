@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Pendaftaran Berhasil — {{ $brand['nama'] ?? config('app.name') }}</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 <style>body{font-family:'Inter',sans-serif}</style>
 </head>
 <body class="bg-emerald-50 min-h-screen flex items-center justify-center p-4">
@@ -30,7 +30,7 @@
             </ol>
         </div>
 
-        <a href="https://wa.me/6281296052010?text=Halo%2C+saya+baru+saja+mendaftar+anggota+dengan+nomor+{{ urlencode($anggota->nomor_anggota) }}+atas+nama+{{ urlencode($anggota->nama) }}.+Mohon+verifikasi."
+        <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo%2C+saya+baru+saja+mendaftar+anggota+dengan+nomor+{{ urlencode($anggota->nomor_anggota) }}+atas+nama+{{ urlencode($anggota->nama) }}.+Mohon+verifikasi."
            class="block bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg mt-6 no-underline">
             💬 Konfirmasi via WhatsApp ke Admin
         </a>

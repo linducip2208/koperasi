@@ -38,6 +38,8 @@ class JurnalService
             throw new InvalidArgumentException("Jurnal tidak balance: debit {$totalDebit} vs kredit {$totalKredit}.");
         }
 
+        $tanggal = $opts['tanggal'] ?? now()->toDateString();
+        self::assertPeriodOpen($tanggal);
         return DB::transaction(function () use ($keterangan, $details, $opts, $totalDebit, $totalKredit) {
             $jurnal = Jurnal::create([
                 'tenant_id'      => CurrentTenant::id(),
@@ -77,6 +79,8 @@ class JurnalService
             return;
         }
 
+        self::assertPeriodOpen($jurnal->tanggal->toDateString());
+
         $jurnal->update([
             'is_posted' => true,
             'posted_at' => now(),
@@ -86,10 +90,58 @@ class JurnalService
 
     public static function unpost(Jurnal $jurnal): void
     {
+        self::assertPeriodOpen($jurnal->tanggal->toDateString());
+
         $jurnal->update([
             'is_posted' => false,
             'posted_at' => null,
             'posted_by' => null,
         ]);
+    }
+
+    /**
+     * Jurnal pembalik (reversal): membalik debit↔kredit per baris,
+     * tertaut ke jurnal asal. Jurnal asal TIDAK diubah (immutable).
+     */
+    public static function reverse(Jurnal $asal, ?string $tanggal = null, ?string $alasan = null): Jurnal
+    {
+        if (! $asal->is_posted) {
+            throw new InvalidArgumentException('Hanya jurnal posted yang bisa di-reverse.');
+        }
+
+        $details = $asal->details()->get()->map(fn ($d) => [
+            'coa_id' => $d->coa_id,
+            'debit' => (int) $d->kredit,
+            'kredit' => (int) $d->debit,
+            'keterangan' => 'Reversal: '.($d->keterangan ?? $asal->keterangan),
+        ])->all();
+
+        return self::create(
+            'Reversal '.$asal->nomor.($alasan ? ' — '.$alasan : ''),
+            $details,
+            [
+                'tanggal' => $tanggal ?? now()->toDateString(),
+                'tipe' => 'balik',
+                'referensi_type' => Jurnal::class,
+                'referensi_id' => $asal->id,
+                'cabang_id' => $asal->cabang_id,
+            ]
+        );
+    }
+
+    /** Periode akuntansi closed → tolak tulis/posting. */
+    public static function isPeriodClosed(string $tanggal): bool
+    {
+        return \App\Models\PeriodeAkuntansi::where('status', 'closed')
+            ->whereDate('tanggal_mulai', '<=', $tanggal)
+            ->whereDate('tanggal_akhir', '>=', $tanggal)
+            ->exists();
+    }
+
+    public static function assertPeriodOpen(string $tanggal): void
+    {
+        if (self::isPeriodClosed($tanggal)) {
+            throw new InvalidArgumentException("Periode akuntansi {$tanggal} sudah di-close (locked).");
+        }
     }
 }

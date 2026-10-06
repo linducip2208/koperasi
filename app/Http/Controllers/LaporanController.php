@@ -78,6 +78,44 @@ class LaporanController extends Controller
         return $this->render('laporan.calk', $data, "calk-{$dari}-{$sampai}", $request);
     }
 
+    /** Buku Besar per akun */
+    public function bukuBesar(Request $request)
+    {
+        $request->validate(['coa_id' => ['required', 'exists:coa,id']]);
+        $dari     = $request->input('dari', now()->startOfYear()->toDateString());
+        $sampai   = $request->input('sampai', now()->toDateString());
+        $cabangId = $request->input('cabang_id') ? (int) $request->input('cabang_id') : null;
+
+        $data = LaporanKeuanganService::bukuBesar((int) $request->input('coa_id'), $dari, $sampai, $cabangId);
+        $data = array_merge($data, $this->commonHeaderData($request, $cabangId));
+
+        return $this->render('laporan.buku-besar', $data, "buku-besar-{$dari}-{$sampai}", $request);
+    }
+
+    /** Neraca Saldo (Trial Balance) */
+    public function trialBalance(Request $request)
+    {
+        $sampai   = $request->input('sampai', now()->toDateString());
+        $cabangId = $request->input('cabang_id') ? (int) $request->input('cabang_id') : null;
+
+        $data = LaporanKeuanganService::trialBalance($sampai, $cabangId);
+        $data = array_merge($data, $this->commonHeaderData($request, $cabangId));
+
+        return $this->render('laporan.trial-balance', $data, "trial-balance-{$sampai}", $request);
+    }
+
+    /** Aging piutang pembiayaan */
+    public function aging(Request $request)
+    {
+        $sampai   = $request->input('sampai', now()->toDateString());
+        $cabangId = $request->input('cabang_id') ? (int) $request->input('cabang_id') : null;
+
+        $data = LaporanKeuanganService::agingPiutang($sampai, $cabangId);
+        $data = array_merge($data, $this->commonHeaderData($request, $cabangId));
+
+        return $this->render('laporan.aging', $data, "aging-{$sampai}", $request);
+    }
+
     /**
      * Ringkasan operasional per produk (simpanan & pinjaman) — bisa difilter cabang & produk.
      */

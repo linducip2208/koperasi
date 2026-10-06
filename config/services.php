@@ -36,10 +36,16 @@ return [
     ],
 
     'whatsapp' => [
-        // Driver: "log" (dev) atau "fonnte" (production)
+        // Driver: "log" (dev) | "fonnte" | "wablas" (production).
+        // Catatan: kredensial operasional harian dibaca dari tabel settings
+        // (group=notifikasi: wa_provider/wa_api_key/wa_api_url) agar bisa
+        // diubah dari admin. Env di bawah adalah default/fallback.
         'driver'   => env('WHATSAPP_DRIVER', 'log'),
-        // Token Fonnte API (didapat dari https://fonnte.com)
-        'token'    => env('WHATSAPP_TOKEN', ''),
+        'token'    => env('WHATSAPP_TOKEN', env('FONNTE_API_KEY', '')),
+        'sender'   => env('WHATSAPP_SENDER', env('FONNTE_SENDER', '')),
+        'wablas_key' => env('WABLAS_API_KEY', ''),
+        'wablas_url' => env('WABLAS_URL', ''),
+        'timeout'  => env('WHATSAPP_TIMEOUT', 15),
         // URL logo untuk header notifikasi (opsional)
         'logo_url' => env('WHATSAPP_LOGO_URL', ''),
     ],

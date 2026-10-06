@@ -118,7 +118,7 @@
                 <p class="text-emerald-100 text-sm leading-relaxed mb-4">
                     Source code aplikasi koperasi lengkap — konvensional & syariah. Siap pakai, bisa direbrand.
                 </p>
-                <a href="https://wa.me/6281296052010?text=Halo%2C+saya+tertarik+dengan+source+code+aplikasi+koperasi"
+                <a href="https://wa.me/{{ config('support.whatsapp') }}?text=Halo%2C+saya+tertarik+dengan+source+code+aplikasi+koperasi"
                    target="_blank"
                    class="block text-center bg-white text-emerald-700 font-semibold py-2.5 px-4 rounded-xl text-sm hover:bg-emerald-50 transition-colors">
                     WhatsApp Sekarang

@@ -3,10 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class RatVoting extends Model
 {
-    protected $table = 'rat_voting';
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['judul', 'is_aktif', 'mulai', 'selesai'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->useLogName('rat_voting');
+    }    protected $table = 'rat_voting';
     protected $guarded = ['id'];
 
     protected $casts = [

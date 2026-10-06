@@ -14,6 +14,12 @@ class BlogPost extends Model
         'published_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        // Anti stored-XSS: konten blog dirender dengan {!! !!} di show.blade.php.
+        static::saving(fn ($m) => $m->content = \App\Support\HtmlSanitizer::clean($m->content));
+    }
+
     public function category()
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');

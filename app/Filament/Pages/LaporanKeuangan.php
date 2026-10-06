@@ -35,6 +35,7 @@ class LaporanKeuangan extends Page implements HasForms
             'cabang_id'           => null,
             'produk_simpanan_id'  => null,
             'produk_pinjaman_id'  => null,
+            'coa_id'              => null,
         ]);
     }
 
@@ -46,6 +47,9 @@ class LaporanKeuangan extends Page implements HasForms
             Select::make('cabang_id')->label('Cabang')
                 ->options(Cabang::where('aktif', true)->pluck('nama', 'id'))
                 ->searchable()->placeholder('Semua Cabang'),
+            Select::make('coa_id')->label('Akun (untuk Buku Besar)')
+                ->options(\App\Models\Coa::where('is_postable', true)->where('is_aktif', true)->orderBy('kode')->pluck('nama', 'id'))
+                ->searchable()->placeholder('Pilih akun…'),
             Select::make('produk_simpanan_id')->label('Produk Simpanan')
                 ->options(ProdukSimpanan::pluck('nama', 'id'))
                 ->searchable()->placeholder('Semua Produk Simpanan'),
