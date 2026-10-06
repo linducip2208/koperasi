@@ -27,13 +27,18 @@ class LaporanExport implements FromArray, WithHeadings, WithTitle, WithStyles, S
             'neraca'    => $this->rowsNeraca(),
             'laba-rugi' => $this->rowsLabaRugi(),
             'arus-kas'  => $this->rowsArusKas(),
+            'perubahan-ekuitas' => $this->rowsEkuitas(),
+            'calk' => $this->rowsCalk(),
             default     => [],
         };
     }
 
     public function headings(): array
     {
-        return ['Kode', 'Akun', 'Saldo (Rp)'];
+        return match ($this->jenis) {
+            'perubahan-ekuitas' => ['Kode', 'Akun', 'Saldo Awal (Rp)', 'Mutasi (Rp)', 'Saldo Akhir (Rp)'],
+            default => ['Kode', 'Akun', 'Saldo (Rp)'],
+        };
     }
 
     public function title(): string
@@ -98,5 +103,35 @@ class LaporanExport implements FromArray, WithHeadings, WithTitle, WithStyles, S
             ['', 'Total Pengeluaran Kas', -$d['keluar']],
             ['', 'Kenaikan/Penurunan Kas Bersih', $d['net']],
         ];
+    }
+
+    private function rowsEkuitas(): array
+    {
+        $d = LaporanKeuanganService::perubahanEkuitas($this->dari, $this->sampai, $this->cabangId);
+        $rows = [];
+        foreach ($d['rincian'] as $r) {
+            $rows[] = [$r['kode'], $r['nama'], $r['saldo_awal'], $r['mutasi'], $r['saldo_akhir']];
+        }
+        $rows[] = ['', '', '', '', ''];
+        $rows[] = ['', 'TOTAL AWAL', $d['total_awal'], '', ''];
+        $rows[] = ['', 'TOTAL MUTASI', '', $d['total_mutasi'], ''];
+        $rows[] = ['', 'TOTAL AKHIR', '', '', $d['total_akhir']];
+        $rows[] = ['', 'SHU BERJALAN (pembanding L/R)', $d['shu_berjalan'], '', ''];
+        return $rows;
+    }
+
+    private function rowsCalk(): array
+    {
+        $d = LaporanKeuanganService::calk($this->dari, $this->sampai, $this->cabangId);
+        $rows = [['── RINGKASAN SAK EP ──', '', '']];
+        foreach ($d['ringkasan'] as $k => $v) {
+            $rows[] = ['', strtoupper(str_replace('_', ' ', $k)), $v];
+        }
+        $rows[] = ['', '', ''];
+        $rows[] = ['── SEGMEN UNIT USAHA ──', '', ''];
+        foreach ($d['segmen_usaha'] as $k => $v) {
+            $rows[] = ['', strtoupper(str_replace('_', ' ', $k)), $v];
+        }
+        return $rows;
     }
 }

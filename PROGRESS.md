@@ -1,5 +1,24 @@
 # Progress Log
 
+## 2026-10-07 — Sesi Pelengkapan SAK EP + E-RAT + Stabilisasi
+
+### SAK EP (baru)
+- `LaporanKeuanganService::perubahanEkuitas()` + `::calk()` — SAK EP koperasi
+- Route `/laporan/perubahan-ekuitas`, `/laporan/calk` (+ Excel), kartu baru di page admin
+- View PDF `laporan/perubahan-ekuitas.blade.php`, `laporan/calk.blade.php`
+
+### E-RAT (baru)
+- Model `RatKehadiran` + `Rat::refreshQuorum()` (arsip selesai dipertahankan, live dari baris hadir)
+- `RatController`: QR check-in `/rat/{id}/checkin` + Buku Tahunan `/rat/{id}/buku-tahunan` (SAK EP + SHU + voting + hadir)
+- `RatVotingResource` admin (dulu stub kosong) + aksi QR & Buku Tahunan di `RatResource`
+- Portal voting diperketat: periode, opsi valid, anggota aktif, anti-double
+- Command `koperasi:rat-sync-quorum` (100 RAT disinkron) + `RatVotingSeeder` (2 voting contoh)
+
+### Stabilisasi operasional
+- Denda: `GenerateDenda` → delegasi ke `PinjamanService::hitungDendaHarian` (single source) + dukung `denda_flat_per_hari`
+- Schedule: tambah `koperasi:update-kolektabilitas` daily 01:30 (sebelumnya belum terjadwal)
+- Test baru `tests/Feature/SakEpRatTest.php` (5 test) — full suite: **88 test, 383 assertion, OK**
+
 ---
 
 ## 2026-04-27 — Sesi Inisial: Build Lengkap All Phases

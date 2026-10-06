@@ -20,6 +20,8 @@
             ['name' => 'Neraca',          'icon' => '📊', 'desc' => 'Posisi Aset, Kewajiban, Ekuitas', 'route' => 'laporan.neraca',           'color' => 'emerald'],
             ['name' => 'Laba Rugi',       'icon' => '💰', 'desc' => 'Pendapatan, Beban, SHU',          'route' => 'laporan.laba-rugi',        'color' => 'blue'],
             ['name' => 'Arus Kas',        'icon' => '💵', 'desc' => 'Pergerakan Kas Bersih',           'route' => 'laporan.arus-kas',         'color' => 'amber'],
+            ['name' => 'Perubahan Ekuitas','icon' => '📈', 'desc' => 'SAK EP: modal awal → mutasi → akhir', 'route' => 'laporan.perubahan-ekuitas', 'color' => 'violet'],
+            ['name' => 'CALK',            'icon' => '📝', 'desc' => 'Catatan atas Laporan Keuangan',   'route' => 'laporan.calk',             'color' => 'emerald'],
             ['name' => 'Ringkasan Produk','icon' => '📦', 'desc' => 'Saldo & Outstanding per Produk',  'route' => 'laporan.ringkasan-produk', 'color' => 'violet'],
         ];
 

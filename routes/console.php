@@ -9,6 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('koperasi:hitung-denda')->dailyAt('01:00');
+Schedule::command('koperasi:update-kolektabilitas')->dailyAt('01:30');
 Schedule::command('koperasi:auto-debet')->dailyAt('03:00');
 Schedule::command('koperasi:penyusutan-aset')->monthlyOn(1, '02:00');
 Schedule::command('backup:run --only-db')->dailyAt('03:00');     // Database-only daily backup

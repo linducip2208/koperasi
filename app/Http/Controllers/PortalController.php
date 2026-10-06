@@ -328,7 +328,24 @@ class PortalController extends Controller
     public function votingSubmit(Request $request)
     {
         $anggota = $this->getAnggotaOrAbort($request);
-        $request->validate(['voting_id' => 'required|exists:rat_voting,id', 'opsi_index' => 'required|integer']);
+        $request->validate(['voting_id' => 'required|exists:rat_voting,id', 'opsi_index' => 'required|integer|min:0']);
+
+        $voting = \App\Models\RatVoting::findOrFail($request->voting_id);
+
+        // Harus aktif & dalam periode
+        if (! $voting->is_aktif || ($voting->mulai && now()->lt($voting->mulai)) || ($voting->selesai && now()->gt($voting->selesai))) {
+            return back()->with('error', 'Voting tidak sedang berlangsung.');
+        }
+
+        $opsi = (array) $voting->opsi;
+        if (! array_key_exists((int) $request->opsi_index, $opsi)) {
+            return back()->with('error', 'Pilihan tidak valid.');
+        }
+
+        if ($anggota->status !== 'aktif') {
+            return back()->with('error', 'Hanya anggota aktif yang boleh voting.');
+        }
+
         if (\App\Models\RatVotingSuara::where('voting_id', $request->voting_id)->where('anggota_id', $anggota->id)->exists()) {
             return back()->with('error', 'Anda sudah memberikan suara.');
         }

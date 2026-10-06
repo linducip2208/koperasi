@@ -52,6 +52,32 @@ class LaporanController extends Controller
         return $this->render('laporan.arus-kas', $data, "arus-kas-{$dari}-{$sampai}", $request);
     }
 
+    /** Laporan Perubahan Ekuitas — SAK EP */
+    public function perubahanEkuitas(Request $request)
+    {
+        $dari     = $request->input('dari', now()->startOfYear()->toDateString());
+        $sampai   = $request->input('sampai', now()->toDateString());
+        $cabangId = $request->input('cabang_id') ? (int) $request->input('cabang_id') : null;
+
+        $data = LaporanKeuanganService::perubahanEkuitas($dari, $sampai, $cabangId);
+        $data = array_merge($data, $this->commonHeaderData($request, $cabangId));
+
+        return $this->render('laporan.perubahan-ekuitas', $data, "perubahan-ekuitas-{$dari}-{$sampai}", $request);
+    }
+
+    /** CALK — Catatan atas Laporan Keuangan (SAK EP ringkas) */
+    public function calk(Request $request)
+    {
+        $dari     = $request->input('dari', now()->startOfYear()->toDateString());
+        $sampai   = $request->input('sampai', now()->toDateString());
+        $cabangId = $request->input('cabang_id') ? (int) $request->input('cabang_id') : null;
+
+        $data = LaporanKeuanganService::calk($dari, $sampai, $cabangId);
+        $data = array_merge($data, $this->commonHeaderData($request, $cabangId));
+
+        return $this->render('laporan.calk', $data, "calk-{$dari}-{$sampai}", $request);
+    }
+
     /**
      * Ringkasan operasional per produk (simpanan & pinjaman) — bisa difilter cabang & produk.
      */
@@ -90,7 +116,7 @@ class LaporanController extends Controller
     public function excel(Request $request, string $laporan)
     {
         $jenis = $laporan;
-        abort_unless(in_array($jenis, ['neraca', 'laba-rugi', 'arus-kas'], true), 404);
+        abort_unless(in_array($jenis, ['neraca', 'laba-rugi', 'arus-kas', 'perubahan-ekuitas', 'calk'], true), 404);
 
         $dari     = $request->input('dari', now()->startOfYear()->toDateString());
         $sampai   = $request->input('sampai', now()->toDateString());

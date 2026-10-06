@@ -125,13 +125,28 @@ class RatResource extends Resource
                 Tables\Columns\TextColumn::make('tahun_buku')->label('Th. Buku')->sortable(),
                 Tables\Columns\TextColumn::make('tanggal')->date('d M Y'),
                 Tables\Columns\TextColumn::make('lokasi'),
-                Tables\Columns\TextColumn::make('jumlah_hadir')->label('Hadir'),
+                Tables\Columns\TextColumn::make('jumlah_hadir')->label('Hadir')
+                    ->description(fn ($record) => $record->jumlah_anggota_terdaftar . ' terdaftar (' . $record->quorumAktualPersen() . '%)'),
                 Tables\Columns\IconColumn::make('quorum_tercapai')->label('Quorum')->boolean(),
                 Tables\Columns\TextColumn::make('status')->badge()->color(fn ($state) => match ($state) {
                     'rencana' => 'gray', 'berlangsung' => 'info', 'selesai' => 'success', 'batal' => 'danger',
                 }),
             ])
-            ->actions([Tables\Actions\EditAction::make()])
+            ->actions([
+                Tables\Actions\Action::make('qr')
+                    ->label('QR Check-in')
+                    ->icon('heroicon-o-qr-code')
+                    ->color('success')
+                    ->url(fn ($record) => \Illuminate\Support\Facades\URL::signedRoute('rat.checkin', ['rat' => $record->id], now()->addDays(30)))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('buku')
+                    ->label('Buku Tahunan')
+                    ->icon('heroicon-o-book-open')
+                    ->color('info')
+                    ->url(fn ($record) => route('rat.buku-tahunan', $record->id))
+                    ->openUrlInNewTab(),
+                Tables\Actions\EditAction::make(),
+            ])
             ->defaultSort('tahun_buku', 'desc');
     }
 

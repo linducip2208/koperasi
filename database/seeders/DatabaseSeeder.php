@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             BlogSeeder::class,
             PaymentProviderSeeder::class,
             PpobSeeder::class,
+            RatVotingSeeder::class,
         ]);
     }
 }

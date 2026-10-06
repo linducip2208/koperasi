@@ -9,6 +9,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\ProgrammaticSeoController;
+use App\Http\Controllers\RatController;
 use App\Http\Controllers\SourceCodeSeoController;
 use Illuminate\Support\Facades\Route;
 
@@ -238,10 +239,21 @@ Route::middleware('auth')->prefix('laporan')->name('laporan.')->group(function (
     Route::get('/neraca', [LaporanController::class, 'neraca'])->name('neraca');
     Route::get('/laba-rugi', [LaporanController::class, 'labaRugi'])->name('laba-rugi');
     Route::get('/arus-kas', [LaporanController::class, 'arusKas'])->name('arus-kas');
+    Route::get('/perubahan-ekuitas', [LaporanController::class, 'perubahanEkuitas'])->name('perubahan-ekuitas');
+    Route::get('/calk', [LaporanController::class, 'calk'])->name('calk');
     Route::get('/ringkasan-produk', [LaporanController::class, 'ringkasanProduk'])->name('ringkasan-produk');
     Route::get('/excel/{laporan}', [LaporanController::class, 'excel'])
-        ->where('laporan', 'neraca|laba-rugi|arus-kas')
+        ->where('laporan', 'neraca|laba-rugi|arus-kas|perubahan-ekuitas|calk')
         ->name('excel');
+});
+
+/* ===== E-RAT: QR check-in + Buku Tahunan ===== */
+Route::prefix('rat')->name('rat.')->group(function () {
+    // QR check-in: link signed 30 hari, contoh dibuat dari admin (RatResource action)
+    Route::get('/{rat}/checkin', [RatController::class, 'checkin'])->name('checkin');
+    Route::post('/{rat}/checkin', [RatController::class, 'storeCheckin'])->name('checkin.store');
+    Route::get('/{rat}/buku-tahunan', [RatController::class, 'bukuTahunan'])
+        ->middleware('auth')->name('buku-tahunan');
 });
 
 // License Pairing v3 routes

@@ -273,13 +273,13 @@
 - [ ] Neraca lajur
 - [ ] Tutup buku bulanan
 - [ ] Tutup buku tahunan
-- [ ] Neraca (laporan posisi keuangan)
-- [ ] Laba/Rugi
-- [ ] Arus Kas (langsung)
-- [ ] Arus Kas (tidak langsung)
-- [ ] Perubahan Ekuitas
-- [ ] CALK (Catatan atas Laporan Keuangan)
-- [ ] Format laporan SAK ETAP
+- [x] Neraca (laporan posisi keuangan) — SAK EP
+- [x] Laba/Rugi (SHU)
+- [x] Arus Kas (langsung)
+- [x] Arus Kas (tidak langsung — via mutasi kas/bank)
+- [x] Perubahan Ekuitas (SAK EP: saldo awal → mutasi → saldo akhir)
+- [x] CALK (Catatan atas Laporan Keuangan, semi-otomatis)
+- [x] Format laporan SAK EP koperasi (Neraca + L/R + Ekuitas + CALK + Arus Kas)
 - [ ] Format laporan PSAK 27 (lama, opsional)
 - [ ] Format laporan PSAK Syariah
 
@@ -500,14 +500,14 @@
 
 ## 20. RAT (Rapat Anggota Tahunan) `[P1]`
 
-- [ ] Setup acara RAT (tanggal, agenda, lokasi)
-- [ ] Daftar hadir digital (QR check-in)
-- [ ] Quorum tracker
-- [ ] Notulen
-- [ ] Voting digital (Phase 1.5)
-- [ ] Arsip dokumen RAT
-- [ ] Cetak laporan tahunan format RAT
-- [ ] Buku tahunan / annual report
+- [x] Setup acara RAT (tanggal, agenda, lokasi)
+- [x] Daftar hadir digital (QR check-in `/rat/{id}/checkin` + auto-quorum)
+- [x] Quorum tracker (otomatis dari tabel kehadiran)
+- [x] Notulen
+- [x] Voting digital (E-Voting resource + portal `/portal/voting` + anti-double + validasi periode)
+- [x] Arsip dokumen RAT
+- [x] Cetak laporan tahunan format RAT
+- [x] Buku tahunan / annual report (`/rat/{id}/buku-tahunan` PDF: SAK EP + SHU + voting + hadir)
 
 ---
 
