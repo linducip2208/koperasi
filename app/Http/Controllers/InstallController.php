@@ -17,18 +17,9 @@ class InstallController extends Controller
 {
     public const LOCK = 'app/.installed';
 
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (\Illuminate\Support\Facades\Storage::disk('local')->exists(self::LOCK)) {
-                abort(404);
-            }
-            return $next($request);
-        });
-    }
-
     public function show(Request $request, string $step = 'welcome')
     {
+        $this->guardNotInstalled();
         $steps = ['welcome', 'requirements', 'database', 'application', 'cooperative', 'admin', 'license', 'finish'];
         if (! in_array($step, $steps, true)) abort(404);
 
@@ -40,6 +31,7 @@ class InstallController extends Controller
 
     public function store(Request $request, string $step)
     {
+        $this->guardNotInstalled();
         $data = session('install', []);
 
         match ($step) {
@@ -59,6 +51,14 @@ class InstallController extends Controller
         }
 
         return redirect()->route('install.show', $next);
+    }
+
+    /** Installer terkunci permanen setelah selesai (anti reinstall). */
+    protected function guardNotInstalled(): void
+    {
+        if (\Illuminate\Support\Facades\Storage::disk('local')->exists(self::LOCK)) {
+            abort(404);
+        }
     }
 
     /** Daftar cek environment untuk step requirements. */

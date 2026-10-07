@@ -15,6 +15,7 @@ class PinjamanJaminan extends Model
         'tenant_id', 'pinjaman_id', 'jenis', 'nama', 'nomor_dokumen', 'atas_nama',
         'nilai_taksiran', 'nilai_pasar', 'ltv', 'foto_path', 'dokumen_path',
         'status', 'tanggal_lepas', 'catatan',
+        'penjamin_nama', 'penjamin_nik', 'penjamin_telp', 'penjamin_hubungan',
     ];
 
     protected $casts = [

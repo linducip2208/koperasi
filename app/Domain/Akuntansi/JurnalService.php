@@ -69,6 +69,8 @@ class JurnalService
                 ]);
             }
 
+            LaporanKeuanganService::flushLedgerCache();
+
             return $jurnal;
         });
     }
@@ -86,6 +88,8 @@ class JurnalService
             'posted_at' => now(),
             'posted_by' => auth()->id(),
         ]);
+
+        LaporanKeuanganService::flushLedgerCache();
     }
 
     public static function unpost(Jurnal $jurnal): void
@@ -97,6 +101,8 @@ class JurnalService
             'posted_at' => null,
             'posted_by' => null,
         ]);
+
+        LaporanKeuanganService::flushLedgerCache();
     }
 
     /**

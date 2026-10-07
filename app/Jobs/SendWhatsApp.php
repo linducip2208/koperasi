@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Kirim WhatsApp via queue: retry 3x dengan backoff, gagal tercatat di failed_jobs.
@@ -18,6 +19,7 @@ class SendWhatsApp implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public array $backoff = [60, 300, 900];
 
     public function __construct(public string $phone, public string $message) {}
@@ -31,7 +33,7 @@ class SendWhatsApp implements ShouldQueue
 
     public function failed(\Throwable $e): void
     {
-        \Illuminate\Support\Facades\Log::warning('SendWhatsApp gagal permanen', [
+        Log::warning('SendWhatsApp gagal permanen', [
             'phone' => substr(preg_replace('/\D/', '', $this->phone), -4),
         ]);
     }

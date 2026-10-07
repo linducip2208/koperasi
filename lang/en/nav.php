@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'Report Center' => 'Report Center',
+    'Report Viewer' => 'Report Viewer',
+    'Executive Dashboard' => 'Executive Dashboard',
+    'Member 360' => 'Member 360',
+    'Import Center' => 'Import Center',
+    'Export Center' => 'Export Center',
+    'Arsip Report' => 'Report Archive',
+    'Scheduled Reports' => 'Scheduled Reports',
+    'Custom Report Builder' => 'Custom Report Builder',
+    'AI Insights' => 'AI Insights',
+    'Collection Center' => 'Collection Center',
+    'Approval Center' => 'Approval Center',
+    'Simulasi Pinjaman' => 'Loan Simulator',
+    'Credit Scoring' => 'Credit Scoring',
+    'Tutup Tahun Buku' => 'Fiscal Year Closing',
+    'Data Quality Center' => 'Data Quality Center',
+    'Deteksi Anomali (Rule-based)' => 'Anomaly Detection (Rule-based)',
+    'Pencarian Universal' => 'Universal Search',
+    'Pusat Notifikasi' => 'Notification Center',
+    'Webhook Center' => 'Webhook Center',
+    'Compliance Center' => 'Compliance Center',
+    'System Health' => 'System Health',
+    'License' => 'License',
+    'Update Center' => 'Update Center',
+];

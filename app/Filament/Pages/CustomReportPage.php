@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\CustomReport;
 use App\Reports\CustomReportRunner;
 use Filament\Forms\Components\Repeater;
@@ -17,9 +18,11 @@ use Filament\Pages\Page;
 class CustomReportPage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Custom Report Builder';
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Custom Builder';

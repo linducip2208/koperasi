@@ -2,6 +2,9 @@
 
 namespace App\Support;
 
+use App\Services\LicenseClient;
+use Carbon\Carbon;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,15 +25,19 @@ class SystemHealth
 
         // PHP & framework
         $push('PHP '.PHP_VERSION, version_compare(PHP_VERSION, '8.2.0', '>=') ? 'OK' : 'ERROR');
-        $push('Laravel '.\Illuminate\Foundation\Application::VERSION, 'OK');
+        $push('Laravel '.Application::VERSION, 'OK');
         $push('App v'.config('product.version').' ('.config('app.env').')',
             config('app.env') === 'production' && config('app.debug') ? 'ERROR' : 'OK',
             config('app.debug') ? 'APP_DEBUG=true' : null);
 
         foreach (['pdo', 'openssl', 'mbstring', 'tokenizer', 'xml', 'ctype', 'json', 'bcmath', 'fileinfo'] as $ext) {
-            if (! extension_loaded($ext)) $push("Ekstensi PHP: {$ext}", 'ERROR', 'hilang');
+            if (! extension_loaded($ext)) {
+                $push("Ekstensi PHP: {$ext}", 'ERROR', 'hilang');
+            }
         }
-        if (extension_loaded('gd')) $push('Ekstensi PHP: gd', 'OK');
+        if (extension_loaded('gd')) {
+            $push('Ekstensi PHP: gd', 'OK');
+        }
 
         // Database
         try {
@@ -74,7 +81,7 @@ class SystemHealth
         // License
         try {
             $domain = strtolower(request()?->getHost() ?? (config('app.url') ? parse_url(config('app.url'), PHP_URL_HOST) : 'localhost'));
-            $st = app(\App\Services\LicenseClient::class)->status($domain);
+            $st = app(LicenseClient::class)->status($domain);
             $push('License: '.$st['status'], in_array($st['status'], ['ACTIVE', 'GRACE_PERIOD'], true) ? ($st['status'] === 'ACTIVE' ? 'OK' : 'WARNING') : 'ERROR',
                 $st['offline_since'] ? 'offline sejak '.$st['offline_since'] : null);
         } catch (\Throwable) {
@@ -98,6 +105,7 @@ class SystemHealth
     {
         $errors = count(array_filter($checks, fn ($c) => $c['status'] === 'ERROR'));
         $warnings = count(array_filter($checks, fn ($c) => $c['status'] === 'WARNING'));
+
         return [
             'total' => count($checks),
             'errors' => $errors,
@@ -117,22 +125,32 @@ class SystemHealth
 
     private static function isReallyWritable(string $dir): bool
     {
-        if (! is_dir($dir)) return false;
+        if (! is_dir($dir)) {
+            return false;
+        }
         $probe = $dir.DIRECTORY_SEPARATOR.'.health-'.getmypid();
         $ok = @file_put_contents($probe, '1') !== false;
-        if ($ok) @unlink($probe);
+        if ($ok) {
+            @unlink($probe);
+        }
+
         return $ok;
     }
 
-    private static function latestBackup(): ?\Carbon\Carbon
+    private static function latestBackup(): ?Carbon
     {
         try {
             $files = Storage::disk('local')->files('koperasi-backups');
-            if (! $files) $files = Storage::disk('local')->files();
+            if (! $files) {
+                $files = Storage::disk('local')->files();
+            }
             $zips = array_filter($files, fn ($f) => str_ends_with($f, '.zip'));
-            if (! $zips) return null;
+            if (! $zips) {
+                return null;
+            }
             $mtimes = array_map(fn ($f) => Storage::disk('local')->lastModified($f), $zips);
-            return \Carbon\Carbon::createFromTimestamp(max($mtimes));
+
+            return Carbon::createFromTimestamp(max($mtimes));
         } catch (\Throwable) {
             return null;
         }

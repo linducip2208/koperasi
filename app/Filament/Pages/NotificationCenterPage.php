@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Contracts\HasTable;
@@ -13,9 +14,11 @@ use Spatie\Activitylog\Models\Activity;
 class NotificationCenterPage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Pusat Notifikasi';
     protected static ?string $navigationIcon = 'heroicon-o-bell';
     protected static ?string $navigationGroup = 'DASHBOARD';
     protected static ?string $navigationLabel = 'Notifikasi';

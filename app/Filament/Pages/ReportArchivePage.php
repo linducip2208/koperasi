@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\ReportArchive;
 use Filament\Pages\Page;
 use Filament\Tables;
@@ -13,9 +14,11 @@ use Filament\Tables\Table;
 class ReportArchivePage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Arsip Report';
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Arsip Report';

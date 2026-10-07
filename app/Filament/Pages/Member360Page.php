@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use App\Models\RatKehadiran;
 use App\Models\RatVotingSuara;
@@ -16,9 +17,11 @@ use Filament\Pages\Page;
 class Member360Page extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'anggota';
+    protected static ?string $navKey = 'Member 360';
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Anggota 360';

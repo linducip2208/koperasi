@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
@@ -10,8 +11,10 @@ use Illuminate\Support\Facades\Cache;
 class UpdateCenterPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'setting';
+    protected static ?string $navKey = 'Update Center';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-circle';
     protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Update Center';

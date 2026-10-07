@@ -3,14 +3,17 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Reports\ReportRegistry;
 use Filament\Pages\Page;
 
 class ReportCenterPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Report Center';
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Report Center';

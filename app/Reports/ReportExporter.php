@@ -19,6 +19,7 @@ class ReportExporter
     public static function make(ReportDefinition $def, ReportResult $result, string $format, array $params)
     {
         $filename = $def->key().'-'.now()->format('Ymd-His');
+
         return match ($format) {
             'csv' => self::csv($def, $result, $filename),
             'excel' => self::excel($def, $result, $filename),
@@ -30,6 +31,7 @@ class ReportExporter
     public static function csv(ReportDefinition $def, ReportResult $result, string $filename): StreamedResponse
     {
         $headers = ['Content-Type' => 'text/csv; charset=UTF-8', 'Content-Disposition' => "attachment; filename=\"{$filename}.csv\""];
+
         return response()->stream(function () use ($result) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // BOM agar Excel baca UTF-8
@@ -37,7 +39,9 @@ class ReportExporter
             $chunk = 0;
             foreach ($result->rows as $row) {
                 fputcsv($out, array_map(fn ($c) => self::cell($row[$c['key']] ?? '', $c), $result->columns), ';');
-                if (++$chunk % 1000 === 0) flush();
+                if (++$chunk % 1000 === 0) {
+                    flush();
+                }
             }
             fclose($out);
         }, 200, $headers);
@@ -45,8 +49,10 @@ class ReportExporter
 
     public static function excel(ReportDefinition $def, ReportResult $result, string $filename)
     {
-        $export = new class($def, $result) implements FromArray, WithHeadings, WithTitle, ShouldAutoSize {
+        $export = new class($def, $result) implements FromArray, ShouldAutoSize, WithHeadings, WithTitle
+        {
             public function __construct(public ReportDefinition $def, public ReportResult $result) {}
+
             public function array(): array
             {
                 return array_map(
@@ -54,9 +60,18 @@ class ReportExporter
                     $this->result->rows
                 );
             }
-            public function headings(): array { return array_column($this->result->columns, 'label'); }
-            public function title(): string { return substr($this->def->key(), 0, 31); }
+
+            public function headings(): array
+            {
+                return array_column($this->result->columns, 'label');
+            }
+
+            public function title(): string
+            {
+                return substr($this->def->key(), 0, 31);
+            }
         };
+
         return Excel::download($export, "{$filename}.xlsx");
     }
 
@@ -67,6 +82,7 @@ class ReportExporter
             'def' => $def, 'result' => $result, 'params' => $params,
             'tenant' => $tenant, 'cabang' => null,
         ])->setPaper('a4', 'landscape');
+
         return $pdf->download("{$filename}.pdf");
     }
 

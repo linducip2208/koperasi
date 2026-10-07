@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\Calculation\CalculatorFactory;
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,9 +16,11 @@ use Filament\Pages\Page;
 class LoanSimulatorPage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'pinjaman';
+    protected static ?string $navKey = 'Simulasi Pinjaman';
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
     protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Simulasi Pinjaman';

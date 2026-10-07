@@ -11,7 +11,9 @@ class ReportRegistry
 
     private static function load(): void
     {
-        if (self::$definitions !== null) return;
+        if (self::$definitions !== null) {
+            return;
+        }
 
         require_once __DIR__.'/FinancialReports.php';
         require_once __DIR__.'/SavingsReports.php';
@@ -61,7 +63,7 @@ class ReportRegistry
         self::$definitions = [];
         foreach ($classes as $class) {
             /** @var ReportDefinition $def */
-            $def = new $class();
+            $def = new $class;
             self::$definitions[$def->key()] = $def;
         }
     }
@@ -70,12 +72,14 @@ class ReportRegistry
     public static function all(): array
     {
         self::load();
+
         return self::$definitions;
     }
 
     public static function find(string $key): ?ReportDefinition
     {
         self::load();
+
         return self::$definitions[$key] ?? null;
     }
 

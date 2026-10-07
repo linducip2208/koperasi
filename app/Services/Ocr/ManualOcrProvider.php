@@ -8,7 +8,10 @@ namespace App\Services\Ocr;
  */
 class ManualOcrProvider implements OcrProviderInterface
 {
-    public function name(): string { return 'manual'; }
+    public function name(): string
+    {
+        return 'manual';
+    }
 
     public function extract(string $filePath, string $jenis): array
     {

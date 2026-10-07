@@ -18,6 +18,7 @@ class ProcessImport implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 1;
+
     public int $timeout = 3600;
 
     public function __construct(public int $batchId) {}

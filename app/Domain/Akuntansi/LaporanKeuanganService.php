@@ -8,6 +8,38 @@ use Illuminate\Support\Carbon;
 
 class LaporanKeuanganService
 {
+    /** Cache agregat ledger per request: 1 query menggantikan N query per akun. */
+    protected static array $ledgerCache = [];
+
+    public static function flushLedgerCache(): void
+    {
+        self::$ledgerCache = [];
+    }
+
+    /**
+     * Peta mutasi [coa_id => ['debit' => int, 'kredit' => int]] dalam SATU query.
+     * $periodOnly=false → akumulatif s/d $sampai (neraca); true → hanya [$dari..$sampai] (L/R).
+     */
+    public static function ledgerMap(?string $dari, string $sampai, ?int $cabangId = null, bool $periodOnly = false): array
+    {
+        $key = ($periodOnly ? 'P' : 'B')."|{$dari}|{$sampai}|{$cabangId}";
+        if (isset(self::$ledgerCache[$key])) return self::$ledgerCache[$key];
+
+        $rows = JurnalDetail::query()
+            ->selectRaw('coa_id, COALESCE(SUM(debit),0) as d, COALESCE(SUM(kredit),0) as k')
+            ->whereHas('jurnal', function ($q) use ($dari, $sampai, $periodOnly, $cabangId) {
+                $q->where('is_posted', true)->whereDate('tanggal', '<=', $sampai);
+                if ($periodOnly && $dari) $q->whereDate('tanggal', '>=', $dari);
+                if ($cabangId) $q->where('cabang_id', $cabangId);
+            })
+            ->groupBy('coa_id')->get();
+
+        $map = [];
+        foreach ($rows as $r) $map[$r->coa_id] = ['debit' => (int) $r->d, 'kredit' => (int) $r->k];
+
+        return self::$ledgerCache[$key] = $map;
+    }
+
     /**
      * Saldo akun untuk periode tertentu (untuk neraca/L-R).
      * Untuk akun aset/kewajiban/ekuitas: saldo akumulatif sampai $sampai.
@@ -16,22 +48,14 @@ class LaporanKeuanganService
     public static function saldoAkun(Coa $coa, ?string $dari, string $sampai, ?int $cabangId = null): int
     {
         $isLR = in_array($coa->tipe, ['pendapatan', 'beban']);
+        $map = self::ledgerMap($isLR ? $dari : null, $sampai, $cabangId, $isLR);
 
-        $query = JurnalDetail::where('coa_id', $coa->id)
-            ->whereHas('jurnal', function ($q) use ($dari, $sampai, $isLR, $cabangId) {
-                $q->where('is_posted', true)->whereDate('tanggal', '<=', $sampai);
-                if ($isLR && $dari) $q->whereDate('tanggal', '>=', $dari);
-                if ($cabangId) $q->where('cabang_id', $cabangId);
-            });
+        $debit = $map[$coa->id]['debit'] ?? 0;
+        $kredit = $map[$coa->id]['kredit'] ?? 0;
 
-        $debit  = (int) $query->sum('debit');
-        $kredit = (int) $query->sum('kredit');
-
-        $saldo = $coa->saldo_normal === 'debit'
+        return $coa->saldo_normal === 'debit'
             ? ($isLR ? 0 : $coa->saldo_awal) + $debit - $kredit
             : ($isLR ? 0 : $coa->saldo_awal) + $kredit - $debit;
-
-        return $saldo;
     }
 
     public static function neraca(string $sampai, ?int $cabangId = null): array

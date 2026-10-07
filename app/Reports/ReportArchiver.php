@@ -13,7 +13,9 @@ class ReportArchiver
     public static function archive(string $key, array $params, ?string $title = null, ?int $userId = null): ReportArchive
     {
         $def = ReportRegistry::find($key);
-        if (! $def) throw new \InvalidArgumentException("Report '{$key}' tidak dikenal.");
+        if (! $def) {
+            throw new \InvalidArgumentException("Report '{$key}' tidak dikenal.");
+        }
 
         $result = ReportRunner::run($key, $params);
         $snapshot = json_encode($result->toArray(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -43,6 +45,7 @@ class ReportArchiver
             throw new \RuntimeException('Checksum arsip tidak valid — snapshot rusak.');
         }
         $data = json_decode($archive->snapshot, true);
+
         return new ReportResult($data['columns'], $data['rows'], $data['totals'], $data['metrics'], $data['charts'], $data['meta']);
     }
 }

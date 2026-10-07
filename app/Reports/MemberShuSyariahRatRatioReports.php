@@ -5,6 +5,7 @@ namespace App\Reports\Domain;
 use App\Domain\Akuntansi\LaporanKeuanganService;
 use App\Models\Anggota;
 use App\Models\Pinjaman;
+use App\Models\PinjamanPembayaran;
 use App\Models\Rat;
 use App\Models\ShuDistribusi;
 use App\Models\ShuPerhitungan;
@@ -15,11 +16,30 @@ use App\Reports\ReportResult;
 
 class MemberGrowthReport extends ReportDefinition
 {
-    public function key(): string { return 'anggota-pertumbuhan'; }
-    public function name(): string { return 'Pertumbuhan Anggota'; }
-    public function description(): string { return 'Anggota baru per bulan 12 bulan terakhir.'; }
-    public function category(): string { return 'members'; }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'anggota-pertumbuhan';
+    }
+
+    public function name(): string
+    {
+        return 'Pertumbuhan Anggota';
+    }
+
+    public function description(): string
+    {
+        return 'Anggota baru per bulan 12 bulan terakhir.';
+    }
+
+    public function category(): string
+    {
+        return 'members';
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public function run(array $params): ReportResult
     {
@@ -30,7 +50,10 @@ class MemberGrowthReport extends ReportDefinition
             $data[] = Anggota::whereDate('tanggal_masuk', '>=', $m->toDateString())->whereDate('tanggal_masuk', '<=', (clone $m)->endOfMonth()->toDateString())->count();
         }
         $rows = [];
-        foreach ($labels as $i => $l) $rows[] = ['bulan' => $l, 'baru' => $data[$i]];
+        foreach ($labels as $i => $l) {
+            $rows[] = ['bulan' => $l, 'baru' => $data[$i]];
+        }
+
         return new ReportResult(
             [['key' => 'bulan', 'label' => 'Bulan'], ['key' => 'baru', 'label' => 'Anggota Baru', 'align' => 'right']],
             $rows, ['baru' => array_sum($data)],
@@ -49,10 +72,26 @@ class MemberGrowthReport extends ReportDefinition
 
 class MemberStatementReport extends ReportDefinition
 {
-    public function key(): string { return 'anggota-statement'; }
-    public function name(): string { return 'Statement Anggota (360 Ringkas)'; }
-    public function description(): string { return 'Ringkasan simpanan, pinjaman, SHU per anggota. Detail penuh di Member 360.'; }
-    public function category(): string { return 'members'; }
+    public function key(): string
+    {
+        return 'anggota-statement';
+    }
+
+    public function name(): string
+    {
+        return 'Statement Anggota (360 Ringkas)';
+    }
+
+    public function description(): string
+    {
+        return 'Ringkasan simpanan, pinjaman, SHU per anggota. Detail penuh di Member 360.';
+    }
+
+    public function category(): string
+    {
+        return 'members';
+    }
+
     public function filters(): array
     {
         return [[
@@ -70,6 +109,7 @@ class MemberStatementReport extends ReportDefinition
         $simpanan = $a->simpanan->where('status', 'aktif');
         $pinjaman = $a->pinjaman->whereIn('status', ['aktif', 'macet']);
         $shu = ShuDistribusi::where('anggota_id', $a->id)->sum('total_shu');
+
         return new ReportResult(
             [['key' => 'pos', 'label' => 'Pos'], $this->moneyCol('nilai', 'Nilai (Rp)')],
             [
@@ -89,10 +129,26 @@ class MemberStatementReport extends ReportDefinition
 
 class ShuReport extends ReportDefinition
 {
-    public function key(): string { return 'shu'; }
-    public function name(): string { return 'SHU & Distribusi'; }
-    public function description(): string { return 'Perhitungan SHU per tahun + distribusi per anggota.'; }
-    public function category(): string { return 'shu'; }
+    public function key(): string
+    {
+        return 'shu';
+    }
+
+    public function name(): string
+    {
+        return 'SHU & Distribusi';
+    }
+
+    public function description(): string
+    {
+        return 'Perhitungan SHU per tahun + distribusi per anggota.';
+    }
+
+    public function category(): string
+    {
+        return 'shu';
+    }
+
     public function filters(): array
     {
         return [[
@@ -107,6 +163,7 @@ class ShuReport extends ReportDefinition
         $hit = ShuPerhitungan::where('tahun', $tahun)->first();
         if (! $hit) {
             $lr = LaporanKeuanganService::labaRugi("{$tahun}-01-01", "{$tahun}-12-31");
+
             return new ReportResult(
                 [], [],
                 [],
@@ -123,6 +180,7 @@ class ShuReport extends ReportDefinition
                 'anggota' => $d->anggota->nama ?? '—', 'jasa_modal' => (int) $d->jasa_modal,
                 'jasa_anggota' => (int) $d->jasa_anggota, 'jumlah' => (int) $d->total_shu,
             ])->all();
+
         return new ReportResult(
             [['key' => 'anggota', 'label' => 'Anggota'], $this->moneyCol('jasa_modal', 'Jasa Modal'),
                 $this->moneyCol('jasa_anggota', 'Jasa Anggota'), $this->moneyCol('jumlah', 'Total')],
@@ -152,11 +210,30 @@ class ShuReport extends ReportDefinition
 
 class SyariahPortfolioReport extends ReportDefinition
 {
-    public function key(): string { return 'syariah-portofolio'; }
-    public function name(): string { return 'Portofolio per Akad Syariah'; }
-    public function description(): string { return 'Outstanding, margin, dan nisbah per akad. Hanya bila mode syariah/dual.'; }
-    public function category(): string { return 'syariah'; }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'syariah-portofolio';
+    }
+
+    public function name(): string
+    {
+        return 'Portofolio per Akad Syariah';
+    }
+
+    public function description(): string
+    {
+        return 'Outstanding, margin, dan nisbah per akad. Hanya bila mode syariah/dual.';
+    }
+
+    public function category(): string
+    {
+        return 'syariah';
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public const SYARIAH_AKAD = ['murabahah', 'mudharabah', 'musyarakah', 'ijarah', 'ijarah_mb', 'qardh', 'rahn', 'salam', 'istishna'];
 
@@ -172,6 +249,7 @@ class SyariahPortfolioReport extends ReportDefinition
         if (empty($rows)) {
             return new ReportResult([], [], [], [['label' => 'Belum ada transaksi syariah', 'value' => 'Aktifkan produk syariah untuk melihat report ini', 'format' => 'text']]);
         }
+
         return new ReportResult(
             [['key' => 'akad', 'label' => 'Akad', 'format' => 'badge'], ['key' => 'akad_count', 'label' => 'Akad', 'align' => 'right'],
                 $this->moneyCol('outstanding', 'Outstanding'), $this->moneyCol('margin', 'Margin')],
@@ -189,19 +267,39 @@ class SyariahPortfolioReport extends ReportDefinition
 
 class SyariahRevenueReport extends ReportDefinition
 {
-    public function key(): string { return 'syariah-pendapatan'; }
-    public function name(): string { return 'Pendapatan & Bagi Hasil Syariah'; }
-    public function description(): string { return 'Margin/ujrah/bagi hasil diterima pada periode.'; }
-    public function category(): string { return 'syariah'; }
-    public function filters(): array { return \App\Reports\ReportFilter::dateRange(); }
+    public function key(): string
+    {
+        return 'syariah-pendapatan';
+    }
+
+    public function name(): string
+    {
+        return 'Pendapatan & Bagi Hasil Syariah';
+    }
+
+    public function description(): string
+    {
+        return 'Margin/ujrah/bagi hasil diterima pada periode.';
+    }
+
+    public function category(): string
+    {
+        return 'syariah';
+    }
+
+    public function filters(): array
+    {
+        return ReportFilter::dateRange();
+    }
 
     public function run(array $params): ReportResult
     {
-        $bayar = \App\Models\PinjamanPembayaran::where('status', 'disetujui')
+        $bayar = PinjamanPembayaran::where('status', 'disetujui')
             ->whereDate('tanggal', '>=', $params['dari'])->whereDate('tanggal', '<=', $params['sampai'])
             ->whereHas('pinjaman.produk', fn ($q) => $q->whereIn('akad_type', SyariahPortfolioReport::SYARIAH_AKAD));
         $margin = (int) (clone $bayar)->sum('alokasi_margin');
         $denda = (int) (clone $bayar)->sum('alokasi_denda');
+
         return new ReportResult(
             [['key' => 'pos', 'label' => 'Pos'], $this->moneyCol('nilai', 'Nilai (Rp)')],
             [
@@ -216,11 +314,30 @@ class SyariahRevenueReport extends ReportDefinition
 
 class RatAnnualReport extends ReportDefinition
 {
-    public function key(): string { return 'rat-tahunan'; }
-    public function name(): string { return 'RAT Tahunan (Data)'; }
-    public function description(): string { return 'Statistik RAT: hadir, quorum, voting, keputusan. Buku PDF di menu RAT.'; }
-    public function category(): string { return 'rat'; }
-    public function permission(): string { return 'rat.view'; }
+    public function key(): string
+    {
+        return 'rat-tahunan';
+    }
+
+    public function name(): string
+    {
+        return 'RAT Tahunan (Data)';
+    }
+
+    public function description(): string
+    {
+        return 'Statistik RAT: hadir, quorum, voting, keputusan. Buku PDF di menu RAT.';
+    }
+
+    public function category(): string
+    {
+        return 'rat';
+    }
+
+    public function permission(): string
+    {
+        return 'rat.view';
+    }
 
     public function run(array $params): ReportResult
     {
@@ -233,6 +350,7 @@ class RatAnnualReport extends ReportDefinition
                 'voting' => $r->votings_count.' agenda',
                 'status' => $r->status,
             ])->all();
+
         return new ReportResult(
             [['key' => 'tahun', 'label' => 'Tahun Buku'], ['key' => 'tanggal', 'label' => 'Tanggal', 'format' => 'date'],
                 ['key' => 'hadir', 'label' => 'Hadir'], ['key' => 'quorum', 'label' => 'Quorum', 'format' => 'badge'],
@@ -244,12 +362,35 @@ class RatAnnualReport extends ReportDefinition
 
 class FinancialRatioReport extends ReportDefinition
 {
-    public function key(): string { return 'rasio-keuangan'; }
-    public function name(): string { return 'Rasio Keuangan'; }
-    public function description(): string { return 'Likuiditas, solvabilitas, profitabilitas, pertumbuhan + ambang peringatan.'; }
-    public function category(): string { return 'ratios'; }
-    public function filters(): array { return array_merge(\App\Reports\ReportFilter::asOf(), \App\Reports\ReportFilter::cabang()); }
-    public function permission(): string { return 'reports.view'; }
+    public function key(): string
+    {
+        return 'rasio-keuangan';
+    }
+
+    public function name(): string
+    {
+        return 'Rasio Keuangan';
+    }
+
+    public function description(): string
+    {
+        return 'Likuiditas, solvabilitas, profitabilitas, pertumbuhan + ambang peringatan.';
+    }
+
+    public function category(): string
+    {
+        return 'ratios';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
+
+    public function permission(): string
+    {
+        return 'reports.view';
+    }
 
     public function run(array $params): ReportResult
     {
@@ -273,13 +414,15 @@ class FinancialRatioReport extends ReportDefinition
             ['key' => 'npm', 'nama' => 'Net Profit Margin', 'formula' => 'SHU / Pendapatan', 'num' => $lr['shu'], 'den' => $lr['total_pendapatan'], 'warn_below' => 0.0, 'satuan' => '%'],
         ];
 
-        $simp = \App\Models\Simpanan::where('status', 'aktif')->sum('saldo');
+        $simp = Simpanan::where('status', 'aktif')->sum('saldo');
         $pinj = Pinjaman::whereIn('status', ['aktif', 'macet'])->sum('saldo_pokok');
         $tung = Pinjaman::whereIn('status', ['aktif', 'macet'])->where('tunggakan_hari', '>', 0)->sum('saldo_pokok');
 
         $rows = [];
         foreach ($def as $d) {
-            if ($d['den'] == 0) continue; // jangan tampilkan bila denominator invalid
+            if ($d['den'] == 0) {
+                continue;
+            } // jangan tampilkan bila denominator invalid
             $isPct = $d['satuan'] === '%';
             $val = $isPct ? round($d['num'] / $d['den'] * 100, 2) : round($d['num'] / $d['den'], 2);
             $warn = isset($d['warn_below']) ? $val < $d['warn_below'] : $val > $d['warn_above'];

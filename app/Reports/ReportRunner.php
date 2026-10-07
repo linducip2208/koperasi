@@ -2,12 +2,14 @@
 
 namespace App\Reports;
 
+use App\Models\User;
+
 /**
  * Eksekusi report: otorisasi → run → audit log.
  */
 class ReportRunner
 {
-    public static function run(string $key, array $params, ?\App\Models\User $user = null): ReportResult
+    public static function run(string $key, array $params, ?User $user = null): ReportResult
     {
         $def = ReportRegistry::find($key);
         if (! $def) {
@@ -30,11 +32,15 @@ class ReportRunner
         return $result;
     }
 
-    public static function export(string $key, string $format, array $params, ?\App\Models\User $user = null)
+    public static function export(string $key, string $format, array $params, ?User $user = null)
     {
         $def = ReportRegistry::find($key);
-        if (! $def) throw new \InvalidArgumentException("Report '{$key}' tidak dikenal.");
-        if (! in_array($format, $def->exports(), true)) abort(422, 'Format export tidak didukung report ini.');
+        if (! $def) {
+            throw new \InvalidArgumentException("Report '{$key}' tidak dikenal.");
+        }
+        if (! in_array($format, $def->exports(), true)) {
+            abort(422, 'Format export tidak didukung report ini.');
+        }
 
         $user ??= auth()->user();
         $need = match ($format) {
@@ -62,6 +68,7 @@ class ReportRunner
             $name = $f['name'];
             $clean[$name] = $params[$name] ?? $f['default'] ?? null;
         }
+
         return $clean;
     }
 }

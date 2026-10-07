@@ -11,12 +11,35 @@ use App\Reports\ReportResult;
 
 class SavingsSummaryReport extends ReportDefinition
 {
-    public function key(): string { return 'simpanan-ringkasan'; }
-    public function name(): string { return 'Ringkasan Simpanan'; }
-    public function description(): string { return 'Total per jenis produk + rekening aktif.'; }
-    public function category(): string { return 'savings'; }
-    public function filters(): array { return array_merge(ReportFilter::asOf(), ReportFilter::cabang()); }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'simpanan-ringkasan';
+    }
+
+    public function name(): string
+    {
+        return 'Ringkasan Simpanan';
+    }
+
+    public function description(): string
+    {
+        return 'Total per jenis produk + rekening aktif.';
+    }
+
+    public function category(): string
+    {
+        return 'savings';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public function run(array $params): ReportResult
     {
@@ -28,6 +51,7 @@ class SavingsSummaryReport extends ReportDefinition
                 'rekening' => $g->count(),
                 'saldo' => $g->sum('saldo'),
             ])->values()->all();
+
         return new ReportResult(
             [['key' => 'jenis', 'label' => 'Jenis'], ['key' => 'rekening', 'label' => 'Rekening', 'align' => 'right'], $this->moneyCol('saldo', 'Saldo (Rp)')],
             $rows,
@@ -44,11 +68,30 @@ class SavingsSummaryReport extends ReportDefinition
 
 class SavingsGrowthReport extends ReportDefinition
 {
-    public function key(): string { return 'simpanan-pertumbuhan'; }
-    public function name(): string { return 'Pertumbuhan Simpanan'; }
-    public function description(): string { return 'Arus setor vs tarik 12 bulan terakhir.'; }
-    public function category(): string { return 'savings'; }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'simpanan-pertumbuhan';
+    }
+
+    public function name(): string
+    {
+        return 'Pertumbuhan Simpanan';
+    }
+
+    public function description(): string
+    {
+        return 'Arus setor vs tarik 12 bulan terakhir.';
+    }
+
+    public function category(): string
+    {
+        return 'savings';
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public function run(array $params): ReportResult
     {
@@ -60,7 +103,10 @@ class SavingsGrowthReport extends ReportDefinition
             $tarik[] = (int) SimpananTransaksi::where('jenis', 'tarik')->whereDate('tanggal', '>=', $m->toDateString())->whereDate('tanggal', '<=', (clone $m)->endOfMonth()->toDateString())->sum('jumlah');
         }
         $rows = [];
-        foreach ($labels as $i => $l) $rows[] = ['bulan' => $l, 'setor' => $setor[$i], 'tarik' => $tarik[$i], 'neto' => $setor[$i] - $tarik[$i]];
+        foreach ($labels as $i => $l) {
+            $rows[] = ['bulan' => $l, 'setor' => $setor[$i], 'tarik' => $tarik[$i], 'neto' => $setor[$i] - $tarik[$i]];
+        }
+
         return new ReportResult(
             [['key' => 'bulan', 'label' => 'Bulan'], $this->moneyCol('setor', 'Setor'), $this->moneyCol('tarik', 'Tarik'), $this->moneyCol('neto', 'Neto')],
             $rows,
@@ -80,10 +126,26 @@ class SavingsGrowthReport extends ReportDefinition
 
 class SavingsMutationReport extends ReportDefinition
 {
-    public function key(): string { return 'simpanan-mutasi'; }
-    public function name(): string { return 'Mutasi Simpanan'; }
-    public function description(): string { return 'Semua transaksi setor/tarik/mutasi pada periode.'; }
-    public function category(): string { return 'savings'; }
+    public function key(): string
+    {
+        return 'simpanan-mutasi';
+    }
+
+    public function name(): string
+    {
+        return 'Mutasi Simpanan';
+    }
+
+    public function description(): string
+    {
+        return 'Semua transaksi setor/tarik/mutasi pada periode.';
+    }
+
+    public function category(): string
+    {
+        return 'savings';
+    }
+
     public function filters(): array
     {
         return array_merge(ReportFilter::dateRange(), ReportFilter::cabang(), [
@@ -105,6 +167,7 @@ class SavingsMutationReport extends ReportDefinition
                 'anggota' => $t->simpanan->anggota->nama ?? '—',
                 'jenis' => $t->jenis, 'jumlah' => (int) $t->jumlah,
             ])->all();
+
         return new ReportResult(
             [['key' => 'tanggal', 'label' => 'Tanggal', 'format' => 'date'], ['key' => 'nomor', 'label' => 'Nomor'],
                 ['key' => 'anggota', 'label' => 'Anggota'], ['key' => 'jenis', 'label' => 'Jenis', 'format' => 'badge'], $this->moneyCol('jumlah', 'Jumlah')],
@@ -115,10 +178,25 @@ class SavingsMutationReport extends ReportDefinition
 
 class DormantMembersReport extends ReportDefinition
 {
-    public function key(): string { return 'simpanan-dorman'; }
-    public function name(): string { return 'Anggota Dorman'; }
-    public function description(): string { return 'Anggota aktif tanpa transaksi > 6 bulan.'; }
-    public function category(): string { return 'savings'; }
+    public function key(): string
+    {
+        return 'simpanan-dorman';
+    }
+
+    public function name(): string
+    {
+        return 'Anggota Dorman';
+    }
+
+    public function description(): string
+    {
+        return 'Anggota aktif tanpa transaksi > 6 bulan.';
+    }
+
+    public function category(): string
+    {
+        return 'savings';
+    }
 
     public function run(array $params): ReportResult
     {
@@ -126,12 +204,16 @@ class DormantMembersReport extends ReportDefinition
         $rows = Anggota::where('status', 'aktif')->with(['simpanan' => fn ($q) => $q->where('status', 'aktif')])
             ->get()->filter(function ($a) use ($batas) {
                 $ids = $a->simpanan->pluck('id');
-                if ($ids->isEmpty()) return true;
+                if ($ids->isEmpty()) {
+                    return true;
+                }
+
                 return ! SimpananTransaksi::whereIn('simpanan_id', $ids)->whereDate('tanggal', '>=', $batas)->exists();
             })->map(fn ($a) => [
                 'nomor' => $a->nomor_anggota, 'nama' => $a->nama,
                 'saldo' => $a->simpanan->sum('saldo'),
             ])->values()->all();
+
         return new ReportResult(
             [['key' => 'nomor', 'label' => 'No. Anggota'], ['key' => 'nama', 'label' => 'Nama'], $this->moneyCol('saldo', 'Saldo')],
             $rows, ['saldo' => collect($rows)->sum('saldo')],
@@ -142,17 +224,37 @@ class DormantMembersReport extends ReportDefinition
 
 class TopSaversReport extends ReportDefinition
 {
-    public function key(): string { return 'simpanan-top'; }
-    public function name(): string { return 'Top Penabung'; }
-    public function description(): string { return '20 saldo terbesar — tanpa nominal sensitif berlebih? nominal tampil untuk staf berizin.'; }
-    public function category(): string { return 'savings'; }
-    public function permission(): string { return 'reports.view'; }
+    public function key(): string
+    {
+        return 'simpanan-top';
+    }
+
+    public function name(): string
+    {
+        return 'Top Penabung';
+    }
+
+    public function description(): string
+    {
+        return '20 saldo terbesar — tanpa nominal sensitif berlebih? nominal tampil untuk staf berizin.';
+    }
+
+    public function category(): string
+    {
+        return 'savings';
+    }
+
+    public function permission(): string
+    {
+        return 'reports.view';
+    }
 
     public function run(array $params): ReportResult
     {
         $rows = Anggota::where('status', 'aktif')->withSum(['simpanan as total_saldo' => fn ($q) => $q->where('status', 'aktif')], 'saldo')
             ->orderByDesc('total_saldo')->limit(20)->get()
             ->map(fn ($a, $i) => ['rank' => $i + 1, 'nomor' => $a->nomor_anggota, 'nama' => $a->nama, 'saldo' => (int) $a->total_saldo])->all();
+
         return new ReportResult(
             [['key' => 'rank', 'label' => '#', 'align' => 'right'], ['key' => 'nomor', 'label' => 'No. Anggota'], ['key' => 'nama', 'label' => 'Nama'], $this->moneyCol('saldo', 'Saldo')],
             $rows, [], []

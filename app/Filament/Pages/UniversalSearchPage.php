@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use App\Models\Coa;
 use App\Models\Jurnal;
@@ -19,9 +20,11 @@ use Filament\Pages\Page;
 class UniversalSearchPage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'anggota';
+    protected static ?string $navKey = 'Pencarian Universal';
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'DASHBOARD';
     protected static ?string $navigationLabel = 'Cari Universal';

@@ -2,6 +2,8 @@
 
 namespace App\Services\Ocr;
 
+use App\Models\Setting;
+
 /**
  * OcrManager: registry + aturan main — hasil OCR TIDAK PERNAH menimpa data
  * anggota terverifikasi tanpa konfirmasi eksplisit operator.
@@ -10,14 +12,16 @@ class OcrManager
 {
     public static function provider(?string $name = null): OcrProviderInterface
     {
-        $name ??= \App\Models\Setting::get('ocr_provider', 'manual', 'integrasi');
+        $name ??= Setting::get('ocr_provider', 'manual', 'integrasi');
+
         return match ($name) {
-            default => new ManualOcrProvider(),
+            default => new ManualOcrProvider,
         };
     }
 
     /**
      * Bandingkan hasil OCR vs data tersimpan → usulan perubahan (bukan apply).
+     *
      * @return array{field, lama, usulan}[]
      */
     public static function propose(string $filePath, string $jenis, array $dataTersimpan): array
@@ -31,6 +35,7 @@ class OcrManager
                 $usul[] = ['field' => $field, 'lama' => $lama, 'usulan' => $nilai];
             }
         }
+
         return $usul;
     }
 }

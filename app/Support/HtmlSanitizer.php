@@ -12,7 +12,9 @@ class HtmlSanitizer
 {
     public static function clean(?string $html): ?string
     {
-        if ($html === null || $html === '') return $html;
+        if ($html === null || $html === '') {
+            return $html;
+        }
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
@@ -33,7 +35,9 @@ class HtmlSanitizer
         if ($onAttrs instanceof \DOMNodeList) {
             foreach ($onAttrs as $el) {
                 foreach (iterator_to_array($el->attributes) as $attr) {
-                    if (stripos($attr->nodeName, 'on') === 0) $el->removeAttribute($attr->nodeName);
+                    if (stripos($attr->nodeName, 'on') === 0) {
+                        $el->removeAttribute($attr->nodeName);
+                    }
                 }
             }
         }
@@ -41,7 +45,9 @@ class HtmlSanitizer
         if ($urlAttrs instanceof \DOMNodeList) {
             foreach ($urlAttrs as $el) {
                 foreach (['href', 'src', 'action'] as $name) {
-                    if (! $el->hasAttribute($name)) continue;
+                    if (! $el->hasAttribute($name)) {
+                        continue;
+                    }
                     $val = trim((string) $el->getAttribute($name));
                     if (preg_match('/^\s*(javascript|data|vbscript)\s*:/i', $val)) {
                         $el->removeAttribute($name);

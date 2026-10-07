@@ -19,3 +19,7 @@ Antrian bucket (hari ini, overdue, 1–7 … 180+), assign kolektor (`pinjaman.k
 ## Simulasi Pinjaman
 
 Admin → Operasional → Simulasi Pinjaman: plafon, rate, tenor, metode (semua kalkulator), frekuensi → jadwal angsuran integer-rupiah.
+
+## Agunan & penjamin
+
+Pinjaman → Agunan & Penjamin: jenis agunan + taksiran + LTV + penjamin (nama/NIK/telp/hubungan). Scoring memakai keberadaan jaminan.

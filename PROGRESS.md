@@ -1,6 +1,15 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Finalisasi: actions, verifikasi QR, idempotency, scoring UI, i18n
+## 2026-10-07 — Sesi Penuntasan: perf agregat, AI HTTP, i18n nav, penjamin, installer fix
+
+- Ledger single-query + cache + flush (neraca/LR 1 query; budget 12 query); whereDate/driver-safe; DATEDIFF → PHP
+- AI Generic HTTP (endpoint/model/key via settings) + fallback lokal; AiInsight tetap berlabel
+- i18n nav 24 halaman (`HasTranslatedNav` + id/en), Tabler theme layer resmi Filament
+- Penjamin di agunan (migrasi + relation manager); SHU snapshot+lock; idempotency offline-ready
+- Installer: fix fatal `$this->middleware()` → guard (test 2/2); verifikasi QR publik; API transaksi/notifikasi
+- Pint: file baru bersih; Test 127 OK (512 assertion)
+
+---
 
 - Executive Dashboard: Today's Actions (approval pending, jatuh tempo hari ini, dokumen expiring, temuan critical, lisensi)
 - Verifikasi kartu publik (`/portal/verifikasi`, signed + throttle + masking) + tautan di kartu

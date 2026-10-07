@@ -2,6 +2,7 @@
 
 namespace App\Workflow;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -35,8 +36,8 @@ class WorkflowService
     }
 
     /**
-     * @param Model $model harus punya kolom `status`
-     * @param string $module permission module, mis. 'procurement'
+     * @param  Model  $model  harus punya kolom `status`
+     * @param  string  $module  permission module, mis. 'procurement'
      */
     public static function transition(Model $model, string $to, string $module, ?string $catatan = null, ?int $userId = null): Model
     {
@@ -45,7 +46,7 @@ class WorkflowService
             throw new \InvalidArgumentException("Transisi {$from} → {$to} tidak diizinkan.");
         }
 
-        $user = $userId ? \App\Models\User::findOrFail($userId) : auth()->user();
+        $user = $userId ? User::findOrFail($userId) : auth()->user();
         $need = $module.'.'.(self::TRANSITION_PERMISSION[$to] ?? 'update');
         if ($user && ! ($user->can($need) || $user->hasRole('super-admin'))) {
             throw new \InvalidArgumentException("Butuh izin {$need} untuk transisi ke {$to}.");

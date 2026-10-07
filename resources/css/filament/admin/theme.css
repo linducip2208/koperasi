@@ -793,3 +793,16 @@ body, html {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Tabler visual language layer (official theme extension, no vendor patch) */
+.fi-body { font-feature-settings: 'cv02','cv03','cv04','cv11'; }
+.fi-sidebar-nav .fi-sidebar-item-active > .fi-sidebar-item-button { border-radius: 0.6rem; box-shadow: inset 0 0 0 1px rgb(5 150 105 / 0.25), 0 4px 14px -6px rgb(5 150 105 / 0.45); }
+.fi-ta-table thead th { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.68rem; }
+.fi-section, .fi-wi-table { border-radius: 0.9rem; }
+.fi-badge { border-radius: 999px; font-weight: 700; }
+.fi-btn { border-radius: 0.6rem; font-weight: 700; }
+.fi-input, .fi-select-input, .fi-textarea { border-radius: 0.6rem; }
+.fi-input:focus-within, .fi-select-input:focus-within { box-shadow: 0 0 0 3px rgb(16 185 129 / 0.18); }
+.fi-modal-window { border-radius: 1rem; }
+.fi-tabs { border-radius: 0.75rem; }
+.fi-no:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid #059669; outline-offset: 2px; }

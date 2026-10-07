@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\Akuntansi\LaporanKeuanganService;
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use App\Models\Pinjaman;
 use App\Models\PinjamanJadwal;
@@ -15,8 +16,10 @@ use Filament\Pages\Page;
 class ExecutiveDashboardPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Executive Dashboard';
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Executive Dashboard';

@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Domain\Pinjaman\CreditScoringService;
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,9 +16,11 @@ use Filament\Pages\Page;
 class CreditScoringPage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'pinjaman';
+    protected static ?string $navKey = 'Credit Scoring';
     protected static ?string $navigationIcon = 'heroicon-o-star';
     protected static ?string $navigationGroup = 'OPERASIONAL';
     protected static ?string $navigationLabel = 'Credit Scoring';

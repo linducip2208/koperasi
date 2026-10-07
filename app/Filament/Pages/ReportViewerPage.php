@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Reports\ReportRegistry;
 use App\Reports\ReportRunner;
 use Filament\Forms\Components\DatePicker;
@@ -16,9 +17,11 @@ use Filament\Pages\Page;
 class ReportViewerPage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Report Viewer';
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Lihat Report';

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\ScheduledReport;
 use App\Reports\ReportRegistry;
 use Filament\Forms\Components\DateTimePicker;
@@ -18,9 +19,11 @@ use Filament\Tables\Table;
 class ScheduledReportPage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Scheduled Reports';
     protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Scheduled Reports';

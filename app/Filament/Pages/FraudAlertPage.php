@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Jurnal;
 use App\Models\PinjamanPembayaran;
 use App\Models\SimpananTransaksi;
@@ -11,8 +12,10 @@ use Filament\Pages\Page;
 class FraudAlertPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Deteksi Anomali (Rule-based)';
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Fraud Alerts';

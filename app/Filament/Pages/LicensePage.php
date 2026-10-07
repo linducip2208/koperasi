@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Services\LicenseClient;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -10,8 +11,10 @@ use Filament\Pages\Page;
 class LicensePage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'license';
+    protected static ?string $navKey = 'License';
     protected static ?string $navigationIcon = 'heroicon-o-key';
     protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'License';

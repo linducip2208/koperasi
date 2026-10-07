@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Imports\ImportDefinition;
 use App\Models\ImportBatch;
 use Filament\Pages\Page;
@@ -10,8 +11,10 @@ use Filament\Pages\Page;
 class ImportCenterPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Import Center';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Import Center';

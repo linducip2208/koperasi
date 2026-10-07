@@ -3,13 +3,17 @@
 namespace App\Reports\Financial;
 
 use App\Domain\Akuntansi\LaporanKeuanganService;
+use App\Models\Anggaran;
 use App\Models\Coa;
 use App\Models\Jurnal;
 use App\Models\JurnalDetail;
 use App\Models\Kas;
+use App\Models\PinjamanJadwal;
+use App\Models\TokoBarang;
 use App\Reports\ReportDefinition;
 use App\Reports\ReportFilter;
 use App\Reports\ReportResult;
+use Carbon\Carbon;
 
 /** Shared helpers untuk report finansial. */
 trait FinancialHelpers
@@ -23,11 +27,31 @@ trait FinancialHelpers
 class BalanceSheetReport extends ReportDefinition
 {
     use FinancialHelpers;
-    public function key(): string { return 'neraca'; }
-    public function name(): string { return 'Neraca (Posisi Keuangan)'; }
-    public function description(): string { return 'Aset, kewajiban, dan ekuitas per tanggal — SAK EP.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::asOf(), ReportFilter::cabang()); }
+
+    public function key(): string
+    {
+        return 'neraca';
+    }
+
+    public function name(): string
+    {
+        return 'Neraca (Posisi Keuangan)';
+    }
+
+    public function description(): string
+    {
+        return 'Aset, kewajiban, dan ekuitas per tanggal — SAK EP.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
@@ -41,6 +65,7 @@ class BalanceSheetReport extends ReportDefinition
         $tA = collect($d['aset'])->sum('saldo');
         $tK = collect($d['kewajiban'])->sum('saldo');
         $tE = collect($d['ekuitas'])->sum('saldo');
+
         return new ReportResult(
             [['key' => 'kelompok', 'label' => 'Kelompok'], ['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'], $this->moneyCol('saldo', 'Saldo (Rp)')],
             $rows,
@@ -59,19 +84,47 @@ class BalanceSheetReport extends ReportDefinition
 
 class ProfitLossReport extends ReportDefinition
 {
-    public function key(): string { return 'laba-rugi'; }
-    public function name(): string { return 'Laba Rugi (SHU)'; }
-    public function description(): string { return 'Pendapatan, beban, dan SHU periode berjalan.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::dateRange(), ReportFilter::cabang()); }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'laba-rugi';
+    }
+
+    public function name(): string
+    {
+        return 'Laba Rugi (SHU)';
+    }
+
+    public function description(): string
+    {
+        return 'Pendapatan, beban, dan SHU periode berjalan.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::dateRange(), ReportFilter::cabang());
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public function run(array $params): ReportResult
     {
         $d = LaporanKeuanganService::labaRugi($params['dari'], $params['sampai'], $this->cabangId($params));
         $rows = [];
-        foreach ($d['pendapatan'] as $r) $rows[] = ['kelompok' => 'PENDAPATAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
-        foreach ($d['beban'] as $r) $rows[] = ['kelompok' => 'BEBAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => -$r['saldo']];
+        foreach ($d['pendapatan'] as $r) {
+            $rows[] = ['kelompok' => 'PENDAPATAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
+        }
+        foreach ($d['beban'] as $r) {
+            $rows[] = ['kelompok' => 'BEBAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => -$r['saldo']];
+        }
+
         return new ReportResult(
             [['key' => 'kelompok', 'label' => 'Kelompok'], ['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'], $this->moneyCol('jumlah', 'Jumlah (Rp)')],
             $rows,
@@ -92,15 +145,35 @@ class ProfitLossReport extends ReportDefinition
 
 class CashFlowReport extends ReportDefinition
 {
-    public function key(): string { return 'arus-kas'; }
-    public function name(): string { return 'Arus Kas'; }
-    public function description(): string { return 'Penerimaan dan pengeluaran kas/bank periode.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::dateRange(), ReportFilter::cabang()); }
+    public function key(): string
+    {
+        return 'arus-kas';
+    }
+
+    public function name(): string
+    {
+        return 'Arus Kas';
+    }
+
+    public function description(): string
+    {
+        return 'Penerimaan dan pengeluaran kas/bank periode.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::dateRange(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
         $d = LaporanKeuanganService::arusKas($params['dari'], $params['sampai'], $this->cabangId($params));
+
         return new ReportResult(
             [['key' => 'uraian', 'label' => 'Uraian'], $this->moneyCol('jumlah', 'Jumlah (Rp)')],
             [
@@ -119,11 +192,30 @@ class CashFlowReport extends ReportDefinition
 
 class EquityChangesReport extends ReportDefinition
 {
-    public function key(): string { return 'perubahan-ekuitas'; }
-    public function name(): string { return 'Perubahan Ekuitas'; }
-    public function description(): string { return 'Saldo awal, mutasi, saldo akhir ekuitas — SAK EP.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::dateRange(), ReportFilter::cabang()); }
+    public function key(): string
+    {
+        return 'perubahan-ekuitas';
+    }
+
+    public function name(): string
+    {
+        return 'Perubahan Ekuitas';
+    }
+
+    public function description(): string
+    {
+        return 'Saldo awal, mutasi, saldo akhir ekuitas — SAK EP.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::dateRange(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
@@ -132,6 +224,7 @@ class EquityChangesReport extends ReportDefinition
             'kode' => $r['kode'], 'akun' => $r['nama'],
             'saldo_awal' => $r['saldo_awal'], 'mutasi' => $r['mutasi'], 'saldo_akhir' => $r['saldo_akhir'],
         ], $d['rincian']);
+
         return new ReportResult(
             [['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'],
                 $this->moneyCol('saldo_awal', 'Saldo Awal'), $this->moneyCol('mutasi', 'Mutasi'), $this->moneyCol('saldo_akhir', 'Saldo Akhir')],
@@ -144,16 +237,36 @@ class EquityChangesReport extends ReportDefinition
 
 class TrialBalanceReport extends ReportDefinition
 {
-    public function key(): string { return 'trial-balance'; }
-    public function name(): string { return 'Neraca Saldo'; }
-    public function description(): string { return 'Debit vs kredit semua akun postable — harus balance.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::asOf(), ReportFilter::cabang()); }
+    public function key(): string
+    {
+        return 'trial-balance';
+    }
+
+    public function name(): string
+    {
+        return 'Neraca Saldo';
+    }
+
+    public function description(): string
+    {
+        return 'Debit vs kredit semua akun postable — harus balance.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
         $d = LaporanKeuanganService::trialBalance($params['sampai'], $this->cabangId($params));
         $rows = array_map(fn ($r) => ['kode' => $r['kode'], 'akun' => $r['nama'], 'debit' => $r['debit'], 'kredit' => $r['kredit']], $d['rows']);
+
         return new ReportResult(
             [['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'],
                 $this->moneyCol('debit', 'Debit'), $this->moneyCol('kredit', 'Kredit')],
@@ -167,10 +280,27 @@ class TrialBalanceReport extends ReportDefinition
 class GeneralLedgerReport extends ReportDefinition
 {
     use FinancialHelpers;
-    public function key(): string { return 'buku-besar'; }
-    public function name(): string { return 'Buku Besar'; }
-    public function description(): string { return 'Mutasi kronologis + saldo berjalan per akun.'; }
-    public function category(): string { return 'financial'; }
+
+    public function key(): string
+    {
+        return 'buku-besar';
+    }
+
+    public function name(): string
+    {
+        return 'Buku Besar';
+    }
+
+    public function description(): string
+    {
+        return 'Mutasi kronologis + saldo berjalan per akun.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
     public function filters(): array
     {
         return array_merge(ReportFilter::dateRange(), ReportFilter::cabang(), ReportFilter::account());
@@ -186,6 +316,7 @@ class GeneralLedgerReport extends ReportDefinition
             'tanggal' => $l['tanggal'], 'nomor' => $l['nomor'], 'keterangan' => $l['keterangan'],
             'debit' => $l['debit'], 'kredit' => $l['kredit'], 'saldo' => $l['saldo'],
         ], $d['lines']);
+
         return new ReportResult(
             [['key' => 'tanggal', 'label' => 'Tanggal', 'format' => 'date'], ['key' => 'nomor', 'label' => 'No. Jurnal'], ['key' => 'keterangan', 'label' => 'Keterangan'],
                 $this->moneyCol('debit', 'Debit'), $this->moneyCol('kredit', 'Kredit'), $this->moneyCol('saldo', 'Saldo')],
@@ -203,11 +334,31 @@ class GeneralLedgerReport extends ReportDefinition
 class JournalReport extends ReportDefinition
 {
     use FinancialHelpers;
-    public function key(): string { return 'jurnal-umum'; }
-    public function name(): string { return 'Jurnal Umum'; }
-    public function description(): string { return 'Daftar jurnal posted + drill-down ke dokumen admin.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::dateRange(), ReportFilter::cabang()); }
+
+    public function key(): string
+    {
+        return 'jurnal-umum';
+    }
+
+    public function name(): string
+    {
+        return 'Jurnal Umum';
+    }
+
+    public function description(): string
+    {
+        return 'Daftar jurnal posted + drill-down ke dokumen admin.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::dateRange(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
@@ -222,6 +373,7 @@ class JournalReport extends ReportDefinition
                 'keterangan' => $j->keterangan, 'debit' => (int) $j->total_debit, 'kredit' => (int) $j->total_kredit,
                 '__link' => url('/admin/jurnals/'.$j->id.'/edit'),
             ])->all();
+
         return new ReportResult(
             [['key' => 'tanggal', 'label' => 'Tanggal', 'format' => 'date'], ['key' => 'nomor', 'label' => 'Nomor'], ['key' => 'keterangan', 'label' => 'Keterangan'],
                 $this->moneyCol('debit', 'Debit'), $this->moneyCol('kredit', 'Kredit')],
@@ -234,20 +386,41 @@ class JournalReport extends ReportDefinition
 
 class CashPositionReport extends ReportDefinition
 {
-    public function key(): string { return 'posisi-kas'; }
-    public function name(): string { return 'Posisi Kas & Bank'; }
-    public function description(): string { return 'Saldo per kas/bank + total likuiditas.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::asOf(), ReportFilter::cabang()); }
+    public function key(): string
+    {
+        return 'posisi-kas';
+    }
+
+    public function name(): string
+    {
+        return 'Posisi Kas & Bank';
+    }
+
+    public function description(): string
+    {
+        return 'Saldo per kas/bank + total likuiditas.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
         $rows = Kas::with('coa')->where('aktif', true)
             ->when($this->cabangId($params), fn ($q, $c) => $q->where('cabang_id', $c))
             ->get()->map(function ($k) use ($params) {
-                $saldo = $k->coa ? \App\Domain\Akuntansi\LaporanKeuanganService::saldoAkun($k->coa, null, $params['sampai'], $this->cabangId($params)) : (int) $k->saldo;
+                $saldo = $k->coa ? LaporanKeuanganService::saldoAkun($k->coa, null, $params['sampai'], $this->cabangId($params)) : (int) $k->saldo;
+
                 return ['kas' => $k->nama, 'tipe' => $k->tipe, 'saldo' => $saldo];
             })->all();
+
         return new ReportResult(
             [['key' => 'kas', 'label' => 'Kas / Bank'], ['key' => 'tipe', 'label' => 'Tipe', 'format' => 'badge'], $this->moneyCol('saldo', 'Saldo (Rp)')],
             $rows,
@@ -259,18 +432,42 @@ class CashPositionReport extends ReportDefinition
 
 class IncomeExpenseReport extends ReportDefinition
 {
-    public function key(): string { return 'rekap-pendapatan-beban'; }
-    public function name(): string { return 'Rekap Pendapatan & Beban'; }
-    public function description(): string { return 'Rincian pendapatan dan beban per akun.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::dateRange(), ReportFilter::cabang()); }
+    public function key(): string
+    {
+        return 'rekap-pendapatan-beban';
+    }
+
+    public function name(): string
+    {
+        return 'Rekap Pendapatan & Beban';
+    }
+
+    public function description(): string
+    {
+        return 'Rincian pendapatan dan beban per akun.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::dateRange(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
         $d = LaporanKeuanganService::labaRugi($params['dari'], $params['sampai'], $this->cabangId($params));
         $rows = [];
-        foreach ($d['pendapatan'] as $r) $rows[] = ['kelompok' => 'PENDAPATAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
-        foreach ($d['beban'] as $r) $rows[] = ['kelompok' => 'BEBAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
+        foreach ($d['pendapatan'] as $r) {
+            $rows[] = ['kelompok' => 'PENDAPATAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
+        }
+        foreach ($d['beban'] as $r) {
+            $rows[] = ['kelompok' => 'BEBAN', 'kode' => $r['kode'], 'akun' => $r['nama'], 'jumlah' => $r['saldo']];
+        }
+
         return new ReportResult(
             [['key' => 'kelompok', 'label' => 'Kelompok'], ['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'], $this->moneyCol('jumlah', 'Jumlah (Rp)')],
             $rows, [], []
@@ -279,18 +476,38 @@ class IncomeExpenseReport extends ReportDefinition
 }
 
 class ReceivablePayableReport extends ReportDefinition
-{    public function key(): string { return 'piutang-hutang'; }
-    public function name(): string { return 'Piutang & Hutang'; }
-    public function description(): string { return 'Posisi akun piutang dan hutang dari COA.'; }
-    public function category(): string { return 'financial'; }
-    public function filters(): array { return array_merge(ReportFilter::asOf(), ReportFilter::cabang()); }
+{
+    public function key(): string
+    {
+        return 'piutang-hutang';
+    }
+
+    public function name(): string
+    {
+        return 'Piutang & Hutang';
+    }
+
+    public function description(): string
+    {
+        return 'Posisi akun piutang dan hutang dari COA.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function filters(): array
+    {
+        return array_merge(ReportFilter::asOf(), ReportFilter::cabang());
+    }
 
     public function run(array $params): ReportResult
     {
         $match = fn ($q) => $q->where('is_postable', true)->where('is_aktif', true)
             ->where(function ($w) {
                 $w->where('nama', 'like', '%piutang%')->orWhere('nama', 'like', '%hutang%')
-                  ->orWhere('nama', 'like', '%utang%')->orWhere('nama', 'like', '%tagihan%');
+                    ->orWhere('nama', 'like', '%utang%')->orWhere('nama', 'like', '%tagihan%');
             });
         $rows = $match(Coa::query())->orderBy('kode')->get()->map(function ($c) use ($params) {
             return [
@@ -299,6 +516,7 @@ class ReceivablePayableReport extends ReportDefinition
                 'saldo' => LaporanKeuanganService::saldoAkun($c, null, $params['sampai'], $this->cabangId($params)),
             ];
         })->filter(fn ($r) => $r['saldo'] != 0)->values()->all();
+
         return new ReportResult(
             [['key' => 'kode', 'label' => 'Kode'], ['key' => 'akun', 'label' => 'Akun'],
                 ['key' => 'posisi', 'label' => 'Posisi', 'format' => 'badge'], $this->moneyCol('saldo', 'Saldo (Rp)')],
@@ -309,29 +527,51 @@ class ReceivablePayableReport extends ReportDefinition
 
 class CashForecastReport extends ReportDefinition
 {
-    public function key(): string { return 'kas-forecast'; }
-    public function name(): string { return 'Forecast Kas 30 Hari'; }
-    public function description(): string { return 'Masuk (angsuran jatuh tempo) vs keluar (estimasi operasional) 4 minggu ke depan.'; }
-    public function category(): string { return 'financial'; }
-    public function supportsChart(): bool { return true; }
+    public function key(): string
+    {
+        return 'kas-forecast';
+    }
+
+    public function name(): string
+    {
+        return 'Forecast Kas 30 Hari';
+    }
+
+    public function description(): string
+    {
+        return 'Masuk (angsuran jatuh tempo) vs keluar (estimasi operasional) 4 minggu ke depan.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
+    public function supportsChart(): bool
+    {
+        return true;
+    }
 
     public function run(array $params): ReportResult
     {
         $labels = $masuk = $keluar = [];
-        $rataBeban = (int) \App\Models\JurnalDetail::whereHas('jurnal', fn ($q) => $q->where('is_posted', true)
-                ->whereDate('tanggal', '>=', now()->subDays(30)->toDateString()))
+        $rataBeban = (int) JurnalDetail::whereHas('jurnal', fn ($q) => $q->where('is_posted', true)
+            ->whereDate('tanggal', '>=', now()->subDays(30)->toDateString()))
             ->whereHas('coa', fn ($q) => $q->where('tipe', 'beban'))->sum('kredit');
         $mingguan = (int) round($rataBeban / 4);
         for ($w = 0; $w < 4; $w++) {
             $a = now()->addDays($w * 7)->toDateString();
             $b = now()->addDays($w * 7 + 6)->toDateString();
-            $labels[] = "Minggu ".($w + 1);
-            $masuk[] = (int) \App\Models\PinjamanJadwal::whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])
+            $labels[] = 'Minggu '.($w + 1);
+            $masuk[] = (int) PinjamanJadwal::whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])
                 ->whereDate('tanggal_jatuh_tempo', '>=', $a)->whereDate('tanggal_jatuh_tempo', '<=', $b)->sum('total_angsuran');
             $keluar[] = $mingguan;
         }
         $rows = [];
-        foreach ($labels as $i => $l) $rows[] = ['minggu' => $l, 'masuk' => $masuk[$i], 'keluar' => $keluar[$i], 'neto' => $masuk[$i] - $keluar[$i]];
+        foreach ($labels as $i => $l) {
+            $rows[] = ['minggu' => $l, 'masuk' => $masuk[$i], 'keluar' => $keluar[$i], 'neto' => $masuk[$i] - $keluar[$i]];
+        }
+
         return new ReportResult(
             [['key' => 'minggu', 'label' => 'Minggu'], $this->moneyCol('masuk', 'Masuk'), $this->moneyCol('keluar', 'Keluar (est)'), $this->moneyCol('neto', 'Neto')],
             $rows,
@@ -351,10 +591,26 @@ class CashForecastReport extends ReportDefinition
 
 class BudgetActualReport extends ReportDefinition
 {
-    public function key(): string { return 'anggaran-realisasi'; }
-    public function name(): string { return 'Anggaran vs Realisasi'; }
-    public function description(): string { return 'Per akun per bulan berjalan + varians.'; }
-    public function category(): string { return 'financial'; }
+    public function key(): string
+    {
+        return 'anggaran-realisasi';
+    }
+
+    public function name(): string
+    {
+        return 'Anggaran vs Realisasi';
+    }
+
+    public function description(): string
+    {
+        return 'Per akun per bulan berjalan + varians.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
+
     public function filters(): array
     {
         return [[
@@ -367,15 +623,28 @@ class BudgetActualReport extends ReportDefinition
     {
         $tahun = (int) ($params['tahun'] ?? now()->year);
         $bulan = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'];
-        $rows = \App\Models\Anggaran::with('coa')->where('tahun', $tahun)->get()->map(function ($a) use ($bulan, $tahun) {
+        // 12 agregat bulanan (1 query per bulan), bukan per-baris-per-bulan.
+        $maps = [];
+        foreach ($bulan as $i => $b) {
+            $d = Carbon::create($tahun, $i + 1, 1);
+            $maps[$b] = LaporanKeuanganService::ledgerMap($d->startOfMonth()->toDateString(), $d->endOfMonth()->toDateString(), null, true);
+        }
+        $rows = Anggaran::with('coa')->where('tahun', $tahun)->get()->map(function ($a) use ($bulan, $maps, $tahun) {
             $rencana = collect($bulan)->sum(fn ($b) => (int) $a->$b);
+            $isLR = in_array($a->coa->tipe, ['pendapatan', 'beban']);
             $realisasi = 0;
-            foreach ($bulan as $i => $b) {
-                $d = \Carbon\Carbon::create($tahun, $i + 1, 1);
-                $realisasi += LaporanKeuanganService::saldoAkun($a->coa, $d->startOfMonth()->toDateString(), $d->endOfMonth()->toDateString());
+            if ($isLR) {
+                foreach ($bulan as $b) {
+                    $d = $maps[$b][$a->coa_id] ?? ['debit' => 0, 'kredit' => 0];
+                    $realisasi += $a->coa->saldo_normal === 'debit' ? $d['debit'] - $d['kredit'] : $d['kredit'] - $d['debit'];
+                }
+            } else {
+                $realisasi = LaporanKeuanganService::saldoAkun($a->coa, null, "{$tahun}-12-31");
             }
+
             return ['akun' => $a->coa->kode.' — '.$a->coa->nama, 'rencana' => $rencana, 'realisasi' => $realisasi, 'varians' => $rencana - $realisasi];
         })->all();
+
         return new ReportResult(
             [['key' => 'akun', 'label' => 'Akun'], $this->moneyCol('rencana', 'Rencana'), $this->moneyCol('realisasi', 'Realisasi'), $this->moneyCol('varians', 'Varians')],
             $rows,
@@ -387,20 +656,36 @@ class BudgetActualReport extends ReportDefinition
 
 class InventoryValuationReport extends ReportDefinition
 {
-    public function key(): string { return 'toko-valuasi'; }
-    public function name(): string { return 'Valuasi Persediaan Toko'; }
-    public function description(): string { return 'Stok × harga beli (average) per barang.'; }
-    public function category(): string { return 'financial'; }
+    public function key(): string
+    {
+        return 'toko-valuasi';
+    }
+
+    public function name(): string
+    {
+        return 'Valuasi Persediaan Toko';
+    }
+
+    public function description(): string
+    {
+        return 'Stok × harga beli (average) per barang.';
+    }
+
+    public function category(): string
+    {
+        return 'financial';
+    }
 
     public function run(array $params): ReportResult
     {
-        $rows = \App\Models\TokoBarang::where('is_jasa', false)->orderBy('nama')->limit(2000)->get()
+        $rows = TokoBarang::where('is_jasa', false)->orderBy('nama')->limit(2000)->get()
             ->map(fn ($b) => [
                 'sku' => $b->sku, 'nama' => $b->nama,
                 'stok' => (float) $b->stok, 'harga_beli' => (int) $b->harga_beli,
                 'nilai' => (int) round(((float) $b->stok) * (int) $b->harga_beli),
                 'status' => $b->stok <= $b->stok_minimum ? 'Menipis' : 'Aman',
             ])->all();
+
         return new ReportResult(
             [['key' => 'sku', 'label' => 'SKU'], ['key' => 'nama', 'label' => 'Barang'],
                 ['key' => 'stok', 'label' => 'Stok', 'align' => 'right'], $this->moneyCol('harga_beli', 'HPP/Beli'),

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use App\Models\Jurnal;
 use App\Models\MemberDocument;
@@ -12,8 +13,10 @@ use Filament\Pages\Page;
 class DataQualityPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Data Quality Center';
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass-circle';
     protected static ?string $navigationGroup = 'REPORTS';
     protected static ?string $navigationLabel = 'Data Quality';

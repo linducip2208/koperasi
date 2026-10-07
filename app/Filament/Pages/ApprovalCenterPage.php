@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Anggota;
 use App\Models\Pinjaman;
 use App\Models\PinjamanPembayaran;
@@ -17,9 +18,11 @@ use Filament\Tables\Table;
 class ApprovalCenterPage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'pinjaman';
+    protected static ?string $navKey = 'Approval Center';
     protected static ?string $navigationIcon = 'heroicon-o-check-badge';
     protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Approval Center';

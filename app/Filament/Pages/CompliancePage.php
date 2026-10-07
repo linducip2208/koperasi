@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Setting;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -22,9 +23,11 @@ use Filament\Pages\Page;
 class CompliancePage extends Page implements HasForms
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithForms;
 
     protected static ?string $permissionModule = 'laporan';
+    protected static ?string $navKey = 'Compliance Center';
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
     protected static ?string $navigationGroup = 'GOVERNANCE';
     protected static ?string $navigationLabel = 'Compliance';

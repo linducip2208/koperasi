@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\Jurnal;
 use App\Models\PeriodeAkuntansi;
 use App\Models\Pinjaman;
@@ -14,8 +15,10 @@ use Illuminate\Support\Facades\Artisan;
 class YearEndClosingPage extends Page
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
 
     protected static ?string $permissionModule = 'jurnal';
+    protected static ?string $navKey = 'Tutup Tahun Buku';
     protected static ?string $navigationIcon = 'heroicon-o-lock-closed';
     protected static ?string $navigationGroup = 'ACCOUNTING';
     protected static ?string $navigationLabel = 'Tutup Tahun Buku';

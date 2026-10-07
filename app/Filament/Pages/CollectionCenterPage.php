@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\CollectionFollowup;
 use App\Models\Pinjaman;
 use App\Models\User;
@@ -21,9 +22,11 @@ use Filament\Tables\Table;
 class CollectionCenterPage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'pinjaman';
+    protected static ?string $navKey = 'Collection Center';
     protected static ?string $navigationIcon = 'heroicon-o-phone';
     protected static ?string $navigationGroup = 'OPERATIONS';
     protected static ?string $navigationLabel = 'Collection Center';

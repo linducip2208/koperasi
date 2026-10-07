@@ -2,18 +2,20 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Akuntansi\JurnalService;
 use App\Domain\Syariah\ProfitSharingCalculator;
 use App\Imports\ImportEngine;
 use App\Imports\IndonesianNumber;
 use App\Models\Anggota;
+use App\Models\Coa;
 use App\Models\CustomReport;
-use App\Models\ReportArchive;
 use App\Models\Tenant;
 use App\Reports\CustomReportRunner;
 use App\Reports\ReportArchiver;
 use App\Reports\ReportRegistry;
 use App\Services\Ai\AiManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class ReportCenterTest extends TestCase
@@ -33,10 +35,10 @@ class ReportCenterTest extends TestCase
 
     public function test_neraca_balance_dari_jurnal_nyata(): void
     {
-        $coaKas = \App\Models\Coa::create(['tenant_id' => 1, 'kode' => '1.1.1.01', 'nama' => 'Kas', 'tipe' => 'aset', 'saldo_normal' => 'debit', 'is_kas' => true, 'is_postable' => true, 'is_aktif' => true]);
-        $coaModal = \App\Models\Coa::create(['tenant_id' => 1, 'kode' => '3.1.1.01', 'nama' => 'Modal', 'tipe' => 'ekuitas', 'saldo_normal' => 'kredit', 'is_postable' => true, 'is_aktif' => true]);
+        $coaKas = Coa::create(['tenant_id' => 1, 'kode' => '1.1.1.01', 'nama' => 'Kas', 'tipe' => 'aset', 'saldo_normal' => 'debit', 'is_kas' => true, 'is_postable' => true, 'is_aktif' => true]);
+        $coaModal = Coa::create(['tenant_id' => 1, 'kode' => '3.1.1.01', 'nama' => 'Modal', 'tipe' => 'ekuitas', 'saldo_normal' => 'kredit', 'is_postable' => true, 'is_aktif' => true]);
 
-        \App\Domain\Akuntansi\JurnalService::create('Setor modal', [
+        JurnalService::create('Setor modal', [
             ['coa_id' => $coaKas->id, 'debit' => 10_000_000, 'kredit' => 0],
             ['coa_id' => $coaModal->id, 'debit' => 0, 'kredit' => 10_000_000],
         ]);
@@ -103,8 +105,8 @@ class ReportCenterTest extends TestCase
     public function test_import_gagal_rollback_total(): void
     {
         $this->expectException(\Throwable::class);
-        \Illuminate\Support\Facades\DB::transaction(function () {
-            \App\Models\Anggota::create(['tenant_id' => 1, 'nomor_anggota' => 'AGT-RB', 'nama' => 'Rollback', 'status' => 'aktif', 'tanggal_masuk' => now()]);
+        DB::transaction(function () {
+            Anggota::create(['tenant_id' => 1, 'nomor_anggota' => 'AGT-RB', 'nama' => 'Rollback', 'status' => 'aktif', 'tanggal_masuk' => now()]);
             throw new \RuntimeException('simulasi gagal');
         });
         $this->assertDatabaseMissing('anggota', ['nomor_anggota' => 'AGT-RB']);
@@ -112,9 +114,9 @@ class ReportCenterTest extends TestCase
 
     public function test_archive_snapshot_immutable(): void
     {
-        $coaKas = \App\Models\Coa::create(['tenant_id' => 1, 'kode' => '1.1.1.01', 'nama' => 'Kas', 'tipe' => 'aset', 'saldo_normal' => 'debit', 'is_kas' => true, 'is_postable' => true, 'is_aktif' => true]);
-        $coaModal = \App\Models\Coa::create(['tenant_id' => 1, 'kode' => '3.1.1.01', 'nama' => 'Modal', 'tipe' => 'ekuitas', 'saldo_normal' => 'kredit', 'is_postable' => true, 'is_aktif' => true]);
-        \App\Domain\Akuntansi\JurnalService::create('M1', [
+        $coaKas = Coa::create(['tenant_id' => 1, 'kode' => '1.1.1.01', 'nama' => 'Kas', 'tipe' => 'aset', 'saldo_normal' => 'debit', 'is_kas' => true, 'is_postable' => true, 'is_aktif' => true]);
+        $coaModal = Coa::create(['tenant_id' => 1, 'kode' => '3.1.1.01', 'nama' => 'Modal', 'tipe' => 'ekuitas', 'saldo_normal' => 'kredit', 'is_postable' => true, 'is_aktif' => true]);
+        JurnalService::create('M1', [
             ['coa_id' => $coaKas->id, 'debit' => 5_000_000, 'kredit' => 0],
             ['coa_id' => $coaModal->id, 'debit' => 0, 'kredit' => 5_000_000],
         ]);
@@ -125,7 +127,7 @@ class ReportCenterTest extends TestCase
         $sebelum = $arsip->snapshot;
 
         // Transaksi baru masuk SETELAH arsip.
-        \App\Domain\Akuntansi\JurnalService::create('M2', [
+        JurnalService::create('M2', [
             ['coa_id' => $coaKas->id, 'debit' => 1_000_000, 'kredit' => 0],
             ['coa_id' => $coaModal->id, 'debit' => 0, 'kredit' => 1_000_000],
         ]);

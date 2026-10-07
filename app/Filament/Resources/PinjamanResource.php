@@ -241,6 +241,7 @@ class PinjamanResource extends Resource
         return [
             \App\Filament\Resources\PinjamanResource\RelationManagers\JadwalRelationManager::class,
             \App\Filament\Resources\PinjamanResource\RelationManagers\PembayaranRelationManager::class,
+            \App\Filament\Resources\PinjamanResource\RelationManagers\JaminanRelationManager::class,
         ];
     }
 

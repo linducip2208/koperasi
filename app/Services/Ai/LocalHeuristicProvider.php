@@ -8,7 +8,10 @@ namespace App\Services\Ai;
  */
 class LocalHeuristicProvider implements AiProviderInterface
 {
-    public function name(): string { return 'local-heuristic'; }
+    public function name(): string
+    {
+        return 'local-heuristic';
+    }
 
     public function explain(string $prompt, array $context): string
     {
@@ -24,6 +27,7 @@ class LocalHeuristicProvider implements AiProviderInterface
             $lines[] = 'Rekomendasi: '.$context['recommendation'];
         }
         $lines[] = 'Catatan: angka akuntansi/database tetap sumber kebenaran.';
+
         return implode("\n", $lines);
     }
 }

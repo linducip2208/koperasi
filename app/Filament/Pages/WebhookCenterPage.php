@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasRoleAccess;
+use App\Filament\Concerns\HasTranslatedNav;
 use App\Models\WebhookEvent;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -14,9 +15,11 @@ use Filament\Tables\Table;
 class WebhookCenterPage extends Page implements HasTable
 {
     use HasRoleAccess;
+    use HasTranslatedNav;
     use InteractsWithTable;
 
     protected static ?string $permissionModule = 'setting';
+    protected static ?string $navKey = 'Webhook Center';
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
     protected static ?string $navigationGroup = 'SYSTEM';
     protected static ?string $navigationLabel = 'Webhook Center';

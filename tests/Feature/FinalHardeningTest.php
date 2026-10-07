@@ -19,6 +19,7 @@ class FinalHardeningTest extends TestCase
     use RefreshDatabase;
 
     private Tenant $tenant;
+
     private Kas $kas;
 
     protected function setUp(): void

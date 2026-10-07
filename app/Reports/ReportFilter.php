@@ -2,6 +2,8 @@
 
 namespace App\Reports;
 
+use App\Models\Cabang;
+
 /**
  * Spesifikasi filter report. Tipe: date | select | text | number | member | account | product.
  * Untuk select: ['options' => [value => label]] atau ['model' => FQCN, 'label' => 'nama', 'scope' => [...]].
@@ -26,7 +28,7 @@ class ReportFilter
     public static function cabang(): array
     {
         return [['name' => 'cabang_id', 'type' => 'select', 'label' => 'Cabang',
-            'model' => \App\Models\Cabang::class, 'option_label' => 'nama', 'placeholder' => 'Semua Cabang']];
+            'model' => Cabang::class, 'option_label' => 'nama', 'placeholder' => 'Semua Cabang']];
     }
 
     public static function account(string $name = 'coa_id', string $label = 'Akun'): array

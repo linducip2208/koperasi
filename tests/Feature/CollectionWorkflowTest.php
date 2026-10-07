@@ -36,6 +36,7 @@ class CollectionWorkflowTest extends TestCase
     {
         $u = User::create(['tenant_id' => $this->tenant->id, 'name' => 'SA', 'email' => 'sa@k.local', 'password' => bcrypt('x')]);
         $u->assignRole('super-admin');
+
         return $u;
     }
 
