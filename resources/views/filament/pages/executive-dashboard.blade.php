@@ -13,9 +13,19 @@
         </div>
     </div>
 
+    @if(! empty($actions))
+        <div class="kop-card" style="padding:1rem 1.25rem; margin-bottom:1rem;">
+            <div class="font-bold text-sm mb-2" style="color:var(--kop-text)">⚡ Today's Actions ({{ count($actions) }})</div>
+            <div class="flex flex-wrap gap-2">
+                @foreach($actions as $a)
+                    <a href="{{ $a['url'] }}" class="kop-badge {{ $a['level'] === 'danger' ? 'danger' : ($a['level'] === 'warning' ? 'warning' : 'info') }}" style="text-decoration:none; font-size:.75rem; padding:.45rem .9rem;">{{ $a['label'] }} →</a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <div class="kop-grid cols-3" style="margin-bottom:1rem;">
-        @foreach($kpi as $k)
-            <div class="kop-card kop-stat">
+        @foreach($kpi as $k)            <div class="kop-card kop-stat">
                 <div>
                     <div class="kop-stat-label">{{ $k['label'] }}</div>
                     <div class="kop-stat-value" style="font-size:1.2rem;">{{ $k['value'] }}</div>

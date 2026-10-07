@@ -12,7 +12,8 @@ class SimpananTransaksi extends Model
     protected $table = 'simpanan_transaksi';
 
     protected $fillable = [
-        'tenant_id', 'simpanan_id', 'nomor', 'tanggal', 'jenis',
+        'tenant_id', 'simpanan_id', 'nomor', 'idempotency_key', 'device_id',
+        'tanggal', 'jenis',
         'jumlah', 'saldo_sebelum', 'saldo_sesudah',
         'kas_id', 'metode_bayar', 'keterangan',
         'jurnal_id', 'user_id',

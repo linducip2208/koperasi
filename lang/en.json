@@ -53,5 +53,21 @@
     "Withdrawal": "Penarikan",
     "Payment": "Pembayaran",
     "Due Date": "Jatuh Tempo",
-    "Penalty": "Denda"
+    "Penalty": "Denda",
+    "Report Center": "Report Center",
+    "Import Center": "Import Center",
+    "Export Center": "Export Center",
+    "Approval Center": "Approval Center",
+    "Collection Center": "Collection Center",
+    "Credit Scoring": "Credit Scoring",
+    "Executive Dashboard": "Executive Dashboard",
+    "Member 360": "Member 360",
+    "Scheduled Reports": "Scheduled Reports",
+    "Custom Report": "Custom Report",
+    "Outstanding": "Outstanding",
+    "Overdue": "Overdue",
+    "Disbursement": "Disbursement",
+    "Collection Rate": "Collection Rate",
+    "Annual Meeting": "Annual Meeting",
+    "Surplus": "Surplus"
 }

@@ -12,7 +12,8 @@ class PinjamanPembayaran extends Model
     protected $table = 'pinjaman_pembayaran';
 
     protected $fillable = [
-        'tenant_id', 'pinjaman_id', 'nomor', 'tanggal', 'jenis',
+        'tenant_id', 'pinjaman_id', 'nomor', 'idempotency_key', 'device_id',
+        'tanggal', 'jenis',
         'total_bayar', 'alokasi_pokok', 'alokasi_margin', 'alokasi_denda',
         'alokasi_admin', 'alokasi_titipan',
         'kas_id', 'metode_bayar', 'keterangan',

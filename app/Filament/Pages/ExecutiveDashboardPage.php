@@ -61,8 +61,29 @@ class ExecutiveDashboardPage extends Page
             $mAset[] = ($setor - $tarik);
         }
 
+        // Today's actions — semua dari database nyata.
+        $actions = [];
+        $pinjamanPending = Pinjaman::where('status', 'pengajuan')->count();
+        if ($pinjamanPending > 0) $actions[] = ['label' => "{$pinjamanPending} pinjaman menunggu approval", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'pinjaman']), 'level' => 'warning'];
+        $bayarPending = \App\Models\PinjamanPembayaran::where('status', 'pending')->count();
+        if ($bayarPending > 0) $actions[] = ['label' => "{$bayarPending} pembayaran menunggu verifikasi", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'pembayaran']), 'level' => 'warning'];
+        $calonAnggota = Anggota::where('kategori', 'calon')->count();
+        if ($calonAnggota > 0) $actions[] = ['label' => "{$calonAnggota} calon anggota menunggu aktivasi", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'anggota']), 'level' => 'info'];
+        $overdueToday = \App\Models\PinjamanJadwal::whereDate('tanggal_jatuh_tempo', now()->toDateString())->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])->count();
+        if ($overdueToday > 0) $actions[] = ['label' => "{$overdueToday} angsuran jatuh tempo hari ini", 'url' => route('filament.admin.pages.collection-center'), 'level' => 'danger'];
+        $dokExpiring = \App\Models\MemberDocument::where('status', 'aktif')->whereDate('tanggal_kedaluwarsa', '<=', now()->addDays(30)->toDateString())->count();
+        if ($dokExpiring > 0) $actions[] = ['label' => "{$dokExpiring} dokumen kedaluwarsa ≤ 30 hari", 'url' => '/admin/member-documents', 'level' => 'warning'];
+        $kritikal = \App\Models\AuditFinding::where('severity', 'critical')->whereIn('status', ['open', 'progress'])->count();
+        if ($kritikal > 0) $actions[] = ['label' => "{$kritikal} temuan audit critical terbuka", 'url' => '/admin/audit-findings', 'level' => 'danger'];
+        try {
+            $st = app(\App\Services\LicenseClient::class)->status(strtolower(request()->getHost()));
+            if (! in_array($st['status'], ['ACTIVE'], true)) $actions[] = ['label' => 'Lisensi: '.$st['status'], 'url' => '/admin/license-page', 'level' => 'danger'];
+        } catch (\Throwable) {
+        }
+
         return [
             'label' => $label,
+            'actions' => $actions,
             'kpi' => [
                 ['label' => 'Total Anggota', 'value' => number_format($anggotaTotal), 'sub' => $anggotaAktif.' aktif'],
                 ['label' => 'Total Aset', 'value' => 'Rp '.number_format($aset, 0, ',', '.'), 'sub' => 'Ekuitas Rp '.number_format($ekuitas, 0, ',', '.')],

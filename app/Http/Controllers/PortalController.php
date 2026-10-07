@@ -264,7 +264,14 @@ class PortalController extends Controller
             'jumlah'      => ['required', 'numeric', 'min:10000', 'max:100000000'],
             'metode_bayar' => ['required', 'in:tunai,transfer'],
             'keterangan'  => ['nullable', 'string', 'max:255'],
+            '_idempotency' => ['nullable', 'string', 'max:80'],
+            '_device' => ['nullable', 'string', 'max:60'],
         ]);
+
+        // Idempotency: double-submit (offline retry) dengan key sama → abaikan.
+        if (! empty($validated['_idempotency']) && \App\Models\SimpananTransaksi::where('idempotency_key', $validated['_idempotency'])->exists()) {
+            return redirect()->route('portal.simpanan')->with('success', 'Pengajuan sudah diterima sebelumnya (duplikat diabaikan).');
+        }
 
         $simpanan = \App\Models\Simpanan::where('id', $validated['simpanan_id'])
             ->where('anggota_id', $anggota->id)
@@ -275,6 +282,8 @@ class PortalController extends Controller
             'tenant_id'     => $anggota->tenant_id,
             'simpanan_id'   => $simpanan->id,
             'nomor'         => 'TRX-' . str_pad((string) $nextId, 8, '0', STR_PAD_LEFT),
+            'idempotency_key' => $validated['_idempotency'] ?? null,
+            'device_id'     => $validated['_device'] ?? null,
             'tanggal'       => now()->toDateString(),
             'jenis'         => 'setor',
             'jumlah'        => (int) $validated['jumlah'],
@@ -285,6 +294,15 @@ class PortalController extends Controller
         ]);
 
         return redirect()->route('portal.simpanan')->with('success', 'Pengajuan setoran berhasil dikirim. Tunggu verifikasi admin (max 1x24 jam).');
+    }
+
+    /** Verifikasi publik kartu anggota (signed URL, tanpa login, data masking). */
+    public function verifikasi(Anggota $anggota)
+    {
+        return view('portal.verifikasi', [
+            'anggota' => $anggota,
+            'koperasi' => \App\Support\CooperativeContext::current(),
+        ]);
     }
 
     /** Unduh statement mutasi milik sendiri (PDF branded). */

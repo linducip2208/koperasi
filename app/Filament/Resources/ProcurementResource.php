@@ -56,6 +56,18 @@ class ProcurementResource extends Resource
                 }),
             ])
             ->actions([
+                Tables\Actions\Action::make('terima')
+                    ->label('Terima Barang')->icon('heroicon-o-check-circle')->color('success')
+                    ->visible(fn ($r) => $r->status === 'approved')
+                    ->form([
+                        Forms\Components\TextInput::make('aktual')->label('Nilai Aktual (Rp)')->numeric()->required()->minValue(0),
+                        Forms\Components\Textarea::make('catatan')->label('Berita Acara / Catatan')->rows(2),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $record->update(['aktual' => (int) $data['aktual'], 'catatan' => $data['catatan'] ?? $record->catatan]);
+                        WorkflowService::transition($record->refresh(), 'executed', 'procurement', 'Barang diterima');
+                        Notification::make()->title('Pengadaan executed.')->success()->send();
+                    }),
                 Tables\Actions\Action::make('workflow')
                     ->label('Proses')->icon('heroicon-o-arrow-path')
                     ->form(fn ($record) => [

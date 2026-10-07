@@ -218,6 +218,8 @@ Route::prefix('activation')->name('activation.')->group(function () {
 });
 
 Route::prefix('portal')->name('portal.')->group(function () {
+    Route::get('/verifikasi/{anggota}', [PortalController::class, 'verifikasi'])
+        ->middleware(['signed', 'throttle:30,1'])->name('verifikasi');
     Route::get('/login', [PortalController::class, 'showLogin'])->name('login');
     Route::post('/login', [PortalController::class, 'login'])->name('login.post');
     Route::get('/qr-login/{anggota}', [PortalController::class, 'qrLogin'])

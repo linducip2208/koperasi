@@ -16,6 +16,19 @@ class ShuCalculationService
     public static function hitung(int $tahun, int $shuTotal, array $persen): ShuPerhitungan
     {
         return DB::transaction(function () use ($tahun, $shuTotal, $persen) {
+            $existing = ShuPerhitungan::where('tahun', $tahun)->first();
+            if ($existing && in_array($existing->status, ['disetujui', 'distribusi'], true)) {
+                throw new \InvalidArgumentException("SHU tahun {$tahun} sudah {$existing->status} — snapshot dikunci, tidak boleh dihitung ulang.");
+            }
+
+            $snapshot = [
+                'shu_total' => $shuTotal,
+                'persen' => $persen,
+                'dihitung_oleh' => auth()->id(),
+                'dihitung_at' => now()->toDateTimeString(),
+                'version' => config('product.version'),
+            ];
+
             $perhitungan = ShuPerhitungan::updateOrCreate(
                 ['tahun' => $tahun],
                 [
@@ -35,6 +48,7 @@ class ShuCalculationService
                     'jumlah_dana_pengurus'   => (int) round($shuTotal * (($persen['dana_pengurus']   ?? 10) / 100)),
                     'jumlah_dana_karyawan'   => (int) round($shuTotal * (($persen['dana_karyawan']   ?? 5) / 100)),
                     'status'                 => 'draft',
+                    'meta'                   => array_merge($existing->meta ?? [], ['snapshot_terakhir' => $snapshot]),
                 ]
             );
 

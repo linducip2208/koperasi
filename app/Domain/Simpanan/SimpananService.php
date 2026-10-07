@@ -14,7 +14,7 @@ use InvalidArgumentException;
 
 class SimpananService
 {
-    public static function setor(Simpanan $simpanan, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $keterangan = null): SimpananTransaksi
+    public static function setor(Simpanan $simpanan, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $keterangan = null, ?string $idempotencyKey = null, ?string $deviceId = null): SimpananTransaksi
     {
         if ($jumlah <= 0) {
             throw new InvalidArgumentException('Jumlah setoran harus > 0');
@@ -22,7 +22,12 @@ class SimpananService
 
         $tanggal ??= now();
 
-        return DB::transaction(function () use ($simpanan, $jumlah, $kasId, $tanggal, $metode, $keterangan) {
+        return DB::transaction(function () use ($simpanan, $jumlah, $kasId, $tanggal, $metode, $keterangan, $idempotencyKey, $deviceId) {
+            // Idempotency offline-ready: retry dengan key sama → kembalikan baris awal.
+            if ($idempotencyKey) {
+                $ada = SimpananTransaksi::where('idempotency_key', $idempotencyKey)->first();
+                if ($ada) return $ada;
+            }
             // Row lock: cegah double-setor concurrent pada rekening yang sama.
             $simpanan = Simpanan::whereKey($simpanan->id)->lockForUpdate()->firstOrFail();
             $saldoSebelum = $simpanan->saldo;
@@ -32,6 +37,8 @@ class SimpananService
                 'tenant_id'     => $simpanan->tenant_id,
                 'simpanan_id'   => $simpanan->id,
                 'nomor'         => NumberingService::next('simpanan_trx', 'STR-', '{prefix}{ymd}-{seq:5}'),
+                'idempotency_key' => $idempotencyKey,
+                'device_id'     => $deviceId,
                 'tanggal'       => $tanggal,
                 'jenis'         => 'setor',
                 'jumlah'        => $jumlah,

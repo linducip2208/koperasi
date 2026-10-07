@@ -98,4 +98,33 @@ class AnggotaApiController extends Controller
 
         return response()->json(['data' => $pengumuman->concat($jatuhTempo)->sortByDesc('waktu')->values()]);
     }
+
+    /** Riwayat gabungan (simpanan + angsuran) milik sendiri — paginasi. */
+    public function transaksi(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $anggota = Anggota::where('user_id', $user->id)->firstOrFail();
+        $perPage = min(100, max(10, (int) $request->input('per_page', 20)));
+
+        $simpananIds = \App\Models\Simpanan::where('anggota_id', $anggota->id)->pluck('id');
+        $pinjamanIds = Pinjaman::where('anggota_id', $anggota->id)->pluck('id');
+
+        $simpananTrx = \App\Models\SimpananTransaksi::whereIn('simpanan_id', $simpananIds)
+            ->select('id', 'tanggal', 'jenis', 'jumlah', 'keterangan')
+            ->selectRaw("'simpanan' as kategori");
+        $pinjamanTrx = \App\Models\PinjamanPembayaran::whereIn('pinjaman_id', $pinjamanIds)
+            ->where('status', 'disetujui')
+            ->select('id', 'tanggal', 'jenis', 'total_bayar as jumlah', 'keterangan')
+            ->selectRaw("'pinjaman' as kategori");
+
+        $semua = $simpananTrx->get()->concat($pinjamanTrx->get())
+            ->sortByDesc('tanggal')->values();
+        $page = max(1, (int) $request->input('page', 1));
+        $items = $semua->forPage($page, $perPage)->values();
+
+        return response()->json([
+            'data' => $items,
+            'meta' => ['current_page' => $page, 'per_page' => $perPage, 'total' => $semua->count()],
+        ]);
+    }
 }

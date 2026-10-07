@@ -91,6 +91,7 @@
 
 <div class="no-print mt-3 max-w-3xl text-xs text-slate-500 text-center">
     QR Code di kartu ini dapat di-scan oleh anggota untuk <strong>login otomatis ke Portal Anggota</strong> tanpa input email/password. Token aktif 2 tahun. Cetak pada kertas tebal/PVC ukuran kartu standar.
+    <br>Verifikasi publik (tanpa login): <a href="{{ \Illuminate\Support\Facades\URL::temporarySignedRoute('portal.verifikasi', now()->addYears(2), ['anggota' => $anggota->id]) }}" style="color:#059669; font-weight:700;">buka halaman verifikasi →</a>
 </div>
 
 </body>

@@ -249,10 +249,12 @@ class PinjamanService
             $j->save();
         }
 
-        // Update kolektabilitas
+        // Update kolektabilitas — hitung di PHP (driver-safe, tanpa DATEDIFF mentah).
         $maxTelat = $pinjaman->jadwal()
             ->where('status', 'telat')
-            ->max(\DB::raw('DATEDIFF(NOW(), tanggal_jatuh_tempo)'));
+            ->pluck('tanggal_jatuh_tempo')
+            ->map(fn ($t) => (int) \Carbon\Carbon::parse($t)->diffInDays($hariIni))
+            ->max();
 
         $kolektabilitas = 'lancar';
         if ($maxTelat >= 1  && $maxTelat <= 30)  $kolektabilitas = 'dpk';
@@ -318,11 +320,16 @@ class PinjamanService
 
     // ─── Pembayaran ─────────────────────────────────────────────────
 
-    public static function bayar(Pinjaman $pinjaman, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $buktiBayar = null): PinjamanPembayaran
+    public static function bayar(Pinjaman $pinjaman, int $jumlah, int $kasId, ?Carbon $tanggal = null, string $metode = 'cash', ?string $buktiBayar = null, ?string $idempotencyKey = null, ?string $deviceId = null): PinjamanPembayaran
     {
         $tanggal ??= now();
 
-        return DB::transaction(function () use ($pinjaman, $jumlah, $kasId, $tanggal, $metode, $buktiBayar) {
+        return DB::transaction(function () use ($pinjaman, $jumlah, $kasId, $tanggal, $metode, $buktiBayar, $idempotencyKey, $deviceId) {
+            // Idempotency offline-ready: retry dengan key sama → kembalikan pembayaran awal.
+            if ($idempotencyKey) {
+                $ada = PinjamanPembayaran::where('idempotency_key', $idempotencyKey)->first();
+                if ($ada) return $ada;
+            }
             $sisa = $jumlah;
             $alokasiPokok = 0;
             $alokasiMargin = 0;
@@ -364,6 +371,8 @@ class PinjamanService
                 'tenant_id'       => $pinjaman->tenant_id,
                 'pinjaman_id'     => $pinjaman->id,
                 'nomor'           => NumberingService::next('pinjaman_bayar', 'PB-', '{prefix}{ymd}-{seq:5}'),
+                'idempotency_key' => $idempotencyKey,
+                'device_id'       => $deviceId,
                 'tanggal'         => $tanggal,
                 'jenis'           => 'angsuran',
                 'total_bayar'     => $jumlah,

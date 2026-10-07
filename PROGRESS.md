@@ -1,6 +1,16 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Platform: navigasi baru + kredit koleksi + workflow + dokumen + closing + quality
+## 2026-10-07 — Sesi Finalisasi: actions, verifikasi QR, idempotency, scoring UI, i18n
+
+- Executive Dashboard: Today's Actions (approval pending, jatuh tempo hari ini, dokumen expiring, temuan critical, lisensi)
+- Verifikasi kartu publik (`/portal/verifikasi`, signed + throttle + masking) + tautan di kartu
+- API: `/api/v1/transaksi` (paginasi, milik sendiri) + `/api/v1/notifikasi` di v1 & legacy
+- Idempotency offline-ready: kolom unik + `device_id` di simpanan/pinjaman pembayaran; service + portal + PPOB/webhook dukung; docs API
+- SHU: snapshot di `meta` + kunci hitung-ulang bila disetujui/distribusi
+- DATEDIFF → PHP diffInDays (driver-safe); Credit Scoring UI; Procurement terima-barang; en.json +15 keys
+- Test 125 OK (FinalHardeningTest 6 baru)
+
+---
 
 ### Navigasi
 - Grup Filament baru: DASHBOARD, OPERASIONAL, ACCOUNTING, REPORTS, OPERATIONS, GOVERNANCE, SYSTEM (ganti 73 resource/page, permission-aware tetap)
