@@ -25,14 +25,14 @@ Route::prefix('install')->name('install.')->group(function () {
         ->where('step', '[a-z]+')->name('store');
 });
 
-// Blog
+// Blog — feed.xml HARUS sebelum {slug} agar tidak tertangkap sebagai slug artikel.
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
-Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/blog/feed.xml', function () {
     $posts = \App\Models\BlogPost::with('category')->published()->latest('published_at')->limit(20)->get();
     return response()->view('blog.feed', ['posts' => $posts])->header('Content-Type', 'application/xml');
 })->name('blog.feed');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/robots.txt', [LandingController::class, 'robots']);
 Route::get('/sitemap.xml', [LandingController::class, 'sitemap']);

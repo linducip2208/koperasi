@@ -1,6 +1,14 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Penuntasan III: SHU payout fix, penjamin, aset, anggaran, audit
+## 2026-10-07 — Sesi Smoke-hijau: view demo + feed order + SEO regression
+
+- `demo/index.blade.php` dibuat (direktori kosong → /demo 500); tanpa password di tabel akun
+- Route `blog/feed.xml` dipindah sebelum `{slug}` (sebelumnya tertangkap 404)
+- Slug SEO invalid → 404 proper (bukan 500); `PublicPagesTest` permanen (valid 200 + invalid 404)
+- Smoke: 111/120, sisa 9 = 404 by-design + placeholder tester; 500 = NOL
+- Test 135 OK (535 assertion)
+
+---
 
 - AssetService::lepas (jurnal laba/rugi + aksi Lepas); Anggaran workflow draft→approved→closed (laporan hanya approved)
 - AuditFinding close/reopen; Pint file baru; Test 133 OK (528 assertion)
