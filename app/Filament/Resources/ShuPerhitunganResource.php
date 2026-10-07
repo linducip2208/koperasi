@@ -128,7 +128,27 @@ class ShuPerhitunganResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')->options(['draft' => 'Draft', 'disetujui' => 'Disetujui', 'distribusi' => 'Distribusi']),
             ])
-            ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
+            ->actions([
+                Tables\Actions\Action::make('setujui')
+                    ->label('Setujui')->icon('heroicon-o-check-badge')->color('warning')
+                    ->visible(fn ($r) => $r->status === 'draft')
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        $record->update(['status' => 'disetujui', 'approved_at' => now()]);
+                        \Filament\Notifications\Notification::make()->title('SHU disetujui — snapshot dikunci.')->success()->send();
+                    }),
+                Tables\Actions\Action::make('bagikan')
+                    ->label('Bagikan')->icon('heroicon-o-banknotes')->color('success')
+                    ->visible(fn ($r) => $r->status === 'disetujui')
+                    ->requiresConfirmation()
+                    ->modalDescription('Kredit ke simpanan sukarela tiap anggota + jurnal ringkas. Idempotent — aman diulang.')
+                    ->action(function ($record) {
+                        $hasil = \App\Domain\Shu\ShuCalculationService::bagikan($record->tahun);
+                        \Filament\Notifications\Notification::make()->title("Dibagikan ke {$hasil['dibayar']} anggota.")->success()->send();
+                    }),
+                Tables\Actions\EditAction::make()->visible(fn ($r) => $r->status === 'draft'),
+                Tables\Actions\DeleteAction::make()->visible(fn ($r) => $r->status === 'draft'),
+            ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 

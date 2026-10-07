@@ -70,7 +70,7 @@ class ExecutiveDashboardPage extends Page
         if ($pinjamanPending > 0) $actions[] = ['label' => "{$pinjamanPending} pinjaman menunggu approval", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'pinjaman']), 'level' => 'warning'];
         $bayarPending = \App\Models\PinjamanPembayaran::where('status', 'pending')->count();
         if ($bayarPending > 0) $actions[] = ['label' => "{$bayarPending} pembayaran menunggu verifikasi", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'pembayaran']), 'level' => 'warning'];
-        $calonAnggota = Anggota::where('kategori', 'calon')->count();
+        $calonAnggota = Anggota::where('status', 'calon')->count();
         if ($calonAnggota > 0) $actions[] = ['label' => "{$calonAnggota} calon anggota menunggu aktivasi", 'url' => route('filament.admin.pages.approval-center', ['tab' => 'anggota']), 'level' => 'info'];
         $overdueToday = \App\Models\PinjamanJadwal::whereDate('tanggal_jatuh_tempo', now()->toDateString())->whereIn('status', ['belum_jatuh_tempo', 'jatuh_tempo'])->count();
         if ($overdueToday > 0) $actions[] = ['label' => "{$overdueToday} angsuran jatuh tempo hari ini", 'url' => route('filament.admin.pages.collection-center'), 'level' => 'danger'];

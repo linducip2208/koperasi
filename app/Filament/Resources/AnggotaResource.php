@@ -137,7 +137,7 @@ class AnggotaResource extends Resource
                 Tables\Columns\TextColumn::make('penghasilan_bulanan')->label('Penghasilan/bln')->money('IDR')->toggleable(),
                 Tables\Columns\TextColumn::make('kategori')->badge()->color('info'),
                 Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state) => match ($state) {
-                    'aktif'       => 'success',
+                    'aktif' => 'success', 'calon' => 'info',
                     'tidak_aktif' => 'warning',
                     default       => 'danger',
                 }),
@@ -145,7 +145,7 @@ class AnggotaResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')->options([
-                    'aktif' => 'Aktif', 'tidak_aktif' => 'Tidak Aktif', 'keluar' => 'Keluar',
+                    'aktif' => 'Aktif', 'calon' => 'Calon (pending)', 'tidak_aktif' => 'Tidak Aktif', 'keluar' => 'Keluar',
                     'meninggal' => 'Meninggal', 'dikeluarkan' => 'Dikeluarkan',
                 ]),
                 Tables\Filters\SelectFilter::make('kategori')->options([

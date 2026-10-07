@@ -123,4 +123,90 @@ class ShuCalculationService
         $belanjaToko = (int) TokoPenjualan::whereBetween('tanggal', [$awal, $akhir])->sum('total');
         return $marginPinjaman + (int) round($belanjaToko * 0.05);
     }
+
+    /**
+     * Bagikan SHU ke simpanan sukarela anggota + 1 jurnal ringkas per 500 baris.
+     * Idempotent: baris 'dibayar' dilewati → aman di-retry. Hanya bila status disetujui.
+     *
+     * @return array{dibayar:int, total:int}
+     */
+    public static function bagikan(int $tahun): array
+    {
+        $perhitungan = ShuPerhitungan::where('tahun', $tahun)->firstOrFail();
+        if ($perhitungan->status !== 'disetujui') {
+            throw new \InvalidArgumentException("SHU tahun {$tahun} harus disetujui dulu (status: {$perhitungan->status}).");
+        }
+
+        $coaShu = \App\Models\Coa::where('tipe', 'ekuitas')->where('is_postable', true)
+            ->where(function ($q) {
+                $q->where('nama', 'like', '%SHU%')->orWhere('nama', 'like', '%laba%ditahan%')->orWhere('nama', 'like', '%laba ditahan%');
+            })->first()
+            ?? \App\Models\Coa::where('tipe', 'ekuitas')->where('is_postable', true)->where('is_aktif', true)->first();
+        $coaSimpanan = \App\Models\Coa::where('kode', '2.2.1.01')->first()
+            ?? \App\Models\Coa::where('tipe', 'kewajiban')->where('is_postable', true)->where('is_aktif', true)->first();
+        if (! $coaShu || ! $coaSimpanan) {
+            throw new \InvalidArgumentException('COA ekuitas/simpanan untuk distribusi SHU tidak ditemukan.');
+        }
+
+        $dibayar = 0;
+        $antre = ShuDistribusi::where('shu_perhitungan_id', $perhitungan->id)
+            ->whereIn('status', ['belum_dibagikan', 'pending'])
+            ->where('total_shu', '>', 0)
+            ->orderBy('id')->get();
+
+        foreach ($antre->chunk(500) as $chunk) {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($chunk, $perhitungan, $coaShu, $coaSimpanan, &$dibayar) {
+                $totalChunk = 0;
+                foreach ($chunk as $row) {
+                    $simpanan = \App\Models\Simpanan::where('anggota_id', $row->anggota_id)
+                        ->where('status', 'aktif')
+                        ->whereHas('produk', fn ($q) => $q->where('jenis', 'sukarela'))
+                        ->lockForUpdate()->first();
+
+                    if (! $simpanan) {
+                        $produk = \App\Models\ProdukSimpanan::where('jenis', 'sukarela')->where('aktif', true)->first();
+                        if (! $produk) continue; // tanpa produk sukarela → lewati, admin atasi manual
+                        $simpanan = \App\Domain\Simpanan\SimpananService::bukaRekening($row->anggota_id, $produk->id);
+                        $simpanan = \App\Models\Simpanan::whereKey($simpanan->id)->lockForUpdate()->first();
+                    }
+
+                    $sebelum = $simpanan->saldo;
+                    $trx = \App\Models\SimpananTransaksi::create([
+                        'tenant_id' => $simpanan->tenant_id,
+                        'simpanan_id' => $simpanan->id,
+                        'nomor' => \App\Domain\Numbering\NumberingService::next('simpanan_trx', 'STR-', '{prefix}{ymd}-{seq:5}'),
+                        'tanggal' => now()->toDateString(),
+                        'jenis' => 'shu',
+                        'jumlah' => (int) $row->total_shu,
+                        'saldo_sebelum' => $sebelum,
+                        'saldo_sesudah' => $sebelum + (int) $row->total_shu,
+                        'metode_bayar' => 'internal',
+                        'keterangan' => "SHU tahun {$perhitungan->tahun}",
+                        'user_id' => auth()->id(),
+                    ]);
+                    $simpanan->update(['saldo' => $sebelum + (int) $row->total_shu]);
+                    $totalChunk += (int) $row->total_shu;
+
+                    $row->update(['status' => 'dibayar', 'distributed_at' => now()]);
+                    $dibayar++;
+                }
+
+                if ($totalChunk > 0) {
+                    \App\Domain\Akuntansi\JurnalService::create("Distribusi SHU {$perhitungan->tahun} (" . $chunk->count() . ' anggota)', [
+                        ['coa_id' => $coaShu->id, 'debit' => $totalChunk, 'kredit' => 0, 'keterangan' => 'Distribusi SHU'],
+                        ['coa_id' => $coaSimpanan->id, 'debit' => 0, 'kredit' => $totalChunk, 'keterangan' => 'SHU masuk simpanan'],
+                    ], ['tipe' => 'otomatis', 'referensi_type' => ShuPerhitungan::class, 'referensi_id' => $perhitungan->id]);
+                }
+            });
+        }
+
+        if (! ShuDistribusi::where('shu_perhitungan_id', $perhitungan->id)->whereIn('status', ['belum_dibagikan', 'pending'])->exists()) {
+            $perhitungan->update(['status' => 'distribusi', 'distributed_at' => now()]);
+        }
+
+        activity('shu')->causedBy(auth()->user())->performedOn($perhitungan)
+            ->withProperties(['tahun' => $tahun, 'dibayar' => $dibayar])->log('shu_dibagikan');
+
+        return ['dibayar' => $dibayar, 'total' => $antre->count()];
+    }
 }

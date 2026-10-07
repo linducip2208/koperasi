@@ -45,6 +45,11 @@ class Pengaturan extends Page implements HasForms
             'shu_karyawan'     => Setting::get('shu_karyawan', '5', 'shu'),
             'pos_diskon_anggota' => Setting::get('pos_diskon_anggota', '5', 'pos'),
             'pos_print_struk'    => Setting::get('pos_print_struk', '1', 'pos'),
+            'ai_provider'  => Setting::get('ai_provider', 'local-heuristic', 'ai'),
+            'ai_endpoint'  => Setting::get('ai_endpoint', '', 'ai'),
+            'ai_model'     => Setting::get('ai_model', '', 'ai'),
+            'ai_api_key'   => Setting::get('ai_api_key', '', 'ai'),
+            'locale'       => Setting::get('locale', config('app.locale'), 'general'),
         ]);
     }
 
@@ -75,6 +80,21 @@ class Pengaturan extends Page implements HasForms
                 TextInput::make('pos_diskon_anggota')->label('Diskon Anggota Default (%)')->numeric()->suffix('%'),
                 Toggle::make('pos_print_struk')->label('Auto-print Struk'),
             ])->columns(2),
+
+            Section::make('AI Insights')->description('Provider AI untuk penjelasan laporan. Tanpa konfigurasi = heuristik lokal (tanpa API luar).')
+                ->schema([
+                    Select::make('ai_provider')->label('Provider')->options([
+                        'local-heuristic' => 'Lokal Heuristik (tanpa API)',
+                        'http-generic' => 'HTTP Generik (OpenAI-compatible / Ollama)',
+                    ]),
+                    TextInput::make('ai_endpoint')->label('Endpoint')->placeholder('http://localhost:11434/v1'),
+                    TextInput::make('ai_model')->label('Model')->placeholder('llama3'),
+                    TextInput::make('ai_api_key')->label('API Key (opsional)')->password()->revealable(),
+                ])->columns(2),
+
+            Section::make('Bahasa / Locale')->schema([
+                Select::make('locale')->label('Bahasa Aplikasi')->options(['id' => 'Indonesia', 'en' => 'English']),
+            ]),
         ])->statePath('data');
     }
 
@@ -86,6 +106,8 @@ class Pengaturan extends Page implements HasForms
             'notifikasi' => ['wa_provider', 'wa_api_key', 'wa_api_url', 'reminder_h'],
             'shu'        => ['shu_jasa_modal', 'shu_jasa_anggota', 'shu_cadangan', 'shu_pendidikan', 'shu_sosial', 'shu_pengurus', 'shu_karyawan'],
             'pos'        => ['pos_diskon_anggota', 'pos_print_struk'],
+            'ai'         => ['ai_provider', 'ai_endpoint', 'ai_model', 'ai_api_key'],
+            'general'    => ['locale'],
         ];
 
         foreach ($groups as $group => $keys) {

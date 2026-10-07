@@ -95,7 +95,7 @@ class ApprovalCenterPage extends Page implements HasTable
 
     protected function anggotaTable(Table $table): Table
     {
-        return $table->query(Anggota::where('kategori', 'calon')->orderByDesc('id'))
+        return $table->query(Anggota::where('status', 'calon')->orderByDesc('id'))
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_anggota')->label('Nomor'),
                 Tables\Columns\TextColumn::make('nama')->searchable(),
@@ -104,7 +104,7 @@ class ApprovalCenterPage extends Page implements HasTable
             ])
             ->actions([
                 Tables\Actions\Action::make('aktifkan')->label('Aktifkan')->color('success')->requiresConfirmation()
-                    ->action(fn ($r) => $this->wrap(fn () => $r->update(['kategori' => 'biasa', 'status' => 'aktif']))),
+                    ->action(fn ($r) => $this->wrap(fn () => $r->update(['status' => 'aktif']))),
             ])->paginated(15);
     }
 

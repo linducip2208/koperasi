@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\RequirePair::class,
             ResolveTenantFromUser::class,
             \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\SetLocale::class,
         ]);
         // Webhook gateway tidak bisa kirim CSRF token — keamanan via
         // signature HMAC + idempotency di controller, bukan CSRF.

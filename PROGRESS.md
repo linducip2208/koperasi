@@ -1,6 +1,13 @@
 # Progress Log
 
-## 2026-10-07 — Sesi Penuntasan: perf agregat, AI HTTP, i18n nav, penjamin, installer fix
+## 2026-10-07 — Sesi Penuntasan II: SHU payout, penjamin, locale, AI settings
+
+- SHU `bagikan()`: kredit sukarela + jurnal ringkas/chunk + idempotent + kunci status; aksi Setujui/Bagikan di resource
+- Approval calon anggota diperbaiki (status calon, bukan kategori); filter + badge + Today's Actions
+- Penjamin di agunan; locale session via settings + middleware; AI provider via settings + section Pengaturan
+- Test 129 OK (519 assertion)
+
+---
 
 - Ledger single-query + cache + flush (neraca/LR 1 query; budget 12 query); whereDate/driver-safe; DATEDIFF → PHP
 - AI Generic HTTP (endpoint/model/key via settings) + fallback lokal; AiInsight tetap berlabel
