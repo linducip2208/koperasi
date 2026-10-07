@@ -11,7 +11,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Anggota extends Model
 {
-    use BelongsToTenant, SoftDeletes, LogsActivity;
+    use BelongsToTenant, LogsActivity, SoftDeletes;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -34,7 +34,7 @@ class Anggota extends Model
 
         static::updating(function (Anggota $anggota) {
             if ($anggota->isDirty('status')) {
-                \App\Models\AnggotaStatusLog::create([
+                AnggotaStatusLog::create([
                     'tenant_id' => $anggota->tenant_id,
                     'anggota_id' => $anggota->id,
                     'dari_status' => $anggota->getOriginal('status'),
@@ -61,11 +61,11 @@ class Anggota extends Model
     ];
 
     protected $casts = [
-        'tanggal_lahir'       => 'date',
-        'tanggal_masuk'       => 'date',
-        'tanggal_keluar'      => 'date',
+        'tanggal_lahir' => 'date',
+        'tanggal_masuk' => 'date',
+        'tanggal_keluar' => 'date',
         'penghasilan_bulanan' => 'integer',
-        'meta'                => 'array',
+        'meta' => 'array',
     ];
 
     public function cabang()
@@ -142,6 +142,7 @@ class Anggota extends Model
         if (! $this->penghasilan_bulanan || $this->penghasilan_bulanan <= 0) {
             return 0;
         }
+
         return round(($this->totalCicilanPerBulan() / $this->penghasilan_bulanan) * 100, 2);
     }
 

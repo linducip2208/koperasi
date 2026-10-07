@@ -629,7 +629,7 @@ class BudgetActualReport extends ReportDefinition
             $d = Carbon::create($tahun, $i + 1, 1);
             $maps[$b] = LaporanKeuanganService::ledgerMap($d->startOfMonth()->toDateString(), $d->endOfMonth()->toDateString(), null, true);
         }
-        $rows = Anggaran::with('coa')->where('tahun', $tahun)->get()->map(function ($a) use ($bulan, $maps, $tahun) {
+        $rows = Anggaran::with('coa')->where('tahun', $tahun)->whereIn('status', ['approved', 'closed'])->get()->map(function ($a) use ($bulan, $maps, $tahun) {
             $rencana = collect($bulan)->sum(fn ($b) => (int) $a->$b);
             $isLR = in_array($a->coa->tipe, ['pendapatan', 'beban']);
             $realisasi = 0;

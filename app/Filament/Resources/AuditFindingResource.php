@@ -68,6 +68,14 @@ class AuditFindingResource extends Resource
                     ->visible(fn ($r) => in_array($r->status, ['open', 'progress']))
                     ->requiresConfirmation()
                     ->action(fn ($r) => $r->update(['status' => 'resolved', 'resolved_at' => now()])),
+                Tables\Actions\Action::make('close')->label('Close')->color('gray')
+                    ->visible(fn ($r) => $r->status === 'resolved')
+                    ->requiresConfirmation()
+                    ->action(fn ($r) => $r->update(['status' => 'closed'])),
+                Tables\Actions\Action::make('reopen')->label('Reopen')->color('warning')
+                    ->visible(fn ($r) => in_array($r->status, ['resolved', 'closed']))
+                    ->requiresConfirmation()
+                    ->action(fn ($r) => $r->update(['status' => 'progress', 'resolved_at' => null])),
                 Tables\Actions\EditAction::make(),
             ])
             ->defaultSort('id', 'desc');

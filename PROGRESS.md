@@ -1,5 +1,12 @@
 # Progress Log
 
+## 2026-10-07 — Sesi Penuntasan III: SHU payout fix, penjamin, aset, anggaran, audit
+
+- AssetService::lepas (jurnal laba/rugi + aksi Lepas); Anggaran workflow draft→approved→closed (laporan hanya approved)
+- AuditFinding close/reopen; Pint file baru; Test 133 OK (528 assertion)
+
+---
+
 ## 2026-10-07 — Sesi Penuntasan II: SHU payout, penjamin, locale, AI settings
 
 - SHU `bagikan()`: kredit sukarela + jurnal ringkas/chunk + idempotent + kunci status; aksi Setujui/Bagikan di resource

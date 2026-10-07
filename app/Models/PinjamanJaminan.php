@@ -20,11 +20,11 @@ class PinjamanJaminan extends Model
 
     protected $casts = [
         'nilai_taksiran' => 'integer',
-        'nilai_pasar'    => 'integer',
-        'ltv'            => 'decimal:2',
-        'foto_path'      => 'array',
-        'dokumen_path'   => 'array',
-        'tanggal_lepas'  => 'date',
+        'nilai_pasar' => 'integer',
+        'ltv' => 'decimal:2',
+        'foto_path' => 'array',
+        'dokumen_path' => 'array',
+        'tanggal_lepas' => 'date',
     ];
 
     public function pinjaman()

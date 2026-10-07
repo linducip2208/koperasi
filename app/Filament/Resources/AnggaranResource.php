@@ -64,11 +64,26 @@ class AnggaranResource extends Resource
                 Tables\Columns\TextColumn::make('coa.tipe')->badge()->color(fn ($state) => $state === 'pendapatan' ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('total')->label('Total Setahun')->money('IDR')
                     ->getStateUsing(fn ($record) => $record->jan + $record->feb + $record->mar + $record->apr + $record->mei + $record->jun + $record->jul + $record->agu + $record->sep + $record->okt + $record->nov + $record->des),
+                Tables\Columns\TextColumn::make('status')->badge()->color(fn ($s) => match ($s) {
+                    'approved' => 'success', 'closed' => 'gray', default => 'warning',
+                }),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('tahun')->options(array_combine(range(2020, now()->year + 1), range(2020, now()->year + 1))),
+                Tables\Filters\SelectFilter::make('status')->options(['draft' => 'Draft', 'approved' => 'Approved', 'closed' => 'Closed']),
             ])
-            ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
+            ->actions([
+                Tables\Actions\Action::make('approve')->label('Approve')->color('success')
+                    ->visible(fn ($r) => $r->status === 'draft')
+                    ->requiresConfirmation()
+                    ->action(fn ($r) => $r->update(['status' => 'approved', 'approved_by' => auth()->id(), 'approved_at' => now()])),
+                Tables\Actions\Action::make('close')->label('Close')->color('gray')
+                    ->visible(fn ($r) => $r->status === 'approved')
+                    ->requiresConfirmation()
+                    ->action(fn ($r) => $r->update(['status' => 'closed'])),
+                Tables\Actions\EditAction::make()->visible(fn ($r) => $r->status === 'draft'),
+                Tables\Actions\DeleteAction::make()->visible(fn ($r) => $r->status === 'draft'),
+            ])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 

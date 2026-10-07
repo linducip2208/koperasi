@@ -138,7 +138,24 @@ class AssetResource extends Resource
                     'aktif' => 'success', 'dijual' => 'info', 'rusak' => 'warning', 'hapus' => 'danger',
                 }),
             ])
-            ->actions([Tables\Actions\EditAction::make()]);
+            ->actions([
+                Tables\Actions\Action::make('lepas')
+                    ->label('Lepas')->icon('heroicon-o-arrow-right-circle')->color('warning')
+                    ->visible(fn ($r) => $r->status === 'aktif')
+                    ->form([
+                        Forms\Components\Select::make('status')->label('Jenis Pelepasan')->options([
+                            'dijual' => 'Dijual', 'rusak' => 'Rusak', 'hapus' => 'Dihapus',
+                        ])->required()->default('dijual'),
+                        Forms\Components\TextInput::make('harga_jual')->label('Harga Jual (Rp, 0 bila non-tunai)')->numeric()->default(0)->required(),
+                        Forms\Components\Select::make('kas_id')->label('Kas Penerima')->options(\App\Models\Kas::where('aktif', true)->pluck('nama', 'id'))->required(),
+                    ])
+                    ->requiresConfirmation()
+                    ->action(function ($record, array $data) {
+                        \App\Domain\Asset\AssetService::lepas($record, (int) $data['harga_jual'], (int) $data['kas_id'], $data['status']);
+                        \Filament\Notifications\Notification::make()->title('Aset dilepas + jurnal tercatat.')->success()->send();
+                    }),
+                Tables\Actions\EditAction::make(),
+            ]);
     }
 
     public static function getPages(): array

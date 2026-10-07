@@ -15,6 +15,7 @@ class Anggaran extends Model
         'tenant_id', 'tahun', 'coa_id',
         'jan', 'feb', 'mar', 'apr', 'mei', 'jun',
         'jul', 'agu', 'sep', 'okt', 'nov', 'des',
+        'status', 'approved_by', 'approved_at',
     ];
 
     protected $casts = [
